@@ -1,1 +1,1 @@
-# DuoCar
+# edu-data-science-dev
