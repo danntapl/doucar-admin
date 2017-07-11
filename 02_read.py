@@ -63,8 +63,8 @@ riders.schema.fields
 from pyspark.sql.types import *
 schema = StructType([
     StructField("id", StringType()),
-    StructField("birth_date", TimestampType()),
-    StructField("start_date", TimestampType()),
+    StructField("birth_date", DateType()),
+    StructField("start_date", DateType()),
     StructField("first_name", StringType()),
     StructField("last_name", StringType()),
     StructField("sex", StringType()),
