@@ -55,6 +55,10 @@ spark.read.csv('duocar/riders_fargo.txt', sep='\t', header=True, inferSchema=Tru
 riders = spark.read.format('csv').option('sep', '\t').option('header', True).option('inferSchema', True).load('duocar/riders_fargo.txt')
 
 
+# See the names and inferred data types of the columns
+riders.schema.fields
+
+
 # You can manually specify the schema instead of inferring it from the header row and column values
 from pyspark.sql.types import *
 schema = StructType([
