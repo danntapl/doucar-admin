@@ -54,6 +54,27 @@ spark.read.csv('duocar/riders_fargo.txt', sep='\t', header=True, inferSchema=Tru
 
 riders = spark.read.format('csv').option('sep', '\t').option('header', True).option('inferSchema', True).load('duocar/riders_fargo.txt')
 
+
+# You can manually specify the schema instead of inferring it from the header row and column values
+from pyspark.sql.types import *
+schema = StructType([
+    StructField("id", StringType()),
+    StructField("birth_date", TimestampType()),
+    StructField("start_date", TimestampType()),
+    StructField("first_name", StringType()),
+    StructField("last_name", StringType()),
+    StructField("sex", StringType()),
+    StructField("ethnicity", StringType()),
+    StructField("student", IntegerType()),
+    StructField("home_block", StringType()),
+    StructField("home_lat", DoubleType()),
+    StructField("home_lon", DoubleType()),
+    StructField("work_lat", DoubleType()),
+    StructField("work_lon", DoubleType())
+])
+spark.read.format('csv').option('sep', '\t').option('header', True).option('schema', schema).load('duocar/riders_fargo.txt').show(5)
+
+
 # Write the file to a comma-delimited file:
 riders.write.csv('duocar/riders_csv', sep=',')
 !hdfs dfs -ls duocar/riders_csv
