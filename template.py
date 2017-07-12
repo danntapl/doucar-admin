@@ -1,11 +1,15 @@
-# # TITLE
+# # Title
+
+
+# ## TODO
+# * Task
 
 
 # ## Setup
 
 # Create a SparkSession:
 from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName('NAME').master('local').getOrCreate()
+spark = SparkSession.builder.appName('name').master('local').getOrCreate()
 
 
 # ## Body
@@ -22,5 +26,6 @@ spark = SparkSession.builder.appName('NAME').master('local').getOrCreate()
 spark.stop()
 
 
-# ## TODO
-# * Task
+# ## References
+
+# [Apache Spark](http://spark.apache.org/)
