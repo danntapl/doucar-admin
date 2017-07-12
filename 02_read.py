@@ -76,7 +76,7 @@ schema = StructType([
     StructField("work_lat", DoubleType()),
     StructField("work_lon", DoubleType())
 ])
-spark.read.format('csv').option('sep', '\t').option('header', True).option('schema', schema).load('duocar/riders_fargo.txt').show(5)
+spark.read.format('csv').option('sep', '\t').option('header', True).schema(schema).load('duocar/riders_fargo.txt').show(5)
 
 
 # Write the file to a comma-delimited file:
