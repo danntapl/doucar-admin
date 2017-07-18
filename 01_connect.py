@@ -1,25 +1,37 @@
 # # Connecting to Spark
 
-
-# ## TODO
-# * Killing a Spark application?
+# In this module we demonstrate how to run Spark in local mode (on the CDSW
+# cluster) and in cluster model (on the Hadoop cluster via YARN).
 
 
 # ## Creating a SparkSession
 
-# A `SparkSession` is the entry point to Spark SQL.
+# A
+# [SparkSession](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.SparkSession)
+# is the entry point to Spark SQL.
 
 from pyspark.sql import SparkSession
 
-# Use the `getOrCreate` method of the `builder` class to create a SparkSession.
+# Use the `getOrCreate` method of the `builder` class to create a SparkSession:
 
-spark = SparkSession.builder.appName('connect').getOrCreate()
+spark = SparkSession.builder.appName("connect").getOrCreate()
 
-# Use the optional `appName` method to change the default name of the SparkSession.
+# Notes:
 
-# **Note:** An underlying `SparkContext` is created with the SparkSession.
+# * The optional `appName` method changes the default name of the SparkSession.
 
-# **Note:** To adjust the logging level us `spark.SparkContext.setLogLevel(newLevel)`.
+# * An underlying `SparkContext` is created with the SparkSession--it is your Spark "runtime".
+
+# * The note from the console about setting logging level is incorrect for your
+# session that creates a SparkSession explicitly.  To adjust the logging level
+# use `spark.SparkContext.setLogLevel('newLevel')`.  Legal values are:
+#    * TRACE
+#    * DEBUG
+#    * INFO
+#    * WARN
+#    * ERROR
+#    * FATAL
+#    * OFF
 
 # Use the `version` method to get the version of Spark.
 
@@ -29,55 +41,85 @@ spark.version
 
 spark.stop()
 
-#**Note:**  According to the documentation, this actually stops the underlying `SparkContext`.
+# This actually stops the underlying `SparkContext`.
 
-# The `SparkSession` can connect to a local instance of Spark or a Spark cluster.
+# The `SparkSession` can connect to Spark in local mode or cluster mode.  The
+# default behavior in CDSW is cluster mode.
 
 
 # ## Connecting to a local Spark instance
 
-# A local Spark instance is useful for developing and debugging code on small datasets.
-# To connect to a local Spark instance running on the CDSW node:
+# A local Spark instance is a single local process, and is useful for
+# developing and debugging code on small datasets.  To connect to a local Spark
+# instance running on the CDSW node, use `master("local")`:
 
-spark = SparkSession.builder.master('local').appName('connect').getOrCreate()
+# Create a SparkSession:
+spark = SparkSession.builder.master("local").appName("connect-local").getOrCreate()
 
+# Create a Spark DataFrame:
+df = spark.createDataFrame([("brian", ), ("glynn", ), ("ian", )], schema=["team"])
+
+# Print the schema:
+df.printSchema()
+
+# View the DataFrame:
+df.show()
+
+# Stop the SparkSession:
 spark.stop()
 
 
 # ## Connecting to a Spark cluster via YARN
 
-# To connect to a Spark cluster via YARN:
+# To connect to a Spark cluster via YARN, use `master("yarn")`:
 
-spark = SparkSession.builder.master('yarn').appName('connect').getOrCreate()
+spark = SparkSession.builder.master("yarn").appName("connect-yarn").getOrCreate()
 
-# **Note:**  Spark runs in `client` mode for CDSW.
-
-# **Note:**  YARN client mode is the default setting in CDSW.
+# **Note**: The default value for master is `"yarn"`.
 
 
 # ## Viewing the Spark Job UI
 
-# Create a simple Spark job to exercise the Spark Job UI
+# Create a simple Spark job to exercise the Spark Job UI:
 df = spark.range(1000000)
 df.count()
 
-# **Method 1:** Enter `echo spark-${CDSW_ENGINE_ID}.${CDSW_DOMAIN}` into the CDSW Terminal and paste the result into your browser.
+# There are at least four methods for viewing your Spark Job UI.  Here are two.
 
-# **Method 2:** Run the following Python code and select the resulting link:
-
-import os, IPython
-url = "spark-%s.%s" % (os.environ["CDSW_ENGINE_ID"], os.environ["CDSW_DOMAIN"])
-IPython.display.HTML("<a href=http://%s>Spark UI</a>" % url)
-
-# **Method 3:** Use the Hue Job Browser for Spark Applications on the cluster.
-
-# **Method 4:** Use the `uiWebUrl` method.
+# **Method 1:** Use the `uiWebUrl` method:
 
 spark.sparkContext.uiWebUrl
+
+# Paste this URL into your browser to view the Spark Job UI.
+
+# **Method 2:** Use the Hue Job Browser for Spark Applications on the cluster.
+
+# See also [Accessing Spark 2 Web UIs from Cloudera Data Science
+# Workbench](https://www.cloudera.com/documentation/data-science-workbench/latest/topics/cdsw_spark_ui.html#cdsw_spark_ui).
 
 
 # ## Viewing the Spark History Server UI
 
-# Open the Spark History Server UI directly from CDSW.
+# You can open the Spark History Server UI directly from CDSW.
 
+# Stop the SparkSession:
 spark.stop()
+
+
+## Exercises
+
+# Create a SparkSession that connects to Spark in local mode.  Configure the SparkSession to use two cores.  
+
+# Create a small DataFrame.  Print the schema.  View the DataFrame.  Count the number of records.
+
+# Explore the Spark Job UI.
+
+# Stop the SparkSession.
+
+# Explore the Spark History Server UI.
+
+
+## References
+
+# [Using Cloudera's Distribution of Apache Spark
+# 2](https://www.cloudera.com/documentation/data-science-workbench/latest/topics/cdsw_dist_comp_with_Spark.html)
