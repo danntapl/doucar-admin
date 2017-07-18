@@ -6,6 +6,8 @@
 # * Add diagnostic plots
 # * Add rider data
 # * Add weather data
+# * Add references
+# * Add links
 
 
 # ## Setup
@@ -18,6 +20,7 @@
 # Create a SparkSession:
 from pyspark.sql import SparkSession
 spark = SparkSession.builder.appName('regress').master('local').getOrCreate()
+
 
 # ## Generate modeling data
 
@@ -47,7 +50,7 @@ joined2 = joined1.join(drivers, joined1.driver_id == drivers.id, 'left_outer')
 # Create function to explore features:
 def explore(df, feature, label):
   from pyspark.sql.functions import count, mean
-  aggregated = df.groupBy(feature).agg(count(feature), mean(label)).orderBy(feature)
+  aggregated = df.rollup(feature).agg(count(feature), mean(label)).orderBy(feature)
   aggregated.show()
 #  aggregated.toPandas().plot(x=0, y=2, kind='scatter')
 
@@ -86,6 +89,9 @@ from pyspark.ml.feature import VectorAssembler
 assembler = VectorAssembler(inputCols=features, outputCol='features')
 assembled = assembler.transform(selected)
 assembled.head(5)
+
+# Save data for subsequent modules:
+assembled.write.parquet('duocar/regression_data', mode='overwrite')
 
 
 # ## Create train and test sets
