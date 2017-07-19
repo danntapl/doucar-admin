@@ -15,7 +15,7 @@
 
 # Create a SparkSession:
 from pyspark.sql import SparkSession
-spark = SparkSession.builder.master("local").appName("read").getOrCreate()
+spark = SparkSession.builder.master("local").appName("read").enableHiveSupport().getOrCreate()
 
 # **Note:** The subsequent Hive examples seem to work without the `enableHiveSupport` method.
 
@@ -256,7 +256,7 @@ ran_df.describe("id", "normal").show()
 !hdfs dfs -rm -r -skipTrash practice/riders_text
 !hdfs dfs -rm -r -skipTrash practice/riders_tsv
 !hdfs dfs -rm -r -skipTrash practive/riders_parquet
-spark.sql("DROP TABLE IF EXISTS riders")1Gj
+spark.sql("DROP TABLE IF EXISTS riders")
 
 # Stop the `SparkSession`:
 
