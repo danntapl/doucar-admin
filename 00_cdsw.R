@@ -60,7 +60,7 @@ devtools::install_github("rstudio/leaflet")
 packageVersion("leaflet")
 
 # Load the package
-library("leaflet")
+library(leaflet)
 
 # Use the package
 leaflet() %>%
