@@ -15,6 +15,8 @@ library(sparklyr)
 
 spark <- spark_connect(master = "local", app_name = "connect-local")
 
+# * The optional `app_name` argument changes the default name of the Spark session.
+
 
 # Use the `spark_version()` function to get the version of Spark.
 
