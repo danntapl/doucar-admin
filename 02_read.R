@@ -146,6 +146,20 @@ class(flights)
 
 flights
 
+
+# But you need not use SQL to access Hive tables with sparklyr
+# Instead you can just reference the Hive table name with `tbl()`:
+
+flights <- tbl(spark, "flights")
+
+# This gives exactly the same result:
+
+class(flights)
+
+flights
+
+
+
 # There are more details in the next module about how sparklyr works together with dplyr
 
 
@@ -164,9 +178,18 @@ iris_tbl <- copy_to(spark, iris)
 
 iris_tbl
 
-# Note: `copy_to()` does not persist the copied data in HDFS.
+# If you remove the variable `iris_tbl` (which represents this remote Spark data frame) you can re-create it without copying the data to Spark again.
+# Just use `tbl()` and reference the name (`iris`):
+
+rm(iris_tbl)
+
+iris_tbl <- tbl(spark, "iris")
+
+iris_tbl
+
+# Note: `copy_to()` *does not persist* the copied data in HDFS.
 # The data is stored in a temporary location in HDFS and may be cached in Spark memory.
-# After you disconnect from Spark, it will no longer be available.
+# After you end your session by disconnecting from Spark, it will no longer be available.
 
 
 # ## Cleanup
