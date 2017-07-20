@@ -86,6 +86,8 @@ system("hdfs dfs -ls practice/riders_tsv")
 
 system("hdfs dfs -cat practice/riders_tsv/* | head -n 5")
 
+# **Note:** Do not worry about the `cat: Unable to write to output steam.` message.
+
 
 # ## Working with Parquet files
 
@@ -133,14 +135,38 @@ airlines
 
 
 # You can also return the result of a SQL query as a `tbl_spark`.
-# To do this, use `tbl(spark, sql(...))`.
+# To do this, you need to load dplyr and use `tbl(spark, sql(...))`.
 # This will *not* return the full query result; it will only display the first few rows.
+
+library(dplyr)
 
 flights <- tbl(spark, sql("SELECT * FROM flights"))
 
 class(flights)
 
 flights
+
+# There are more details in the next module about how sparklyr works together with dplyr
+
+
+# ## Copying data frames from R to Spark
+
+# Use the `copy_to()` function to copy a local R data frame to Spark
+
+iris_tbl <- copy_to(spark, iris)
+
+# On our class cluster, this may fail when you are connected to a local Spark instance.
+# Workaround: Connect to Spark on YARN instead.
+
+spark_disconnect(spark)
+spark <- spark_connect(master = "yarn", app_name = "write")
+iris_tbl <- copy_to(spark, iris)
+
+iris_tbl
+
+# Note: `copy_to()` does not persist the copied data in HDFS.
+# The data is stored in a temporary location in HDFS and may be cached in Spark memory.
+# After you disconnect from Spark, it will no longer be available.
 
 
 # ## Cleanup
