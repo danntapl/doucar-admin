@@ -13,6 +13,7 @@
 #   * Keeping distinct rows
 #   * Filtering rows
 #   * Sampling rows
+# * Working with missing values
 
 # **Note:** There is often more than one way to do these transformations.  In
 # particular, there is almost always a Spark SQL version of each
@@ -151,6 +152,43 @@ riders.sampleBy("sex", fractions={"male": 0.2, "female": 0.8}, seed=54321).group
 # Here we have sampled 20% of male riders and 80% of female riders.
 
 
+# ## Working with missing values
+
+# Note the missing (null) values in the following DataFrame:
+riders_selected = riders.select("id", "sex", "ethnicity")
+riders_selected.show(25)
+
+# Drop rows with any missing values:
+riders_selected.dropna(how="any", subset=["sex", "ethnicity"]).show(25)
+
+# Drop rows with all missing values:
+riders_selected.na.drop(how="all", subset=["sex", "ethnicity"]).show(25)
+
+# **Note**: `dropna` and `na.drop` are equivalent.
+
+# Replace missing values with a common value:
+riders_selected.fillna("UNKNOWN", ["sex", "ethnicity"]).show(25)
+
+# Replace missing values with different values:
+riders_missing = riders_selected.na.fill({"sex": "UNKNOWN", "ethnicity": "MISSING"})
+riders_missing.show(25)
+
+# **Note**: `fillna` and `na.fill` are equivalent.
+
+# Replace arbitrary values with a common value:
+riders_missing.replace(["UNKNOWN", "MISSING"], "NA", ["sex", "ethnicity"]).show(25)
+
+# Replace arbitrary values with different values:
+riders_missing.replace({"UNKNOWN": "NA", "MISSING": "NO RESPONSE"}, ["sex", "ethnicity"]).show(25)
+
+# **Note:** `replace` and `na.replace` are equivalent.  `replace` can be used to replace
+# sentinel values (e.g., -9999) that represent missing values in numerical columns.
+
+# See the
+# [DataFrameNaFunctions](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.DataFrameNaFunctions)
+# class for more details.
+
+
 # ## Exercises
 
 # Read the raw driver data from HDFS into a Spark DataFrame.
@@ -160,6 +198,9 @@ riders.sampleBy("sex", fractions={"male": 0.2, "female": 0.8}, seed=54321).group
 # How many female drivers does DuoCar have?  How many non-white, female drivers?
 
 # Create a new DataFrame without any personally identifiable information (PII).
+
+# Replace the missing values in the **rides.service** column with "Car" for
+# standard DuoCar service.
 
 
 # ## Cleanup
@@ -176,3 +217,5 @@ spark.stop()
 # [Column class](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.Column)
 
 # [pyspark.sql.functions module](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#module-pyspark.sql.functions)
+
+# [DataFrameNaFunctions class](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.DataFrameNaFunctions)
