@@ -54,7 +54,8 @@ install.packages("leaflet")
 # Or install the latest development version from GitHub
 devtools::install_github("rstudio/leaflet")
 
-# Note that this package is now installed for all sessions associated with this project.
+# Note that this package is now installed for all sessions associated with 
+# this project.
 
 # See what version of the package is installed
 packageVersion("leaflet")
@@ -65,10 +66,78 @@ library(leaflet)
 # Use the package
 leaflet() %>%
   addTiles() %>%
-  addMarkers(lng = -122.139869, lat = 37.425501, popup = "395 Page Mill Rd")
-
+  addMarkers(lng = -122.4450575, lat = 37.7211538, popup = "325 Seneca Avenue")
 # Unload the package
 detach("package:leaflet", unload = TRUE)
 
 # Uninstall the package
 remove.packages("leaflet")
+
+# ## Formatting Session Output
+
+# Comments in your file can include
+# [Markdown](https://daringfireball.net/projects/markdown/syntax) for
+# presentation.  You'll see some examples here, and you can see the References
+# section below to find out more.
+
+# ### Headings
+
+# # Heading 1
+
+# ## Heading 2
+
+# ### Heading 3
+
+# ### Text
+
+# Plain text
+
+# *Emphasized text* or _emphasized text_
+
+# **Bold text** or __bold text__
+
+# `Code text` (Note these are backtick quotes.)
+
+# ### Mathematical Text
+
+# Display an inline term like $\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$ using
+# a [LaTeX](https://en.wikibooks.org/wiki/LaTeX/Mathematics) expression
+# surrounded by dollar-sign characters.
+
+# A math expression can be displayed set apart by surrounding the LaTeX
+# shorthand with double dollar-signs, like so: $$f(x)=\frac{1}{1+e^{-x}}$$
+
+# ### Lists
+
+# Bulleted List
+# * Item 1
+#   * Item 1a
+#   * Item 1b
+# * Item 2
+# * Item 3
+
+# Numbered List
+# 1. Item 1
+# 2. Item 2
+# 3. Item 3
+
+# ### Links
+
+# Link to [Cloudera](http://www.cloudera.com)
+
+# ### Images
+
+# Displaying a stored image file:
+
+library(png)
+pic <- readPNG("spark.png")
+plot(0:1,0:1,type="n",ann=FALSE,axes=FALSE)
+rasterImage(pic,0,0,1,1)
+
+# ## References
+
+# [Cloudera Data Science Workbench](https://www.cloudera.com/documentation/data-science-workbench/latest.html)
+
+# [Markdown](https://daringfireball.net/projects/markdown/)
+
+# [LaTeX](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
