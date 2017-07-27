@@ -35,6 +35,8 @@ riders <- spark_read_csv(
 # Show the schema and first few rows of data:
 riders
 
+# 
+
 # The returned object (`riders` in this example) is a `tbl_spark`.
 
 class(riders)
