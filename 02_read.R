@@ -169,13 +169,6 @@ flights
 
 iris_tbl <- copy_to(spark, iris)
 
-# On our class cluster, this may fail when you are connected to a local Spark instance.
-# Workaround: Connect to Spark on YARN instead.
-
-spark_disconnect(spark)
-spark <- spark_connect(master = "yarn", app_name = "write")
-iris_tbl <- copy_to(spark, iris)
-
 iris_tbl
 
 # If you remove the variable `iris_tbl` (which represents this remote Spark data frame) you can re-create it without copying the data to Spark again.
