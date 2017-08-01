@@ -7,6 +7,23 @@
 # together to perform data manipulation tasks.
 
 
+# ## Setup
+
+library(sparklyr)
+library(dplyr)
+
+spark <- spark_connect(master = "local", app_name = "inspect")
+
+
+# ## Load the riders data from HDFS into a Spark DataFrame
+
+riders <- spark_read_csv(
+  sc = spark,
+  name = "riders",
+  path = "/duocar/raw/riders/"
+)
+
+
 # ## Using dplyr verbs
 
 # ### Background about dplyr verbs
@@ -150,6 +167,10 @@ riders %>% filter(first_name == "Skylar")
 riders %>% filter(first_name == "Skylar", sex == "female")
 
 riders %>% filter(first_name == "Skylar" & sex == "female")
+
+# And you can use other logical operators like `|`:
+
+riders %>% filter(first_name == "Skylar" | last_name == "Hayes")
 
 
 # ### `arrange()` orders the rows of the data by the values of variables
