@@ -99,6 +99,7 @@ rides.rollup("rider_sex").agg(count("*")).orderBy("rider_sex").show()
 
 # Which null is which?  Use the `grouping` function to distinguish
 # between the null values:
+from pyspark.sql.functions import grouping
 rides.rollup("rider_sex").agg(grouping("rider_sex"), count("*")).orderBy("rider_sex").show()
 
 # Use the `cube` method to get all subtotals:
@@ -109,6 +110,7 @@ rides\
   .show()
 
 # Use the `grouping_id` function to distinguish grouping levels:
+from pyspark.sql.functions import grouping_id
 rides\
   .cube("rider_student", "service")\
   .agg(grouping_id("rider_student", "service"), 
