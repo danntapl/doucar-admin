@@ -159,8 +159,6 @@ class(flights)
 
 flights
 
-
-
 # There are more details in the next module about how sparklyr works together with dplyr
 
 
