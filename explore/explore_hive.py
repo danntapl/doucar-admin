@@ -50,6 +50,16 @@ riders_fixed = riders\
   .withColumn("start_date", riders.start_date.cast("timestamp"))
 riders_fixed.write.format("parquet").saveAsTable("riders")
 
+# Create (clean) joined table:
+spark.sql("drop table if exists joined")
+joined = spark.read.parquet("/duocar/joined/")
+joined_fixed = joined\
+	.withColumn("driver_birth_date", col("driver_birth_date").cast("timestamp"))\
+	.withColumn("driver_start_date", col("driver_start_date").cast("timestamp"))\
+	.withColumn("rider_birth_date", col("rider_birth_date").cast("timestamp"))\
+	.withColumn("rider_start_date", col("rider_start_date").cast("timestamp"))
+joined_fixed.write.format("parquet").saveAsTable("joined")
+
 # Verify database and tables:
 spark.sql("show databases").show()
 spark.sql("show tables").show()
