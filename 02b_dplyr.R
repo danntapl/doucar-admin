@@ -62,8 +62,8 @@ class(riders_tbl_spark)
 # `tbl_lazy` means that R uses lazy evaluation on this object; it does not immediately perform operations but waits until the result is requested
 # `tbl_sql` means that R can perform operaions on this object by issuing SQL queries which are processed by some SQL backend (Spark SQL in this case)
 
-# This work of translating commands into SQL is done by dplyr
-# and also by the package dbplyr which is a database backend for dplyr.
+# This work of translating commands into SQL is done by dplyr, with help from sparklyr
+# and also by the package dbplyr which is a general database backend for dplyr.
 # sparklyr imports dplyr and dbplyr, but to do many things, you need to load dplyr yourself:
 
 library(dplyr)
