@@ -13,7 +13,7 @@ spark <- spark_connect(master = "local", app_name = "read")
 
 # ### Infer the schema
 
-# With only the required arguments:
+# Showing only the required arguments:
 
 riders <- spark_read_csv(
   sc = spark,
@@ -86,7 +86,7 @@ system("hdfs dfs -ls practice/riders_tsv")
 
 system("hdfs dfs -cat practice/riders_tsv/* | head -n 5")
 
-# **Note:** Do not worry about the `cat: Unable to write to output steam.` message.
+# **Note:** Disregard the `cat: Unable to write to output steam.` message.
 
 
 # ## Working with Parquet files
@@ -105,6 +105,7 @@ riders_parquet <- spark_read_parquet(
   name = "riders_parquet",
   path = "practice/riders_parquet"
 )
+
 riders_parquet
 
 
@@ -165,9 +166,9 @@ flights
 
 # ## Copying data frames from R to Spark
 
-# Use the `copy_to()` function to copy a local R data frame to Spark
+# Use the `sdf_copy_to()` function to copy a local R data frame to Spark
 
-iris_tbl <- copy_to(spark, iris)
+iris_tbl <- sdf_copy_to(spark, iris)
 
 iris_tbl
 
@@ -180,7 +181,7 @@ iris_tbl <- tbl(spark, "iris")
 
 iris_tbl
 
-# Note: `copy_to()` *does not persist* the copied data in HDFS.
+# Note: `sdf_copy_to()` *does not persist* the copied data in HDFS.
 # The data is stored in a temporary location in HDFS and may be cached in Spark memory.
 # After you end your session by disconnecting from Spark, it will no longer be available.
 
