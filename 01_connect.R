@@ -23,8 +23,14 @@ spark <- spark_connect(master = "local", app_name = "connect-local")
 spark_version(spark)
 
 
-# TBD: do something trivial here to show Spark is working
+# Create a Spark DataFrame
+# (by creating an R data frame and copying it to Spark)
 
+df <- sdf_copy_to(spark, data.frame(team = c("brian", "glynn", "ian")))
+
+# View the Spark DataFrame
+
+df
 
 # Disconnect from Spark
 
@@ -36,7 +42,15 @@ spark_disconnect(spark)
 spark <- spark_connect(master = "yarn", app_name = "connect-yarn")
 
 
-# TBD: do something trivial here to show Spark is working
+# ## Viewing the Spark Job UI
+
+# Create a simple Spark job to exercise the Spark Job UI:
+
+df <- sdf_len(spark, 1000000)
+nrow(df)
+
+# Print the URL for the Spark Job UI
+cat(spark_web(spark))
 
 
 # Disconnect from Spark
