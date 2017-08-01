@@ -62,8 +62,9 @@ class(riders_tbl_spark)
 # `tbl_lazy` means that R uses lazy evaluation on this object; it does not immediately perform operations but waits until the result is requested
 # `tbl_sql` means that R can perform operaions on this object by issuing SQL queries which are processed by some SQL backend (Spark SQL in this case)
 
-# This work of translating commands into SQL is done by dplyr.
-# sparklyr imports dplyr, but to do many things, you need to load it:
+# This work of translating commands into SQL is done by dplyr
+# and also by the package dbplyr which is a database backend for dplyr.
+# sparklyr imports dplyr and dbplyr, but to do many things, you need to load dplyr yourself:
 
 library(dplyr)
 
@@ -195,8 +196,32 @@ flights <- tbl(spark, sql("SELECT * FROM flights"))
 flights <- tbl(spark, "flights")
 
 
-# For the rest of the course, we will keep dplyr loaded at all times
-# and you should do this whenever you're using sparklyr
+# Sometimes you need to use a table that's in a non-default database.
+# To see what databases are available, call the `src_databases()` function:
+
+src_databases(spark)
+
+# Then use the function `in_schema()` in the dbplyr package to qualify which database a table is in.
+# To avoid loading the dbplyr package, you can use `dbplyr::` before the function call:
+
+drivers <- tbl(spark, dbplyr::in_schema("duocar", "drivers"))
+
+# Another way to use a table that's in a non-default database is to change the current database.
+# You can do this using the `tbl_change_db()` function:
+
+tbl_change_db(spark, "duocar")
+
+# Then you can refer to tables in the duocar database without using `in_schema()`:
+
+drivers <- tbl(spark, "drivers")
+
+# Then switch back to the default database:
+
+tbl_change_db(spark, "default")
+
+
+# For the rest of the course, we will keep dplyr loaded at all times.
+# You should generally do this whenever you're using sparklyr.
 
 
 # ## Cleanup
