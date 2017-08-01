@@ -32,9 +32,17 @@ df <- sdf_copy_to(spark, data.frame(team = c("brian", "glynn", "ian")))
 
 df
 
+# See if the connection to Spark is still open
+
+spark_connection_is_open(spark)
+
 # Disconnect from Spark
 
 spark_disconnect(spark)
+
+# See if the connection to Spark is still open
+
+spark_connection_is_open(spark)
 
 
 # ## Connecting to a Spark cluster via YARN
