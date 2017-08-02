@@ -124,7 +124,31 @@ riders %>% select(first_name)
 
 riders %>% select(first_name, last_name)
 
-# There are also several variations on `select()`:
+# You can also use `select()` to remove columns:
+
+riders %>% select(-first_name)
+
+riders %>% select(-c(first_name, last_name))
+
+# And you can use several functions inside `select()`,
+# including `starts_with()`, `ends_with()`, `contains()`,
+# and `matches()`:
+
+riders %>% select(ends_with("_name"))
+
+riders %>% select(-ends_with("_name"))
+
+# For more details about the functions you can use inside
+# `select()` see `?select_helpers`.
+
+# You can also refer to columns by their numeric positions:
+
+riders %>% select(4:5)
+
+riders %>% select(-(4:5))
+
+
+# There are several variations on `select()`:
 
 # `distinct()` works like `select()`
 # but it reutrns only distinct values
