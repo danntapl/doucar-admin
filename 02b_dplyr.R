@@ -104,7 +104,7 @@ riders_tbl_df <- riders_tbl_spark %>% collect()
 riders_tbl_df
 
 # Important: All the data in this is stored in memory in R!
-# So you should only use `collapse()` if the table is small enough to fit in R's memory on the computer you're using!
+# So you should only use `collect()` if the table is small enough to fit in R's memory on the computer you're using!
 
 # This object is no longer a `tbl_spark`.
 # It's now a `tbl_df`, also called a "data frame tbl" or simply a "tibble"
@@ -137,7 +137,7 @@ leaflet(riders_tbl_df) %>%
 
 # ## Working with Local Data Frames and Remote Spark DataFrames
 
-# It's not just graphics functions that require you to `collapse()` the data before using them;
+# It's not just graphics functions that require you to `collect()` the data before using them;
 # Many of the usual functions that work on data frames do not work on `tbl_spark` objects.
 # (they may fail or return unexpected output)
 
@@ -164,7 +164,7 @@ riders_tbl_df %>% str()
 
 
 # However, for many operations, dplyr provides its own ways to work with `tbl_spark` objects
-# So you don't have to call `collapse()` to do simple things.
+# So you don't have to call `collect()` to do simple things.
 
 # For example, instead of using `$` to get a single column,
 # dplyr provides the function `pull()` which collects just the one column:
