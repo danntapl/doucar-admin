@@ -2,7 +2,7 @@
 
 # At the end of the last module, we saw some examples of `select()` and `distinct()`.
 # These are examples of dplyr *verbs*.
-# In this module we will look at the most common dplyr verbs, and
+# In this module we will look at the common dplyr verbs, and
 # understand how they work in sparklyr and how they can be used
 # together to perform data manipulation tasks.
 
@@ -110,6 +110,10 @@ Species ORDER BY Avg_Sepal_Width"))
 
 # R users typically find it more intuitive to use dplyr verbs
 # instead of directly writing SQL statements.
+# A chain of dplyr verbs can be read left to right and top to bottom
+# whereas complex nested SQL statements need to be read from the inside out,
+# starting with the most deeply nested subqueries and working your way out.
+# So the remainder of this course will use few SQL statements.
 
 
 # ## Simple dplyr examples
@@ -124,19 +128,36 @@ riders %>% select(first_name)
 
 riders %>% select(first_name, last_name)
 
-# You can also use `select()` to remove columns:
+# You can also use `select()` to remove specific columns:
 
 riders %>% select(-first_name)
 
 riders %>% select(-c(first_name, last_name))
 
-# And you can use several functions inside `select()`,
-# including `starts_with()`, `ends_with()`, `contains()`,
-# and `matches()`:
+# You can use the colon operator (`:`) to specify a range
+# of columns by name:
+
+riders %>% select(home_lat:work_lon)
+
+# There are several helper functions you can use inside 
+# `select()`, including `starts_with()`, `ends_with()`, 
+# `contains()`, and `matches()`:
 
 riders %>% select(ends_with("_name"))
 
 riders %>% select(-ends_with("_name"))
+
+# You can also use `select()` to reorder columns.
+# For example, say you want `first_name` and `last_name`
+# to be the leftmost columns, and you want to keep all 
+# the other columns. To do this, use `select()` with
+# the helper function `everything()`:
+
+riders %>% select(
+  first_name,
+  last_name,
+  everything()
+)
 
 # For more details about the functions you can use inside
 # `select()` see `?select_helpers`.
@@ -185,6 +206,8 @@ riders %>%
 
 riders %>% filter(first_name == "Skylar")
 
+riders %>% filter(!is.na(sex))
+
 # To filter by more than one condition, you can use `&` 
 # or list the conditions separated by commas
 
@@ -209,26 +232,270 @@ riders %>% arrange(last_name, first_name)
 riders %>% arrange(desc(birth_date))
 
 
-# ### `mutate()` ... 
+# ### `mutate()` creates one or more new columns
 
-# ...
+riders %>% mutate(full_name = paste(first_name, last_name))
 
-# A variation on `mutate()` is `transmute()` ...
+# You can use `mutate()` to replace existing columns:
 
-# ...
+riders %>% mutate(
+  sex = ifelse(is.na(sex), "other/unknown", sex)
+)
+
+# You can refer to columns that you have just created
+# in the same `mutate()`:
+
+riders %>% mutate(
+  full_name = paste(first_name, last_name),
+  uppercase_full_name = toupper(full_name)
+)
+
+# A variation on `mutate()` is `transmute()`.
+# `transmute()` keeps only the specified columns
+# and discards all the other columns:
+
+riders %>% transmute(full_name = paste(first_name, last_name))
+
+riders %>% transmute(
+  id,
+  full_name = paste(first_name, last_name)
+)
 
 
-# ### `summarise()` ...
+# ### `summarise()` applies aggregation functions to the data
 
-# ...
+# When used by itself, `summarise()` returns a single row:
 
-# You can also use the American English spelling: `summarize()` (z instead of s)
+riders %>% summarise(count = n())
+
+riders %>% summarise(
+  num_unique_first_names = n_distinct(first_name)
+)
+
+riders %>% summarise(
+  prop_students = mean(as.numeric(student)),
+  women = sum(as.numeric(sex == "female")),
+  men = sum(as.numeric(sex == "male"))
+)
+
+# You can also use the American English spelling: `summarize()` (z instead of s):
+
+riders %>% summarize(
+  oldest = min(birth_date),
+  youngest = max(birth_date)
+)
+
+# `summarise()` is more interesting when combined with `group_by()`:
 
 
-# ### `group_by()` ...
+# ### `group_by()` defines groups of rows
 
-# ...
+# `group_by()` does nothing by itself
+# but it changes what other dplyr verbs do.
 
+# Most importantly: `group_by()` causes the next 
+# `summarise()` operation to be performed *by group*.
+# So instead of returning one single row, `summarise()`
+# returns one row *per group*:
+
+riders %>% 
+  group_by(sex) %>% 
+  summarise(count = n())
+
+riders %>% 
+  group_by(sex, ethnicity) %>%
+  summarise(
+    count = n(),
+    students = sum(as.numeric(student))
+  )
+
+
+# ### Using variables in dplyr expressions
+
+# You can use local variables in dplyr expressions.
+# For example:
+
+first_names <- c("Brian", "Glynn", "Ian")
+riders %>% filter(first_name %in% first_names)
+
+# But be careful about cases where the variable name is the same
+# as the name of one of the columns. For example, this returns
+# an unexpected result:
+
+first_name <- "Brian"
+riders %>% filter(first_name == first_name)
+
+# This returns *all* rows, because both instances of `first_name` 
+# in the expression are interpreted as references to the column 
+# named `first_name`, not the variable named `first_name`.
+
+# To make dplyr interpret `first_name` as a variable, use the
+# *unquote* operator `!!`:
+
+first_name <- "Brian"
+riders %>% filter(first_name == !! first_name)
+
+# This returns the expected result.
+
+# For details about how this works, see the 
+# [Programming with dplyr vignette](https://cran.r-project.org/web/packages/dplyr/vignettes/programming.html).
+
+
+# ## Chaining dplyr verbs
+
+# You can accomplish most common data analysis tasks
+# by chanining together these simple dplyr verbs.
+
+# For example, you can find out:
+# How many riders and how many student riders have their
+# birthday today, broken down by the decade of their
+# birth, with the result returned in order by decade:
+
+current_month <- format(Sys.Date(), "%m")
+current_day <- format(Sys.Date(), "%d")
+
+riders %>% 
+  select(birth_date, student) %>%
+  mutate(
+    birth_month = substr(birth_date, 6, 7),
+    birth_day = substr(birth_date, 9, 10),
+    birth_decade = paste0(substr(birth_date, 1, 3), "0s")
+  ) %>% 
+  filter(
+    birth_month == current_month,
+    birth_day == current_day
+  ) %>% 
+  group_by(birth_decade) %>% 
+  summarize(
+    count = n(),
+    students = sum(as.numeric(student))
+  ) %>%
+  arrange(birth_decade)
+
+
+# ## Working with dplyr output
+
+# If you do not assign the output of one or more dplyr operations
+# to a variable, then the output is simply printed to the screen.
+# The example above shows this.
+
+# You can also assign the output to a variable:
+
+student_rider_homes <- riders %>% 
+  filter(student == 1) %>% 
+  select(home_lat, home_lon)
+
+# If you like, you can use the right assignment operator `->`.
+# This is less common, but it makes your code read from left to right:
+
+riders %>% 
+  filter(student == 1) %>% 
+  select(home_lat, home_lon) -> 
+  student_rider_homes
+
+# This variable is a `tbl_spark` object:
+
+class(student_rider_homes)
+
+# It represents the Spark DataFrame and all the dplyr operations 
+# to be performed on it.
+# You can see an overview of all these operations by looking 
+# at the `ops` element of the object:
+
+student_rider_homes$ops
+
+# And you can see the SQL that will perform these operations
+# by using the `show_query()` function:
+
+student_rider_homes %>% show_query()
+
+# You can also perform more dplyr operations on this object:
+
+student_rider_homes %>% head(10)
+
+# When you assign the output of one or more dplyr operations
+# to a variable, Spark does not actually execute those operations
+# at that time. Spark does not execute the operations until 
+# you force execution.
+
+# What are the ways to force execution on a `tbl_spark`? They are:
+
+# Printing the `tbl_spark`:
+
+student_rider_homes
+
+# Calling the `collect()` function on the `tbl_spark`:
+
+student_rider_homes_tbl_df <- 
+  student_rider_homes %>% 
+  collect()
+
+# Another way to force computation is to call the `compute()`
+# function, which makes a temporary table in Spark and stores 
+# the results in it:
+
+riders %>% 
+  filter(student == 1) %>% 
+  select(home_lat, home_lon) %>% 
+  compute("student_rider_homes")
+
+# After calling `compute()`, there is a new temporary table 
+# registered in your Spark session named `student_rider_homes`.
+# You can retrieve it using `tbl()`:
+
+tbl(spark, "student_rider_homes")
+
+# You could then call `collect()` on this temporary table:
+
+student_rider_homes_tbl_df <- 
+  tbl(spark, "student_rider_homes") %>%
+  collect()
+
+
+# ## After collecting dplyr output
+
+# Once you use `collect()` to return a dplyr result to R as 
+# a local `tbl_df`, then you can use functions and operators
+# from base R and other R packages on it:
+
+student_rider_homes_tbl_df$home_lat
+student_rider_homes_tbl_df[, "home_lat"]
+
+clusters <- kmeans(student_rider_homes_tbl_df, 2)
+
+student_rider_homes_tbl_df$cluster <- 
+  factor(clusters$cluster)
+
+
+# plot it with ggplot2
+
+library(ggplot2)
+
+ggplot(
+    student_rider_homes_tbl_df,
+    aes(x = home_lon, y = home_lat)
+  ) + 
+  geom_point(aes(color = cluster))
+
+
+# plot it with leaflet
+
+library(leaflet)
+
+leaflet(student_rider_homes_tbl_df) %>%
+  addTiles() %>%
+  addMarkers(lng = ~home_lon, lat = ~home_lat)
+
+
+# You can also perform more dplyr operations on a `tbl_df` that was 
+# created using sparklyr and collected, but these operations will 
+# not be processed by Spark. They will just be processed locally in R:
+
+student_rider_homes_tbl_df %>% 
+  summarise(
+    avg_lat = mean(home_lat),
+    avg_lon = mean(home_lon)
+  )
 
 
 # ## Cleanup
