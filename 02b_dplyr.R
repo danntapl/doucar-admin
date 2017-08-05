@@ -94,7 +94,9 @@ riders_tbl_spark # This is the same as: print(riders_tbl_spark)
 
 # ## Returning Data to R
 
-# So how *do* you make Spark execute the SQL command that we saw in `show_query()` and return the *full* result to R?
+# So how *do* you make Spark execute the SQL command 
+# that we saw in `show_query()` and return 
+# the *full* result to R?
 # By using the `collect()` function:
 
 riders_tbl_df <- riders_tbl_spark %>% collect()
