@@ -424,15 +424,29 @@ student_rider_homes %>% head(10)
 
 student_rider_homes
 
-# Calling the `collect()` function on the `tbl_spark`:
+# Printing a `tbl_spark` causes Spark to return 
+# only the first 10 rows of the result to R.
+
+# You can also print a result at the same time as
+# assigning it, by enclosing the assignment operation
+# in parentheses:
+
+( student_rider_homes <- riders %>% 
+    filter(student == 1) %>% 
+    select(home_lat, home_lon) )
+
+# You can also force execution by calling
+# the `collect()` function on the `tbl_spark`:
 
 student_rider_homes_tbl_df <- 
   student_rider_homes %>% 
   collect()
 
-# Another way to force computation is to call the `compute()`
+# This returns the full result to R.
+
+# Another way to force execution is to call the `compute()`
 # function, which makes a temporary table in Spark and stores 
-# the results in it:
+# the full result in it:
 
 riders %>% 
   filter(student == 1) %>% 
