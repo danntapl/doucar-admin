@@ -221,17 +221,21 @@ riders %>% filter(first_name == "Skylar" | last_name == "Hayes")
 
 # Another option is to filter to a *random* set of rows.
 # This is of course known as *sampling*.
-# There are two functions for random sampling:
+# There are two special dplyr verbs for random sampling:
 
 # `sample_n()` samples a fixed number of rows.
-# For example, to sample 100 rows:
+# For example, to sample 100 rows from the riders table:
 
 riders %>% sample_n(100)
 
 # `sample_frac()` samples the specified fraction of rows.
-# For example, to sample 1% of rows:
+# For example, to sample 1% of the rows from the riders table:
 
 riders %>% sample_frac(0.01)
+
+# When you use these two sampling functions on `tbl_spark`
+# objects, they always perform sampling *without replacement*
+# and they do not do any grouping or weighting.
 
 
 # ### `arrange()` orders the rows of the data by the values of variables
