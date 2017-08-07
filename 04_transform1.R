@@ -219,6 +219,20 @@ riders %>% filter(first_name == "Skylar" & sex == "female")
 
 riders %>% filter(first_name == "Skylar" | last_name == "Hayes")
 
+# Another option is to filter to a *random* set of rows.
+# This is of course known as *sampling*.
+# There are two functions for random sampling:
+
+# `sample_n()` samples a fixed number of rows.
+# For example, to sample 100 rows:
+
+riders %>% sample_n(100)
+
+# `sample_frac()` samples the specified fraction of rows.
+# For example, to sample 1% of rows:
+
+riders %>% sample_frac(0.01)
+
 
 # ### `arrange()` orders the rows of the data by the values of variables
 
