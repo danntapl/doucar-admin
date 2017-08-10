@@ -1,95 +1,188 @@
 # # Extracting, transforming, and selecting features
 
-# In this module we demonstrate some of the functionality available in Spark MLlib
-# to extract, transform, and select features for machine learning.  In particular,
-# we focus on generating features from the ride review text data.
-
-
-# ## TODO
-# * Test on cluster
-# * Add links to methods
-# * Add additional analysis to explore predictive relationships
+# In this module we demonstrate some of the functionality available in Spark
+# MLlib to extract, transform, and select features for machine learning.  In
+# particular, we generate features from the ride review text that can be used
+# to predict ride rating.  We cover only a small subset of the available
+# transformations; we will cover additional transformations in subsequent
+# modules.
 
 
 # ## Setup
 
 # Create a SparkSession:
 from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName('extract').master('local').getOrCreate()
+spark = SparkSession.builder.master("local").appName("extract").getOrCreate()
 
-# Read ride review data from HDFS:
-reviews = spark.read.csv('/duocar/ride_reviews', sep='\t', inferSchema=True).toDF('ride_id', 'review')
+# Read the ride review data from HDFS:
+reviews = spark.read.parquet("/duocar/clean/ride_reviews/")
 
-# Read ride data from HDFS:
-rides = spark.read.csv('/duocar/rides', sep='\t', header=True, inferSchema=True)
+# Read the ride data from HDFS:
+rides = spark.read.parquet("/duocar/clean/rides/")
 
-# Join ride data:
-reviews_with_ratings = reviews.join(rides, reviews.ride_id == rides.id, 'left_outer')
+# Join the ride review data with the ride data:
+joined = reviews.join(rides, reviews.ride_id == rides.id, "left_outer")
 
-# Select a subset of columns:
-selected = reviews_with_ratings.select('ride_id', 'review', 'star_rating')
+# **Note:** We want only those rides with reviews.
+
+# Select the subset of columns in which we are interested:
+reviews_with_ratings = joined.select("ride_id", "review", "star_rating")
+reviews_with_ratings.head(5)
 
 
-# ## Extract and transform features
+# ## Extracting and transforming features
 
-# Use `Tokenizer` to tokenize the reviews:
+# The ride reviews are not in a form amenable to machine learning algorithms.
+# Spark MLlib provides a number of feature extractors and feature transformers
+# to preprocess the ride reviews into a form appropriate for modeling.
+
+# Use the
+# [Tokenizer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.Tokenizer)
+# class to tokenize the reviews:
 from pyspark.ml.feature import Tokenizer
-tokenizer = Tokenizer(inputCol='review', outputCol='words')
-tokenized = tokenizer.transform(selected)
+tokenizer = Tokenizer(inputCol="review", outputCol="words")
+tokenized = tokenizer.transform(reviews_with_ratings)
 tokenized.head(5)
 
-# **Note:** Punctuation is not being handled properly.  Use `RegexTokenizer`
-# for splitting on characters other than whitespace.
+# **Note:** `Tokenizer` is a
+# [Transformer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.Transformer)
+# since it takes a DataFrame as input and returns a DataFrame as output via its
+# `transform` method.
 
-# **Note:** `Tokenizer` only requires a transform method.
+# **Note:** Punctuation is not being handled properly.  Use the
+# [RegexTokenizer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.RegexTokenizer)
+# class to split on characters other than whitespace.
 
-# Use `CountVectorizer` to compute the term frequency:
+# Use the
+# [CountVectorizer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.CountVectorizer)
+# class to compute the term frequency:
 from pyspark.ml.feature import CountVectorizer
-cv = CountVectorizer(inputCol='words', outputCol='words_vectorized', vocabSize=10)
-cv_model = cv.fit(tokenized)
-cv_model.vocabulary
-vectorized = cv_model.transform(tokenized)
+vectorizer = CountVectorizer(inputCol="words", outputCol="words_vectorized", vocabSize=10)
+vectorizer_model = vectorizer.fit(tokenized)
+vectorized = vectorizer_model.transform(tokenized)
 vectorized.head(5)
 
-# **Note:** Alternatively, use `HashingTF` to compute the term frequency.
+# **Note:** `CountVectorizer` is an
+# [Estimator](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.Estimator)
+# since it takes a DataFrame as input and returns a `Transformer` as output via
+# its `fit` method.  In this case, the resulting transformer is an instance of
+# the
+# [CountVectorizerModel](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.CountVectorizerModel)
+# class.
 
-# **Note:** `CountVectorizer` requires a fit and transform method.
+# **Note:** The resulting word vector is stored in sparse format.
 
-# Use `StopWordsRemover` to remove common words:
+# **Note:** Alternatively, use the
+# [HashingTF](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.HashingTF)
+# class to compute the term frequency.
+
+# **Note:** Our limited vocabulary includes a number of common words such as
+# "the" that we do not expect to be predictive:
+vectorizer_model.vocabulary
+# Spark MLlib provides a transformer to remove these so-called "stop words".
+
+# Use the
+# [StopWordsRemover](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.StopWordsRemover)
+# class to remove common words:
 from pyspark.ml.feature import StopWordsRemover
-remover = StopWordsRemover(inputCol='words', outputCol='words_removed')
+remover = StopWordsRemover(inputCol="words", outputCol="words_removed")
+remover.getStopWords()[:5]
 removed = remover.transform(tokenized)
+removed.head(5)
 
 # Recount the words:
-cv = CountVectorizer(inputCol='words_removed', outputCol='words_vectorized', vocabSize=10)
-cv_model = cv.fit(removed)
-cv_model.vocabulary
-vectorized = cv_model.transform(removed)
+vectorizer = CountVectorizer(inputCol="words_removed", outputCol="words_vectorized", vocabSize=10)
+vectorizer_model = vectorizer.fit(removed)
+vectorized = vectorizer_model.transform(removed)
 vectorized.head(5)
 
+# **Note:** Our vocabulary seems more reasonable now:
+vectorizer_model.vocabulary
 
-# ## Select features
+# ## Selecting features
 
-# Use `ChiSqSelector` to select top 5 features:
+# We have generated a potentially large number of features.  How do we
+# distinguish the relevant features from the irrelevant ones?  Spark MLlib
+# provides the
+# [ChiSqSelector](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.ChiSqSelector)
+# estimator to address this challenge when the label is categorical.
+
+# Use `ChiSqSelector` to select the top 5 features:
 from pyspark.ml.feature import ChiSqSelector
-selector = ChiSqSelector(featuresCol='words_vectorized', labelCol='star_rating', outputCol='selected_words', numTopFeatures=5)
+selector = ChiSqSelector(featuresCol="words_vectorized", labelCol="star_rating", outputCol="selected_words", numTopFeatures=5)
 selector_model = selector.fit(vectorized)
-selected2 = selector_model.transform(vectorized)
-selected2.head(5)
+selected = selector_model.transform(vectorized)
+selected.head(5)
 
-# Listed selected words:
-[cv_model.vocabulary[i] for i in selector_model.selectedFeatures]
+# List selected words:
+[vectorizer_model.vocabulary[i] for i in selector_model.selectedFeatures]
 
-# **Note:** We don't know the strength or direction of the predictive relationships.
+# `ChiSqSelector` does not provide any information on relative strength or
+# direction of the predictive relationships.  We can apply some Spark SQL magic
+# to compute the average ride rating based on the presence or absence of each
+# vocabulary word in a review:
+from pyspark.sql.functions import array_contains, count, mean
+for word in vectorizer_model.vocabulary:
+  print "**** word = %s ****\n" % word
+  vectorized \
+    .select(array_contains("words_removed", word).alias("contains_word"), "star_rating") \
+    .groupBy("contains_word") \
+    .agg(count("star_rating"), mean("star_rating")) \
+    .show()
+
+# These results appear to be consistent with the results of `ChiSqSelector`.
+
+
+# ## Predict ride ratings
+
+# As a preview of topics to come, let us build a Naive Bayes classifier to
+# predict the ride rating from the word vector.  Before doing so, we need to
+# preprocess the ride rating.
+
+# Use the
+# [StringIndexer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.StringIndexer)
+# estimator to convert `star_rating` to a zero-based integer:
+from pyspark.ml.feature import StringIndexer
+indexer = StringIndexer(inputCol="star_rating", outputCol="star_rating_indexed")
+indexed = indexer.fit(selected).transform(selected)
+
+# **Note:** We have chained the `fit` and `transform` methods.
+
+# We can examine the mapping by applying the `crosstab` method:
+indexed \
+  .crosstab("star_rating", "star_rating_indexed") \
+  .orderBy("star_rating_star_rating_indexed") \
+  .show()
+
+# Now we are ready to build a simple Naive Bayes classifier:
+from pyspark.ml.classification import NaiveBayes
+naive_bayes = NaiveBayes(featuresCol="selected_words", labelCol="star_rating_indexed")
+reviews_with_prediction = naive_bayes.fit(indexed).transform(indexed)
+
+# Compute the *confusion matrix* via the `crosstab` method:
+reviews_with_prediction \
+  .crosstab("prediction", "star_rating_indexed") \
+  .orderBy("prediction_star_rating_indexed") \
+  .show()
+
+# Compute the accuracy of the model:
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+evaluator = MulticlassClassificationEvaluator(predictionCol="prediction", \
+                                              labelCol="star_rating_indexed", \
+                                              metricName="accuracy")
+evaluator.evaluate(reviews_with_prediction)
+
+# It looks like we have some more work to do to improve our model.
+# Five words will not suffice!
 
 
 # ## Exercises
 
-# Determine if increasing the vocabulary size improves the solution.
+# (1) Use the `RegexTokenizer` transformer to more cleanly tokenize the reviews.
 
-# Use `RegexTokenizer` to more cleanly tokenize the reviews.
+# (2) Determine if increasing the vocabulary size improves the solution.
 
-# Use `HashingTF` rather than `CountVectorizer` to generate the term-frequency vectors.
+# (3) Use the `HashingTF` estimator rather than the `CountVectorizer` estimator to generate the term-frequency vectors.
 
 
 # ## Cleanup
@@ -99,5 +192,9 @@ spark.stop()
 
 
 # ## References
+
+# [Feature engineering](https://en.wikipedia.org/wiki/Feature_engineering)
+
+# [Feature selection](https://en.wikipedia.org/wiki/Feature_selection)
 
 # [Extracting, transforming, and selecting features](http://spark.apache.org/docs/latest/ml-features.html)
