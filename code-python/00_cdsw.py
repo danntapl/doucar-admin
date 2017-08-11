@@ -109,8 +109,10 @@ sns.distplot(x, rug=True)
 # Displaying a stored image file:
 
 from IPython.display import Image
-Image("spark.png")
+Image("resources/spark.png")
 
+# **Note:** Path is relative to `/home/cdsw/` regardless of script location.
+  
 # Dummy Python command to get Linux commands to print.  
 # See [DSE-2112](https://jira.cloudera.com/browse/DSE-2112).
 print("Fin")
