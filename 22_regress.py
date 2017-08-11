@@ -1,97 +1,110 @@
-# # Building and Evaluating Regression Models
+# # Building and evaluating regression models
 
-
-# ## TODO
-# * Test on cluster
-# * Add diagnostic plots
-# * Add rider data
-# * Add weather data
-# * Add references
-# * Add links
+# In this module we build and evaluate a regression model to predict ride
+# rating from various ride, driver, and rider information.  The general
+# workflow will be the same for other regression algorithms; however, the
+# particular details will differ.
 
 
 # ## Setup
 
-# Import useful packages:
+# Import useful packages, modules, classes, and functions:
+from __future__ import print_function
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
 #import numpy as np
 #import pandas as pd
 #import matplotlib.pyplot as plt
+#import seaborn as sns
 
 # Create a SparkSession:
-from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName('regress').master('local').getOrCreate()
+spark = SparkSession.builder.appName("regress").master("local").getOrCreate()
+
+# Read enhanced ride data from HDFS:
+rides = spark.read.parquet("/duocar/joined_all")
 
 
-# ## Generate modeling data
+# ## Preprocess the data for modeling
 
-# Read ride data from HDFS:
-rides = spark.read.csv('/duocar/rides', sep='\t', header=True, inferSchema=True)
+# Cancelled rides do not have a rating.  We can use the `filter` method to remove
+# the cancelled rides:
+processed1 = rides.filter(rides.cancelled == 0)
+processed1.count()
 
-# Remove cancelled rides:
-filtered = rides.filter(rides.cancelled == 0)
+# However, we will use the versatile
+# [SQLTransformer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.SQLTransformer):
+from pyspark.ml.feature import SQLTransformer
+sql_filter = SQLTransformer(statement="SELECT * FROM __THIS__ WHERE cancelled == 0")
+processed2 = sql_filter.transform(rides)
+processed2.count()
 
-# Read ride review data from HDFS:
-reviews = spark.read.csv('/duocar/ride_reviews', sep='\t', inferSchema=True).toDF('ride_id', 'review')
+# **Note:** `__THIS__` represents the DataFrame passed to the `transform` method.
 
-# Join ride review data:
-joined1 = filtered.join(reviews, filtered.id == reviews.ride_id, 'left_outer')
-
-# Read driver data from HDFS:
-drivers = spark.read.csv('/duocar/drivers', sep='\t', header=True, inferSchema=True)
-
-# Join driver data:
-joined2 = joined1.join(drivers, joined1.driver_id == drivers.id, 'left_outer')
-
-# **Developer Note:**  Consider precomputing this data.
+# **Note:** Using the `SQLTransformer` rather than the `filter` method allows us to
+# use this transformation in a Spark MLlib pipeline.
 
 
 # ## Extract, transform, and select features
 
-# Create function to explore features:
-def explore(df, feature, label):
-  from pyspark.sql.functions import count, mean
-  aggregated = df.rollup(feature).agg(count(feature), mean(label)).orderBy(feature)
+# Create function to explore (categorical) features:
+def explore(df, feature, label, plot=True):
+  from pyspark.sql.functions import count, mean, stddev
+  aggregated = df \
+    .groupBy(feature) \
+    .agg(count(label), mean(label), stddev(label)).orderBy(feature)
   aggregated.show()
-#  aggregated.toPandas().plot(x=0, y=2, kind='scatter')
+  if plot == True:
+    pdf = aggregated.toPandas()
+    pdf.plot.bar(x=pdf.columns[0], y=pdf.columns[2], yerr=pdf.columns[3], capsize=5)
 
 # Did rider review the ride?
-engineered1 = joined2.withColumn('reviewed', joined2.review.isNotNull().cast('int'))
-explore(engineered1, 'reviewed', 'star_rating')
+engineered1 = processed2.withColumn("reviewed", col("review").isNotNull().cast("int"))
+explore(engineered1, "reviewed", "star_rating")
 
 # Does the year of the vehicle matter?
-explore(joined2, 'vehicle_year', 'star_rating')
+explore(processed2, "vehicle_year", "star_rating")
 
 # What about the color of the vehicle?
-explore(joined2, 'vehicle_color', 'star_rating')
+explore(processed2, "vehicle_color", "star_rating")
+
+# Do riders give better reviews on sunny days?
+explore(engineered1, "CloudCover", "star_rating")
+
+# Spark MLlib algorithms require the features to be a vector of doubles.
+# As a result, we need to apply some additional transformations.
 
 # Use `StringIndexer` to convert the string codes to numeric codes:
 from pyspark.ml.feature import StringIndexer
-indexer = StringIndexer(inputCol='vehicle_color', outputCol='vehicle_color_ix')
+indexer = StringIndexer(inputCol="vehicle_color", outputCol="vehicle_color_ix")
 indexer_model = indexer.fit(engineered1)
 indexer_model.labels
 indexed = indexer_model.transform(engineered1)
+indexed.select("vehicle_color", "vehicle_color_ix").show(5)
 
-# **Note:** `StringIndexer` requires a fit and transform.
+# **Note:** `StringIndexer` is an estimator.
 
 # Use `OneHotEncoder` to generate a set of dummy variables:
 from pyspark.ml.feature import OneHotEncoder
-encoder = OneHotEncoder(inputCol='vehicle_color_ix', outputCol='vehicle_color_cd')
+encoder = OneHotEncoder(inputCol="vehicle_color_ix", outputCol="vehicle_color_cd")
 encoded = encoder.transform(indexed)
+encoded.select("vehicle_color", "vehicle_color_ix", "vehicle_color_cd").show(5)
 
-# **Note:** `OneHotEncoder` only requires a transform.
+# **Note:** `OneHotEncoder` is a tranformer.
 
 # Select features (and label):
-selected = encoded.select('reviewed', 'vehicle_year', 'vehicle_color_cd', 'star_rating')
-features = ['reviewed', 'vehicle_year', 'vehicle_color_cd']
+selected = encoded.select("reviewed", "vehicle_year", "vehicle_color_cd", "star_rating")
+features = ["reviewed", "vehicle_year", "vehicle_color_cd"]
 
 # Assemble feature vector:
 from pyspark.ml.feature import VectorAssembler
-assembler = VectorAssembler(inputCols=features, outputCol='features')
+assembler = VectorAssembler(inputCols=features, outputCol="features")
 assembled = assembler.transform(selected)
 assembled.head(5)
 
 # Save data for subsequent modules:
-assembled.write.parquet('duocar/regression_data', mode='overwrite')
+assembled.write.parquet("myduocar/regression_data", mode="overwrite")
+
+# **Note:** We are saving the data in our personal HDFS directory.
 
 
 # ## Create train and test sets
@@ -105,7 +118,7 @@ assembled.write.parquet('duocar/regression_data', mode='overwrite')
 
 # Use the `LinearRegression` class to specify a linear regression model:
 from pyspark.ml.regression import LinearRegression
-lr = LinearRegression(featuresCol='features', labelCol='star_rating')
+lr = LinearRegression(featuresCol="features", labelCol="star_rating")
 
 # Use the `explainParams` method to get a full list of parameters:
 print(lr.explainParams())
@@ -138,8 +151,8 @@ summary_test.r2
 summary_test.rootMeanSquaredError
 
 # Plot observed versus predicted values:
-tmp = summary_test.predictions.select('prediction', 'star_rating').toPandas()
-tmp.plot(x='prediction', y='star_rating', kind='scatter')
+tmp = summary_test.predictions.select("prediction", "star_rating").toPandas()
+tmp.plot.scatter(x="prediction", y="star_rating")
 
 # **Developer Note:**  This does not seem to work if I import pandas above or if I run it twice in the same session.
 
@@ -151,22 +164,27 @@ test_with_predictions.show(5)
 
 # Create instance of `RegressionEvaluator` class:
 from pyspark.ml.evaluation import RegressionEvaluator
-evaluator = RegressionEvaluator(predictionCol='prediction', labelCol='star_rating', metricName='r2')
+evaluator = RegressionEvaluator(predictionCol="prediction", labelCol="star_rating", metricName="r2")
 print(evaluator.explainParams())
 evaluator.evaluate(test_with_predictions)
 
 # Evaluate using another metric:
-evaluator.setMetricName('rmse').evaluate(test_with_predictions)
+evaluator.setMetricName("rmse").evaluate(test_with_predictions)
 
 
 # ## Exercises
 
-# Try different sets of features.
+# (1)  Experiment with different sets of features.
 
-# Try a different regression method.
+# (2)  Experiment with a different regression method.
 
 
 # ## Cleanup
 
 # Stop the SparkSession:
 spark.stop()
+
+
+# ## References
+
+# [Classification and regression](http://spark.apache.org/docs/latest/ml-classification-regression.html)
