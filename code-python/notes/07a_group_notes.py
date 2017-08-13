@@ -13,15 +13,15 @@ rides.persist()
 
 # Display of rollup, to help visualize the result
 
-def indent_null(test_variable):
+def outdent_null(test_variable):
   if test_variable is None:
-    return "      "
-  else:
     return ""
+  else:
+    return "       "
   
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType
-indent_null_udf = udf(indent_null, returnType=StringType())
+outdent_null_udf = udf(outdent_null, returnType=StringType())
 
 from pyspark.sql.functions import col, concat, count
 rides\
@@ -29,8 +29,8 @@ rides\
   .agg(count("*").alias("count"))\
   .withColumn("display_count",\
               concat(col("count")\
-                     ,indent_null_udf(col("rider_student"))\
-                     ,indent_null_udf(col("service"))))\
+                     ,outdent_null_udf(col("rider_student"))\
+                     ,outdent_null_udf(col("service"))))\
   .drop("count")\
   .orderBy("rider_student", "service", ascending=False)\
   .show()
