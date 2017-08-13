@@ -1,66 +1,66 @@
 # # Tuning hyperparameters using grid search
 
-# In this module we demonstrate the use of grid search in Apache Spark MLlib to
-# determine a reasonable regularization parameter for $l1$ (lasso) linear regression.
+# Most machine learning algorithms have a set of parameters that govern the
+# algorithm's behavior.  These parameters are called hyperparameters to
+# distinguish them from the model parameters such as the coefficients in linear
+# and logistic regression.  In this module we show how to use grid search and
+# cross validation in Spark MLlib to determine a reasonable regularization
+# parameter for [$l1$ lasso linear
+# regression](https://en.wikipedia.org/wiki/Lasso_(statistics)).
 
-
-# ## TODO
-# * Find more interesting model (with nonzero regularization parameter)
-# * Add additional commentary
-# * Add links to documentation
-# * Test on cluster
-# * Determine why LaTeX rendering is not working
-# * Generate additional exercises
-
+# **Developer Note:** The markdown for the Wikipedia link does not render
+# correctly.
+  
 
 # ## Setup
 
-# Import useful packages:
+# Import useful packages, modules, classes, and functions:
+from __future__ import print_function
+from pyspark.sql import SparkSession
 import matplotlib.pyplot as plt
 
 # Create a SparkSession:
-from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName('tune').master('local').getOrCreate()
+spark = SparkSession.builder.master("local").appName("tune").getOrCreate()
 
 
-# ## Generate modeling data
+# ## Generate the modeling data
 
-# Load enhanced ride data:
-rides = spark.read.parquet('duocar/regression_data')
+# Load the regression modeling data from HDFS:
+rides = spark.read.parquet("myduocar/regression_data")
+rides.show(5)
 
-# Create train and test datasets:
+# Create train and test DataFrames:
 (train, test) = rides.randomSplit([0.7, 0.3], 12345)
 
 
 # ## Requirements for hyperparameter tuning
 
-# We need to specify three *things* to perform hyperparameter tuning using grid search:
+# We need to specify four components to perform hyperparameter tuning using
+# grid search:
 # * Estimator
-# * Evaluator
 # * Hyperparameter grid
+# * Evaluator
 # * Validation method
 
 
-# ## Specifying the estimator
+# ## Specify the estimator
 
 # In this example we will use $l1$ (lasso) linear regression as our estimator:
 from pyspark.ml.regression import LinearRegression
-lr = LinearRegression(featuresCol='features', labelCol='star_rating', elasticNetParam=1.0)
+lr = LinearRegression(featuresCol="features", labelCol="star_rating", elasticNetParam=1.0)
 
 # Use the `explainParams` method to get the full list of hyperparameters:
 print(lr.explainParams())
 
-
-# ## Specifying the evaluator
-
-# In this case we will use root-mean-squared error as the evaluator:
-from pyspark.ml.evaluation import RegressionEvaluator
-evaluator = RegressionEvaluator(predictionCol='prediction', labelCol='star_rating', metricName='rmse')
+# Setting `elasticNetParam=1.0` corresponds to $l1$ (lasso) linear regression.
+# We are interested in finding a good value of `regParam`.
 
 
-# ## Specifying hyperparameter grid
+# ## Specify hyperparameter grid
 
-# Use the `ParamGridBuilder` class to specify a hyperparameter grid:
+# Use the
+# [ParamGridBuilder](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.tuning.ParamGridBuilder)
+# class to specify a hyperparameter grid:
 from pyspark.ml.tuning import ParamGridBuilder
 regParamList = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
 grid = ParamGridBuilder().addGrid(lr.regParam, regParamList).build()
@@ -68,10 +68,24 @@ grid = ParamGridBuilder().addGrid(lr.regParam, regParamList).build()
 # The resulting object is simply a list of parameter maps:
 grid
 
+# Rather than specify `elasticNetParam` in the `LinearRegression` constructor, we can specify it in our grid:
+grid = ParamGridBuilder().baseOn({lr.elasticNetParam: 1.0}).addGrid(lr.regParam, regParamList).build()
+grid
+
+
+# ## Specify the evaluator
+
+# In this case we will use
+# [RegressionEvaluator](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.evaluation.RegressionEvaluator)
+# as our evaluator and specify root-mean-squared error as the metric:
+from pyspark.ml.evaluation import RegressionEvaluator
+evaluator = RegressionEvaluator(predictionCol="prediction", labelCol="star_rating", metricName="rmse")
+
 
 # ## Tuning the hyperparameters using holdout cross-validation
 
-# For large datasets, holdout cross-validation will be more efficient.  Use the
+# For large DataFrames, holdout cross-validation will be more efficient.  Use
+# the
 # [TrainValidationSplit](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.tuning.TrainValidationSplit)
 # class to specify holdout cross-validation:
 from pyspark.ml.tuning import TrainValidationSplit
@@ -80,20 +94,29 @@ validator = TrainValidationSplit(estimator=lr, estimatorParamMaps=grid, evaluato
 # Use the `fit` method to find the best set of hyperparameters:
 %time cv_model = validator.fit(train)
 
-# The resulting model is an instance of the [TrainValidationSplitModel]() class:
+# **Note:** Our train DataFrame is split again according to `trainRatio`.
+
+# The resulting model is an instance of the
+# [TrainValidationSplitModel](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.tuning.TrainValidationSplitModel)
+# class:
 type(cv_model)
 
 # The cross-validation results are stored in the `validationMatrics` attribute:
 cv_model.validationMetrics
+
+# These are the RMSE for each set of hyperparameters.  Smaller is better.
+
 def plot_holdout_results(model):
   plt.plot(regParamList, model.validationMetrics)
-  plt.title('Hyperparameter Tuning Results')
-  plt.xlabel('Regularization Parameter')
-  plt.ylabel('Validation Metric')
+  plt.title("Hyperparameter Tuning Results")
+  plt.xlabel("Regularization Parameter")
+  plt.ylabel("Validation Metric")
   plt.show()
 plot_holdout_results(cv_model)
 
-# The `bestModel` attribute is an instance of the `LinearRegressionModel` class:
+# In this case the `bestModel` attribute is an instance of the
+# [LinearRegressionModel](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.regression.LinearRegressionModel)
+# class:
 type(cv_model.bestModel)
 
 # **Note:** The model is rerun on the entire dataset using the best set of hyperparameters.
@@ -108,23 +131,24 @@ cv_model.bestModel.evaluate(test).r2
 # ## Tune hyperparameters using k-fold cross-validation
 
 # For small datasets k-fold cross-validation will be more accurate.  Use the
-# [CrossValidator]()
+# [CrossValidator](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.tuning.CrossValidator)
 # class to specify the k-fold cross-validation:
 from pyspark.ml.tuning import CrossValidator
 kfold_validator = CrossValidator(estimator=lr, estimatorParamMaps=grid, evaluator=evaluator, numFolds=3, seed=54321)
 %time kfold_model = kfold_validator.fit(train)
 
-# The result is an instance of the [CrossValidatorModel]() class:
+# The result is an instance of the
+# [CrossValidatorModel](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.tuning.CrossValidatorModel)
+# class:
 type(kfold_model)
 
 # The cross-validation results are stored in the `avgMetrics` attribute:
 kfold_model.avgMetrics
 def plot_kfold_results(model):
-  import matplotlib.pyplot as plt
   plt.plot(regParamList, model.avgMetrics)
-  plt.title('Hyperparameter Tuning Results')
-  plt.xlabel('Regularization Parameter')
-  plt.ylabel('Validation Metric')
+  plt.title("Hyperparameter Tuning Results")
+  plt.xlabel("Regularization Parameter")
+  plt.ylabel("Validation Metric")
   plt.show()
 plot_kfold_results(kfold_model)
 
@@ -135,10 +159,17 @@ type(kfold_model.bestModel)
 # Compute the performance of the performance of the best model on the test dataset:
 kfold_model.bestModel.evaluate(test).r2
 
+
 # ## Exercises
 
-# Create a parameter grid that searches over regularization type (lasso or ridge)
-# as well as the regularization parameter.
+# (1) Maybe our regularization parameters are too large.  Rerun the
+# hyperparameter tuning with regularization parameters [0.0, 0.02, 0.04, 0.06,
+# 0.08, 1.0].
+
+# (2) Create a parameter grid that searches over regularization type (lasso or
+# ridge) as well as the regularization parameter.
+
+# (3) Apply hyperparameter tuning to your favorite machine learning algorithm (estimator).
 
 
 # ## Cleanup
