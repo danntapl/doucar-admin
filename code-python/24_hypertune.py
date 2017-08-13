@@ -20,7 +20,7 @@ from pyspark.sql import SparkSession
 import matplotlib.pyplot as plt
 
 # Create a SparkSession:
-spark = SparkSession.builder.master("local").appName("tune").getOrCreate()
+spark = SparkSession.builder.master("local").appName("hypertune").getOrCreate()
 
 
 # ## Generate the modeling data
