@@ -94,6 +94,8 @@ def inspect_categorical_variables(df, column_list):
     print("====")
     print("Inspecting column: " + c)
     print("====")
+    n = df.select(c).distinct().count()
+    print("Number of distinct values: " + str(n))
     df.groupBy(c).count().orderBy(c).show(20)
     
   # Begin column notes.  Copy and paste output into a script to begin report.
