@@ -45,6 +45,7 @@ filterer = SQLTransformer(statement="SELECT * FROM __THIS__ WHERE cancelled == 0
 # **Note:** Recall that `SQLTransformer` requires the `statement` keyword.
 
 # Index `vehicle_color`:
+from pyspark.ml.feature import StringIndexer
 indexer = StringIndexer(inputCol="vehicle_color", outputCol="vehicle_color_indexed")
 
 # Create dummy variables for `vehicle_color_indexed`:
@@ -117,7 +118,7 @@ indexer_model.labels
 # [RandomForestClassificationModel](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.classification.RandomForestClassificationModel)
 # class:
 validator_model = pipeline_model.stages[5]
-type(classifier_model.bestModel)
+type(validator_model.bestModel)
 validator_model.bestModel.getNumTrees
 validator_model.bestModel.featureImportances
 

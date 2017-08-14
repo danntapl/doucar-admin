@@ -34,7 +34,7 @@ val preprocessed = pre2
 [Binarizer](http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.ml.feature.Binarizer)
 instance from HDFS: */
 import org.apache.spark.ml.feature.Binarizer
-val binarizer = Binarizer.load("duocar/binarizer")
+val binarizer = Binarizer.load("myduocar/binarizer")
 
 /* Inspect the Binarizer instance: */
 binarizer.getInputCol

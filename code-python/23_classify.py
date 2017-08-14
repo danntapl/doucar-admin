@@ -17,11 +17,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 #import numpy as np
 #import pandas as pd
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 #import seaborn as sns
-
-# **Note:** `numpy` and `matplotlib.pyplot` are already available as `np` and
-# `plt`, respectively.
 
 # Create a SparkSession:
 spark = SparkSession.builder.master("local").appName("classify").getOrCreate()

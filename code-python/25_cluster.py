@@ -9,8 +9,8 @@
 from pyspark.sql import SparkSession
 spark = SparkSession.builder.appName('cluster').master('local').getOrCreate()
 
-# Load ride data from HDFS:
-rides = spark.read.csv('duocar/rides_fargo.txt', sep='\t', header=True, inferSchema=True)
+# Load enhanced ride data from HDFS:
+rides = spark.read.parquet('/duocar/joined/')
 
 
 # ## Preprocess the data
@@ -101,6 +101,5 @@ HTML("<iframe src=mymap.html height='500px' width='800px'></iframe>")
 spark.stop()
 
 
-# ## TODO
-# * Task
+# ## References
 

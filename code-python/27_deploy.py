@@ -3,18 +3,14 @@
 # In this module we show how save, load, and apply transformers, estimators, and pipelines.
 
 
-# ## TODO
-# * Create outline
-
-
 # ## Setup
 
 # Create a SparkSession:
 from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName("deploy").master("local[2]").getOrCreate()
+spark = SparkSession.builder.appName("deploy").master("local").getOrCreate()
 
 # Read the enhanced ride data from HDFS:
-rides = spark.read.parquet("/duocar/joined")
+rides = spark.read.parquet("/duocar/joined/")
 
 
 # ## Preprocess the data
@@ -50,8 +46,8 @@ binarized.select('star_rating', 'star_rating_binarized').show()
 binarized.filter(binarized.star_rating.isNull()).select('star_rating', 'star_rating_binarized').show()
 
 # Save the Binarizer to HDFS:
-!hdfs dfs -rm -r duocar/binarizer
-binarizer.save("duocar/binarizer")
+!hdfs dfs -rm -r myduocar/binarizer
+binarizer.save("myduocar/binarizer")
 
 # **Note**: We are saving to our user directory in HDFS.
 # The Binarizer instance is stored in JSON format.
