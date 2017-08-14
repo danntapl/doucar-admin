@@ -9,9 +9,21 @@ print("Hello, CDSW!")
 
 2 + 2
 
-import random
-import matplotlib.pyplot as plt
-plt.plot([random.normalvariate(0,1) for i in xrange(1,1000)])
+import seaborn as sns
+iris = sns.load_dataset("iris")
+sns.pairplot(iris, hue="species")
+
+
+# ## Getting Help
+
+# Use the standard Python help command:
+help(sns.pairplot)
+
+# or the IPython help syntax:
+sns.pairplot?
+
+# Use the following IPython help syntax to inspect the source code:
+sns.pairplot??
 
 
 # ## Accessing the Command Line
@@ -30,26 +42,24 @@ plt.plot([random.normalvariate(0,1) for i in xrange(1,1000)])
 # Use `!pip list` to get a list of the currently installed packages:
 !pip list --format=columns
 
-# Search for an available Python package (seaborn in this case):
-!pip search seaborn
+# Search for an available Python package (folium in this case):
+!pip search folium
 
 # Install a new package. Note that this package is now installed for all
 # sessions associated with this project.
-!pip install seaborn
+!pip install folium
 
 # Show details about an installed package.  This returns nothing if the package
 # is not installed.
-!pip show seaborn
+!pip show folium
 
-# Use seaborn:
-import numpy as np
-import seaborn as sns
-x = np.random.normal(size=100)
-sns.distplot(x, rug=True)
+# Use folium:
+import folium
+folium.Map(location=[46.8772222, -96.7894444])
 
 # Uninstall package. (Note: Include the '-y' option to avoid a prompt asking
 # you to confirm the delete.)
-!pip uninstall -y seaborn
+!pip uninstall -y folium
 
 
 # ## Formatting Session Output
@@ -106,12 +116,11 @@ sns.distplot(x, rug=True)
 
 # ### Images
 
-# Displaying a stored image file:
-
+# Display a stored image file:
 from IPython.display import Image
 Image("resources/spark.png")
 
-# **Note:** Path is relative to `/home/cdsw/` regardless of script location.
+# **Note:** The image path is relative to `/home/cdsw/` regardless of script location.
   
 # Dummy Python command to get Linux commands to print.  
 # See [DSE-2112](https://jira.cloudera.com/browse/DSE-2112).
