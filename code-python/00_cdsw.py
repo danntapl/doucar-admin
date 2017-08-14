@@ -17,13 +17,16 @@ sns.pairplot(iris, hue="species")
 # ## Getting Help
 
 # Use the standard Python help command:
-help(sns.pairplot)
+# help(sns.pairplot)
 
 # or the IPython help syntax:
 sns.pairplot?
 
 # Use the following IPython help syntax to inspect the source code:
-sns.pairplot??
+#sns.pairplot??
+
+# **Developer Note:** The script does not run (using `Run All`) correctly when
+# this command is uncommented.
 
 
 # ## Accessing the Command Line
@@ -33,6 +36,8 @@ sns.pairplot??
 !pwd
 
 !ls -l
+
+# You can also access the command line via the **Terminal access** menu item.
 
 
 # ## Working with Python Packages
@@ -121,10 +126,21 @@ from IPython.display import Image
 Image("resources/spark.png")
 
 # **Note:** The image path is relative to `/home/cdsw/` regardless of script location.
-  
-# Dummy Python command to get Linux commands to print.  
-# See [DSE-2112](https://jira.cloudera.com/browse/DSE-2112).
-print("Fin")
+
+
+# ## Exercises
+
+# (1) Experiment with the CDSW command prompt.  Note the following:
+# * Tab completion is available
+# * Some GNU Readline Library commands such as `C-f`, `C-b`, and `C-d` are
+# available.
+
+# (2) Experiment with the CDSW editor.  Create a new file.  Enter Python code
+# and Markdown text.  Run the file line by line (or chunk by chunk).  Clear the
+# console log and run the entire file.
+
+# (3) Open a terminal window.  Type `env | grep PYTHON` to explore the Python
+# environmental variables
 
 
 # ## References
