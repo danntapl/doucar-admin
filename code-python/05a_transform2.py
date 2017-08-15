@@ -60,7 +60,7 @@ riders.select("student", (riders["student"] == 1).alias("student_boolean")).show
 
 # ## Working with string columns
 
-# ### Example 4: Normalizing rider sex
+# ### Example 4: Normalizing the sex column in the riders table
 
 # Trim whitespace and convert rider sex to uppercase:
 from pyspark.sql.functions import trim, upper
