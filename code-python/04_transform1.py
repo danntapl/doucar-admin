@@ -167,19 +167,19 @@ riders_selected.na.drop(how="all", subset=["sex", "ethnicity"]).show(25)
 # **Note**: `dropna` and `na.drop` are equivalent.
 
 # Replace missing values with a common value:
-riders_selected.fillna("UNKNOWN", ["sex", "ethnicity"]).show(25)
+riders_selected.fillna("OTHER/UNKNOWN", ["sex", "ethnicity"]).show(25)
 
 # Replace missing values with different values:
-riders_missing = riders_selected.na.fill({"sex": "UNKNOWN", "ethnicity": "MISSING"})
+riders_missing = riders_selected.na.fill({"sex": "OTHER/UNKNOWN", "ethnicity": "MISSING"})
 riders_missing.show(25)
 
 # **Note**: `fillna` and `na.fill` are equivalent.
 
 # Replace arbitrary values with a common value:
-riders_missing.replace(["UNKNOWN", "MISSING"], "NA", ["sex", "ethnicity"]).show(25)
+riders_missing.replace(["OTHER/UNKNOWN", "MISSING"], "NA", ["sex", "ethnicity"]).show(25)
 
 # Replace arbitrary values with different values:
-riders_missing.replace({"UNKNOWN": "NA", "MISSING": "NO RESPONSE"}, ["sex", "ethnicity"]).show(25)
+riders_missing.replace({"OTHER/UNKNOWN": "NA", "MISSING": "NO RESPONSE"}, ["sex", "ethnicity"]).show(25)
 
 # **Note:** `replace` and `na.replace` are equivalent.  `replace` can be used to replace
 # sentinel values (e.g., -9999) that represent missing values in numerical columns.
