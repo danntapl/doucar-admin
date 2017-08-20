@@ -17,8 +17,8 @@ spark = SparkSession.builder.appName('config').master('local').getOrCreate()
 # distributed on a cluster
 
 # Most of these settings are handled for you by the administrator, who uses 
-# Cloudera Manager to make settings that work as a general policy.  However, you 
-# can configure some settings specifically for your own scripts.  
+# Cloudera Manager to make settings that work as a general policy.  However, 
+# you can configure some settings specifically for your own scripts.  
 
 # Spark provides three separate techniques that configure separate parts
 # of an application:
@@ -46,7 +46,7 @@ spark = SparkSession.builder.appName('config').master('local').getOrCreate()
 
 # Notice the line `shell.log.level=ERROR`, which sets default logging for sessions.
 
-# You can change the requested log level any time througout your 
+# You can change the requested log level any time throughout your 
 # SparkSession with the command `spark.SparkContext.setLogLevel('<newLevel>')`.  
 # The value for `<newLevel>` can be one of:
 #    * ALL
@@ -69,9 +69,6 @@ myrdd.count()
 spark.sparkContext.setLogLevel("WARN")
 myrdd.count()
 
-# **Note:** If you run this script top to bottom, the INFO log messages may not 
-# appear immediately following the INFO setting, due to the timing delay of log 
-# messages sent from the separate logging system.
 
 # ## Configuring Spark Properties
 
@@ -100,7 +97,7 @@ spark = SparkSession\
   .getOrCreate()
   
 # The most common Spark properties to set are documented 
-# [here](http://spark.apache.org/docs/latest/configuration.html#available-properties)
+# [here](http://spark.apache.org/docs/latest/configuration.html#available-properties).
 
 # You can see all set properties in the configuration component of your 
 # SparkContext:

@@ -41,13 +41,9 @@ spark = SparkSession\
 # If you create a SparkSession with local master, then it does not run on the
 # Hadoop cluster, and will not appear in the Hue Job Browser.
 
-# You can see the operation of the your Spark application by browsing directly
+# You can see the operation of your Spark application by browsing directly
 # to the Spark Application WebURL
 
-spark.sparkContext.uiWebUrl
-
-# (Copy and browse to the result string.)
-  
 drivers = spark.read.csv("/duocar/raw/drivers/", header=True, inferSchema=True)
 rides = spark.read.csv("/duocar/raw/rides/", header=True, inferSchema=True)
 
@@ -127,24 +123,19 @@ spark = SparkSession\
   .getOrCreate()
 
 
-# The Spark Web UI is still presented by your application:
-
-spark.sparkContext.uiWebUrl
-
-# (Copy and browse to the result string.)
-
-# But now your application is also visible in the Hue Job Browser.  Click on
-# the job ID, and then the "Jobs" URL to see the same Spark Application UI.
+# The Spark Application UI is still presented, but now your application is 
+# also visible in the Hue Job Browser.  Click on the job ID, and then the 
+# "Jobs" URL to see the same Spark Application UI.
   
 drivers = spark.read.csv("/duocar/raw/drivers/", header=True, inferSchema=True)
 rides = spark.read.csv("/duocar/raw/rides/", header=True, inferSchema=True)
 rides = rides.repartition(35)
 
 # In the Application UI, click on the Event Timeline.  Notice that an executor
-# was created in the cluster on your behalf in order to serve the tiny jobs from
-# your `read.csv` commands.  If you wait another minute, then the now-idle
-# executor will be killed.  This creation and destruction of executors on the
-# ebb and flow of demand is YARN's dynamic resource allocation.
+# was created in the cluster on your behalf in order to serve the tiny jobs 
+# from your `read.csv` commands.  If you wait another minute, then the now-idle
+# executor will be killed.  This destruction and creation of executors based
+# on the ebb and flow of demand is YARN's dynamic resource allocation.
 
 from pyspark.sql.functions import concat_ws  
 driver_riders = rides\
@@ -173,9 +164,10 @@ result1.write.csv("practice/result1")
 
 # [Stage 22:==========>  (162 + 15) / 200]+----------------+---------------+
 
-# A line like that means that, at the moment, Stage 22 of your application is
+# A line like that means that, at the moment, Stage 22 of the application is
 # currently running.  It consists of 200 tasks, of which 162 are completed, and
-# 15 are currently running.  (Each task is running in a separate executor.)
+# 15 are currently running.  (Each task is running in a separate executor or
+# --if local--a separate thread.)
 
 # A third job:
 

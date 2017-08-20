@@ -2,25 +2,34 @@
 
 # Spark applications and Spark environments present countless opportunities for
 # ever deeper understanding and performance tuning.  Here we present a few of 
-# the techniques readily available to you in your scripts--and often have
+# the techniques readily available to you in your scripts--which often have
 # the most dramatic effects on runtime performance.
 
 # Note this script has no `spark.stop()` method.  We'll run it four times, 
 # each time launching a new session, then running the entire script and timing 
 # the run.
 
+# Because we'll be editing this file for multiple runs, you may want to copy
+# to a new file, so you can keep the original as is.
+
 # For each run, we'll make a slight change. The four runs:
 
-# 1. Run the script as is.  
+# 1. **Local run:**
+# Run the script as is.  
+#
 # There are three actions at the bottom of the script--and you may not want 
 # to wait for all three actions to complete.
-# 2. Edit line 60 and change `local` to `yarn`, then launch a new session
-# and run again.  
+#
+# 2. **YARN run:**
+# Edit line 71: change `local` to `yarn`, then launch a new session and run.
+#
 # This runs the application in the Hadoop cluster rather than locally.
 # Notice the change in setup time.  
 # If you like, monitor the application in the Spark Application WebUI.
-# 3. For another session, uncomment line 69, to partition the rides 
-# DataFrame. 
+#
+# 3. **YARN, partitioning:**
+# Uncomment line 77, to partition the rides DataFrame; then run again.
+#
 # This enables the Hadoop cluster to run your program with more parallelism.  
 # Look at the stage progress bar during the run, to see evidence of growing 
 # parallelism.
@@ -28,10 +37,12 @@
 # This shows commonly configured YARN behavior called *dynamic resource 
 # allocation*, allowing your application to request executors as needed.  
 # The number of executors you are allowed is subject to resource and 
-# administered limits, including allowance for changing load conditions.  
+# administered limits, including allowance for changing load conditions.
 # What happens when your application sits idle for more than a minute?
-# 4. One more session: Uncomment lines 92-93, to request caching of your 
-# result1 DataFrame.  
+#
+# 4. **YARN, partitioning, caching:**
+# Uncomment lines 100-101, to request caching of your result1 DataFrame. 
+#
 # DataFrames normally exist only as execution plans that run whenever you 
 # call an action to get some result.  
 # The `persist` method causes a DataFrame--the next time it is requested--to 
@@ -56,17 +67,14 @@
 from pyspark.sql import SparkSession
 spark = SparkSession\
   .builder\
-  .config("spark.app.name", "tune")\
+  .config("spark.app.name", "tune-spark")\
   .config("spark.master", "local")\
   .getOrCreate()
   
-# Get the Application Web UI URL for browsing.
-spark.sparkContext.uiWebUrl
-
 # Read drivers and rides datasets
 drivers = spark.read.csv("/duocar/raw/drivers/", inferSchema=True, header=True)
 rides = spark.read.csv("/duocar/raw/rides/", inferSchema = True, header = True)
-# rides = rides.repartition(27)
+# rides = rides.repartition(9)
   
 # Explode the size of the rides DataFrame
 multiplier = spark.range(5000)
@@ -80,7 +88,7 @@ driver_riders = rides\
               concat_ws(", ", drivers.last_name, drivers.first_name))\
   .select("driver_id", "driver_name", "rider_id")
 
-# Aggregate to find for each driver the number of distinct riders carried
+# Aggregate to find the number of distinct riders carried by each driver
 from pyspark.sql.functions import col
 result1 = \
   driver_riders\
@@ -92,25 +100,29 @@ result1 = \
 # from pyspark import StorageLevel
 # result1.persist(StorageLevel.MEMORY_ONLY)
 
-# How many distinct riders (customers) for each driver.  Order by most riders first.
+# How many distinct riders (customers) for each driver?  Order by most riders first.
 result1.orderBy("distinct_riders", ascending=False).show(10, truncate=False)
 
-# Same data, but order by driver name
+# Same data, but order by driver name.
 result1.orderBy("driver_name", ascending=True).show(10, truncate=False)
 
-# What is the mean number of distinct riders per driver?  ...and other basics.
+# What is the mean number of distinct riders per driver?  ...and other basic
+# statistics.
 result1.select("distinct_riders").describe().show()
 
 
 # ## Exercises
 
 # Look in the documentation for the explanation of the `repartition` and 
-# `coalesce` methods on DataFrames.
+# `coalesce` methods on DataFrames.  In these methods, what is the effect
+# if you request more partitions than before?  Fewer partitions?
 
 # If you configure a SparkSession with master set to `local[2]`, you get
 # a local run, but using two runtime threads to get some degree of 
-# parallelism.  Leaving lines 69, 92, and 93 uncommented, change the session
-# to run with this setting and compare run time.
+# parallelism.  Leaving lines 74, 97, and 98 uncommented, change the session
+# to run with this setting and compare run time.  How do you account for this
+# result?  What are the implications when you work with smaller datasets, or
+# with larger datasets?
 
 
 # ## References
