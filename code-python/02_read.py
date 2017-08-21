@@ -244,14 +244,14 @@ ran_df.describe("id", "normal").show()
 
 # Read the raw driver file into a Spark DataFrame.
 
-# Save the driver DataFrame as a JSON file in your CDSW project directory.
+# Save the driver DataFrame as a JSON file in your CDSW practice directory.
 
 # Read the driver JSON file into a Spark DataFrame.
 
 
 # ## Cleanup
 
-# Remove practice directory from HDFS:
+# Remove practice directory contents from HDFS:
 
 !hdfs dfs -rm -r -skipTrash practice/riders_text
 !hdfs dfs -rm -r -skipTrash practice/riders_tsv
