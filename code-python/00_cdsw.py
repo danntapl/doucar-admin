@@ -132,6 +132,34 @@ Image("resources/spark.png")
 # **Note:** The image path is relative to `/home/cdsw/` regardless of script
 # location.
 
+# ### Code blocks
+
+# To print a block of code in the output without running it, 
+# use a comment line with three backticks to begin the block,
+# then the block of code with each line preceded with the 
+# comment character, then a comment line with three backticks
+# to close the block. Optionally include the language name 
+# after the opening backticks:
+
+#``` python
+#print("Hello, World!")
+#```
+
+# You can omit the language name to print the code block in 
+# black text without syntax coloring, for example to display
+# a block of static data or output.
+
+#```
+#Hello, World!
+#```
+
+# ### Invisible comments
+
+#[//]: # (To include a comment that will not appear in the)
+#[//]: # (output at all, you can use this curious syntax.)
+
+# Move along, nothing to see here
+
 
 # ## Exercises
 
