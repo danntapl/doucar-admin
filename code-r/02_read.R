@@ -25,6 +25,7 @@ spark <- spark_connect(
 #[//]: # (spark_write_table())
 #[//]: # (which creates a permanent Hive table)
 #[//]: # (which we don't want students to do yet)
+#[//]: # (and is probably safer to do with PySpark than sparklyr)
 
 #[//]: # (spark_read_source and spark_write_source)
 #[//]: # (with have to do with Spark packages—a more advanced topic)
