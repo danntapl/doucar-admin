@@ -3,7 +3,7 @@
 # sparklyr supports a number of options for configuring both 
 # the behavior of the package and the behavior of the 
 # underlying Spark engine. These are described in the 
-# [sparklyr deployment and configuration guide](https://spark.rstudio.com/deployment.html#configuration).
+# [sparklyr deployment and configuration guide](https://spark.rstudio.com/articles/deployment-overview.html#configuration).
 # This guide describes the `spark_config()` function seen 
 # elsewhere in this course. It also describes a method for 
 # specifying configuration in a config.yml file:
