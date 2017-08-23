@@ -89,7 +89,7 @@ riders_tbl_spark %>% head(5) %>% show_query()
 
 # `head()` is a very simple operation
 # (We will learn about many other operations later)
-# Actually, when you pri) a `tbl_spark`, dplyr automatically applies `head(10)` in order to display only the first 10 rows:
+# Actually, when you print a `tbl_spark`, dplyr automatically applies `head(10)` in order to display only the first 10 rows:
 
 riders_tbl_spark # This is the same as: print(riders_tbl_spark)
 
