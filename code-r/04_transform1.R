@@ -224,6 +224,58 @@ riders %>% filter(first_name == "Skylar" & sex == "female")
 
 riders %>% filter(first_name == "Skylar" | last_name == "Hayes")
 
+
+# There are three special variants of `filter()` that you
+# can use to apply filtering operations to multiple columns.
+# These are `filter_all()`, `filter_at()`, and `filter_if()`.
+# These verbs use *predicate expressions* to specify
+# which columns to filter on.
+
+# `filter_all()` applies filtering criteria either to
+# *any* columns, or to *all* columns.
+# The pronoun `.` is used to refer to these columns.
+
+# To apply filter criteria to *all* columns, use
+# the function `all_vars()`. For example, to filter
+# out all rows in which any column has a missing value:
+
+riders %>%
+  filter_all(
+    all_vars(!is.na(.))
+  )
+
+# The remaining rows do not contain any missing values.
+
+# Or to filter to the rows in which the first name, the
+# last name, or both are "Ryan":
+
+riders %>% 
+  select(first_name, last_name) %>%
+  filter_all(
+    any_vars(. == "Ryan")
+  )
+
+# Another way to do this is to use `filter_at()`
+# which applies to predicate expression only to certain
+# variables, which are specified using `vars()`:
+
+riders %>% filter_at(
+  vars(ends_with("_name")),
+  any_vars(. == "Ryan")
+)
+
+# The verb `filter_if()` takes this concept further, 
+# and allows you to select which variables to filter on
+# by using a separate predicate function. For example,
+# to filter out missing values in numeric columns, but 
+# leave missing values in non-numeric columns:
+
+riders %>% filter_if(
+  ~ is.numeric(.),
+  all_vars(!is.na(.))
+)
+
+
 # Another option is to filter to a *random* set of rows.
 # This is of course known as *sampling*.
 # There are two special dplyr verbs for random sampling:
