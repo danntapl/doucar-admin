@@ -71,4 +71,6 @@ leaflet() %>%
 detach("package:leaflet", unload = TRUE)
 
 # Uninstall the package
-remove.packages("leaflet")
+#``` r
+#remove.packages("leaflet")
+#```
