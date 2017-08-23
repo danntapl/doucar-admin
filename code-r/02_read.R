@@ -217,11 +217,11 @@ iris_tbl
 
 # ## Exercises
 
-# Read the raw driver file into a Spark DataFrame.
+# Read the raw drivers file into a Spark DataFrame.
 
-# Save the driver DataFrame as a JSON file in your CDSW practice directory.
+# Save the drivers DataFrame as a JSON file in your CDSW practice directory.
 
-# Read the driver JSON file into a Spark DataFrame.
+# Read the drivers JSON file into a Spark DataFrame.
 
 # Delete the JSON file.
 
