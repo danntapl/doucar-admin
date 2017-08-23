@@ -341,7 +341,7 @@ riders %>% transmute(
 
 # When used by itself, `summarise()` returns a single row:
 
-riders %>% summarise(count = n())
+riders %>% summarise(n = n())
 
 riders %>% summarise(
   num_unique_first_names = n_distinct(first_name)
@@ -360,6 +360,11 @@ riders %>% summarize(
   youngest = max(birth_date)
 )
 
+# Tip: `tally()` is a shortcut for `summarise(n = n())`:
+
+riders %>% tally()
+
+
 # `summarise()` is more interesting when combined with `group_by()`:
 
 
@@ -375,14 +380,19 @@ riders %>% summarize(
 
 riders %>% 
   group_by(sex) %>% 
-  summarise(count = n())
+  summarise(n = n())
 
 riders %>% 
   group_by(sex, ethnicity) %>%
   summarise(
-    count = n(),
+    n = n(),
     students = sum(as.numeric(student))
   )
+
+# Tip: `count(column)` is a shortcut for 
+# `group_by(column) %>% summarise(n = n())`:
+
+riders %>% count(sex)
 
 
 # ### Using variables in dplyr expressions
@@ -442,7 +452,7 @@ riders %>%
   ) %>% 
   group_by(birth_decade) %>% 
   summarize(
-    count = n(),
+    n = n(),
     students = sum(as.numeric(student))
   ) %>%
   arrange(birth_decade)
@@ -585,6 +595,11 @@ student_rider_homes_tbl_df %>%
     avg_lat = mean(home_lat),
     avg_lon = mean(home_lon)
   )
+
+
+# ## Exercises
+
+
 
 
 # ## Cleanup
