@@ -255,7 +255,7 @@ tbl_change_db(spark, "default")
 
 # Show two different ways to create a character vector
 # containing the makes of all the drivers' vehicles,
-# one using collect(), the other using pull().
+# one using `collect()`, the other using `pull()`.
 
 # Name this character vector `makes` and run the following code:
 
