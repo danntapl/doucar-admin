@@ -275,6 +275,12 @@ riders %>% filter_if(
   all_vars(!is.na(.))
 )
 
+# Note: This `filter_*()` variants are a relatively
+# exotic topic. Don't worry about remembering exactly
+# how to use them; just remember that they exist.
+# You can always look at the help documentation to 
+# see how to use them.
+
 
 # Another option is to filter to a *random* set of rows.
 # This is of course known as *sampling*.
