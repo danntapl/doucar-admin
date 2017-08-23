@@ -34,7 +34,7 @@ riders
 class(riders)
 
 
-# let's rename riders to `riders_tbl_spark` so we remember what type of object it is
+# Let's rename riders to `riders_tbl_spark` so we remember what type of object it is
 
 riders_tbl_spark <- riders
 rm(riders)
@@ -48,12 +48,13 @@ rm(riders)
 # These do not work with `tbl_spark` objects.
 # For example, this fails:
 
-library(leaflet)
-
-# leaflet(riders_tbl_spark) %>%
+#``` r
+#library(leaflet)
+#
+#leaflet(riders_tbl_spark) %>%
 #  addTiles() %>%
-#  addCircles(lng = ~home_lon, lat = ~home_lat)
-
+#  addCircles(lng = ~home_lon, lat = ~home_lat) # fails
+#```
 
 # Before we see how to make this succeed, let's first look more at this `riders_tbl_spark` object.
 # We know that it is a `tbl_spark` object,
@@ -61,7 +62,7 @@ library(leaflet)
 
 class(riders_tbl_spark)
 
-# notice this object also inherits `tbl_sql`, `tbl_lazy`, and `tbl`.
+# Notice this object also inherits `tbl_sql`, `tbl_lazy`, and `tbl`.
 # these are classes defined by the packages `tibble` and `dplyr`.
 # `tbl` is an underlying class defined by the `tibble` package
 # `tbl_lazy` means that R uses lazy evaluation on this object; it does not immediately perform operations but waits until the result is requested
@@ -126,7 +127,8 @@ class(riders_tbl_df)
 
 riders_df <- as.data.frame(riders_tbl_df)
 
-# But the output when you print that is much uglier and less useful when you print it:
+# Then the output when you print that is different
+# and takes more time to render in CDSW:
 
 riders_df
 
@@ -136,6 +138,8 @@ rm(riders_df)
 
 
 # Now with this `tbl_df`, you can use leaflet, and it succeeds:
+
+library(leaflet)
 
 leaflet(riders_tbl_df) %>%
   addTiles() %>%
@@ -153,18 +157,24 @@ leaflet(riders_tbl_df) %>%
 
 # For example, you cannot use `$` or `[]` to pull a column from a `tbl_spark`: 
 
-#riders_tbl_spark$student
-#riders_tbl_spark[, "student"]
+#```r
+#riders_tbl_spark$student # returns NULL
+#
+#riders_tbl_spark[, "student"] # fails
+#```
 
 # But you can do this on a `tbl_df`:
 
 riders_tbl_df$student %>% table()
+
 riders_tbl_df[, "student"]
 
 # And you cannot use `str()` to examine the structure of a `tbl_df`
 # (it returns a mess of technical info, not the column structure)
 
-#riders_tbl_spark %>% str()
+#```r
+#riders_tbl_spark %>% str() # returns non-useful output
+#```
 
 # But you can do this on a `tbl_df`: 
 riders_tbl_df %>% str()
@@ -229,6 +239,37 @@ tbl_change_db(spark, "default")
 
 # For the rest of the course, we will keep dplyr loaded at all times.
 # You should generally do this whenever you're using sparklyr.
+
+
+# ## Exercises
+
+# Examine the structure of the drivers table.
+
+# Collect the first 100 rows of the drivers table into 
+# a data frame tbl.
+
+# Show the SQL query that sparklyr executed to do this.
+
+# Create a character vector containing the names of the 
+# tables in the duocar database.
+
+# Show two different ways to create a character vector
+# containing the makes of all the drivers' vehicles,
+# one using collect(), the other using pull().
+
+# Name this character vector `makes` and run the following code:
+
+makes_counts <- table(makes)
+makes_df <- data.frame(
+  make = names(makes_counts),
+  count = as.numeric(makes_counts)
+)
+makes_df <- makes_df[makes_df$count > 20, ]
+
+library(ggplot2)
+ggplot(makes_df, aes(x = make, y = count)) + geom_col()
+
+# What are the top three vehicle makes among DuoCar drivers?
 
 
 # ## Cleanup
