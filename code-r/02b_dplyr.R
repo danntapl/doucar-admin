@@ -8,8 +8,13 @@
 # ## Setup
 
 library(sparklyr)
-spark <- spark_connect(master = "local", app_name = "dplyr")
-
+config <- spark_config()
+config$spark.driver.host <- Sys.getenv("CDSW_IP_ADDRESS")
+spark <- spark_connect(
+  master = "local",
+  app_name = "dplyr",
+  config = config
+)
 
 # ## Remote Spark DataFrames
 

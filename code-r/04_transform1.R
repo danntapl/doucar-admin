@@ -12,8 +12,13 @@
 library(sparklyr)
 library(dplyr)
 
-spark <- spark_connect(master = "local", app_name = "inspect")
-
+config <- spark_config()
+config$spark.driver.host <- Sys.getenv("CDSW_IP_ADDRESS")
+spark <- spark_connect(
+  master = "local",
+  app_name = "transform",
+  config = config
+)
 
 # ## Load the riders data from HDFS into a Spark DataFrame
 
