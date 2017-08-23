@@ -11,6 +11,31 @@ spark <- spark_connect(
   config = config
 )
 
+#[//]: # (Instructor note:)
+
+#[//]: # (This section describes some of the functions documented at)
+#[//]: # (https://spark.rstudio.com/reference/index.html#section-spark-data)
+#[//]: # (There are some other functions there that are not)
+#[//]: # (described here but that students may ask about, like:)
+
+#[//]: # (spark_read_table())
+#[//]: # (which is not necessary when you are using dplyr)
+#[//]: # (because you can instead use tbl())
+
+#[//]: # (spark_write_table())
+#[//]: # (which creates a permanent Hive table)
+#[//]: # (which we don't want students to do yet)
+
+#[//]: # (spark_read_source and spark_write_source)
+#[//]: # (with have to do with Spark packages—a more advanced topic)
+
+#[//]: # (spark_read_jdbc and spark_write_jdbc)
+#[//]: # (which are beyond the scope of this course)
+
+#[//]: # (In general, browing the list of functions in sparklyr)
+#[//]: # (will cause students to see a lot of content they do not)
+#[//]: # (need to know about.)
+
 
 # ## Working with delimited text files
 
@@ -188,6 +213,16 @@ iris_tbl
 # Note: `sdf_copy_to()` *does not persist* the copied data in HDFS.
 # The data is stored in a temporary location in HDFS and may be cached in Spark memory.
 # After you end your session by disconnecting from Spark, it will no longer be available.
+
+# ## Exercises
+
+# Read the raw driver file into a Spark DataFrame.
+
+# Save the driver DataFrame as a JSON file in your CDSW practice directory.
+
+# Read the driver JSON file into a Spark DataFrame.
+
+# Delete the JSON file.
 
 
 # ## Cleanup
