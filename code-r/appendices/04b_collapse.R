@@ -1,4 +1,4 @@
-# # dplyr's `collapse()` function
+# # The dplyr `collapse()` function
 
 # 04_transform1.R talks about `collect()` and `compute()`,
 # but it doesn't mention the related function `collapse()`.
