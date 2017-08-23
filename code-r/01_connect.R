@@ -1,6 +1,29 @@
 # # Connecting to Spark
 
-# TBD: document rationale for sparklyr over SparkR
+# ## Background
+
+# There are two R packages that provide R interfaces to 
+# Apache Spark:
+# **[SparkR](https://spark.apache.org/docs/latest/sparkr.html)**
+# and
+# **[sparklyr](https://spark.rstudio.com)**.
+# SparkR is part of the Apache Spark project; it was created by
+# the same people who create Apache Spark.
+# sparklyr was created by [RStudio](https://www.rstudio.com).
+
+# SparkR does not follow established idioms of R programming.
+# It uses a syntax that is unfamiliar to the typical R user.
+
+# sparklyr follows the idioms of the popular
+# [tidyverse](https://www.tidyverse.org) collection of R
+# packages. As you will see in later sections, sparklyr
+# uses a syntax that is familiar to many R users.
+
+# It has been our experience at Cloudera that data scientists
+# who use R are typically more comfortable and more productive 
+# using sparklyr. Cloudera generally encourages R users to 
+# use sparklyr instead of SparkR.
+
 
 # ## Installing sparklyr
 
