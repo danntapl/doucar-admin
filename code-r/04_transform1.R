@@ -317,11 +317,46 @@ riders %>% arrange(desc(birth_date))
 
 riders %>% mutate(full_name = paste(first_name, last_name))
 
-# You can use `mutate()` to replace existing columns:
+# You can use `mutate()` to replace existing columns, but
+# note that the order of the columns may not be preserved:
 
 riders %>% mutate(
   sex = ifelse(is.na(sex), "other/unknown", sex)
 )
+
+# You can use `mutate()` to change the data types of 
+# one or more columns:
+
+riders %>% mutate(
+  id = as.character(id),
+  birth_date = as.date(birth_date),
+  student = as.logical(student)
+)
+
+# Note that the `birth_date` column still appears in the
+# printed R `tbl_spark` to be a string column, but 
+# internally Spark now recognizes it as a date column.
+
+# Some R-specific type conversion functions do not work
+# with `mutate()` on `tbl_spark` objects, but they do work
+# after you `collect()` the `tbl_spark` to a `tbl_df`:
+
+# This fails:
+
+#```r
+#riders %>%
+#  mutate(
+#    birth_date = as.POSIXct(birth_date)
+#  )
+#```
+
+# This works:
+
+riders %>%
+  collect() %>% 
+  mutate(
+    birth_date = as.POSIXct(birth_date)
+  )
 
 # You can refer to columns that you have just created
 # in the same `mutate()`:
