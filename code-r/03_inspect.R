@@ -57,16 +57,11 @@ riders %>% colnames(.)
 riders %>% colnames()
 
 
-# ## Counting the number of rows and columns
+# ## Counting the number of rows
 
-# To get the number of rows or columns, use `nrow()` or `ncol()`:
+# To get the number of rows, use `tally()`:
 
-riders %>% nrow()
-riders %>% ncol()
-
-# Or use `dim()` to get a vector of both:
-
-riders %>% dim()
+riders %>% tally()
 
 
 # ## Inspecting a column (variable)
@@ -85,16 +80,30 @@ riders %>% distinct(first_name)
 riders %>% distinct(first_name, last_name)
 
 
-# You can also use `nrow()`, `ncol()`, or `dim()` after these:
+# You can also use `tally()` after these:
 
 riders %>% 
   distinct(first_name, last_name) %>% 
-  dim()
+  tally()
 
 
 # But to go beyond these simple operations, we need to learn more 
 # about *dplyr verbs* and how they can be used to manipulate data.
 # This is the subject of the next module.
+
+
+# ## Exercises
+
+# Read the drivers data and view the first 5 rows.
+
+# What are the names of the columns in the drivers data?
+
+# How many rows are in the drivers data?
+
+# Select only the `vehicle_make` and `vehicle_model` columns
+# from the drivers data.
+
+# How many different vehicle makes are in the drivers data?
 
 
 # ## Cleanup
