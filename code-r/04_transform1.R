@@ -196,10 +196,11 @@ riders %>% distinct(first_name)
 
 riders %>% distinct(first_name, last_name)
 
-# `pull()` is like `select()` for a single column, 
+# `pull()` is a shortcut for `select()` then 
+# `collect()` for a single column, 
 # but it returns a vector instead of a `tbl`:
 
-riders %>% select(first_name)
+riders %>% select(first_name) %>% collect()
 
 riders %>% pull(first_name)
 
