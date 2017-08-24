@@ -24,12 +24,14 @@ riders <- spark_read_csv(
 
 # ## Viewing some data and examining the schema
 
-# Print the `tbl_spark` to see the names and types of the columns
-# and the first 10 rows of data, for as many columns as fit on the screen
+# Print the `tbl_spark` to see the names and types 
+# of the columns and the first 10 rows of data, 
+# for as many columns as fit on the screen
 
 riders
 
-# To get the first *`x`* rows for some other value of *`x`*, use `head()`.
+# To get the first *`x`* rows for some other value 
+# of *`x`*, use `head()`.
 # The default number of rows is 6.
 
 riders %>% head()
@@ -47,7 +49,8 @@ colnames(riders)
 
 riders %>% colnames()
 
-# There are other styles of using the pipe operator, but the one above is preferable.
+# There are other styles of using the pipe operator, 
+# but the one above is preferable.
 
 # ok:
 riders %>% colnames
@@ -57,11 +60,18 @@ riders %>% colnames(.)
 riders %>% colnames()
 
 
-# ## Counting the number of rows
+# ## Counting the number of rows and columns
 
-# To get the number of rows, use `tally()`:
+# To get the number of rows and columns, use 
+# `sdf_nrow()` and `sdf_ncol()`. "sdf" stands for 
+# "Spark DataFrame".
 
-riders %>% tally()
+riders %>% sdf_nrow()
+riders %>% sdf_ncol()
+
+# Or use `sdf_dim()` to get a vector of both:
+
+riders %>% sdf_dim()
 
 
 # ## Inspecting a column (variable)
@@ -73,23 +83,26 @@ riders %>% select(first_name)
 riders %>% select(first_name, last_name)
 
 
-# To select the distinct values of one or more columns, use `distinct()`:
+# To select the distinct values of one or more columns, 
+# use `distinct()`:
 
 riders %>% distinct(first_name)
 
 riders %>% distinct(first_name, last_name)
 
 
-# You can also use `tally()` after these:
+# You can also use `sdf_nrow()`, `sdf_ncol()`, or 
+# `sdf_dim()` after operations like these:
 
 riders %>% 
   distinct(first_name, last_name) %>% 
-  tally()
+  sdf_dim()
 
 
-# But to go beyond these simple operations, we need to learn more 
-# about *dplyr verbs* and how they can be used to manipulate data.
-# This is the subject of the next module.
+# But to go beyond these simple operations, we need 
+# to learn more about *dplyr verbs* and how they can 
+# be used to manipulate data. This is the subject 
+# of the next module.
 
 
 # ## Exercises
