@@ -41,7 +41,8 @@ spark <- spark_connect(
 # ## Working with delimited text files
 
 # The rider data is a comma-delimited text file
-# Use the `spark_read_csv()` function to read it into a Spark DataFrame
+# Use the `spark_read_csv()` function to read it into 
+# a Spark DataFrame
 
 # ### Infer the schema
 
@@ -53,7 +54,8 @@ riders <- spark_read_csv(
   path = "/duocar/raw/riders/"
 )
 
-# Showing some more arguments, which are set to the default values:
+# Showing some more arguments, which are set to the
+# default values:
 
 riders <- spark_read_csv(
   sc = spark,
@@ -67,11 +69,13 @@ riders <- spark_read_csv(
 # Show the schema and first few rows of data:
 riders
 
-# The returned object (`riders` in this example) is a `tbl_spark`.
+# The returned object (`riders` in this example) is a 
+# `tbl_spark`.
 
 class(riders)
 
-# This represents a remote Spark DataFrame. It is not loaded in R's memory.
+# This represents a remote Spark DataFrame. It is not 
+# loaded in R's memory.
 # Notice that only the first few rows of data are shown.
 
 
@@ -101,9 +105,9 @@ riders2 <- spark_read_csv(
 
 riders2
 
-# Notice, in this explicit schema we override the default choices that
-# Spark would have made for the datatypes of the `id` and `home_block` 
-# columns.
+# Notice, in this explicit schema we override the default 
+# choices that Spark would have made for the datatypes 
+# of the `id` and `home_block` columns.
 
 # Write the file to a tab-delimited file:
 
@@ -121,10 +125,13 @@ system("hdfs dfs -ls practice/riders_tsv")
 
 system("hdfs dfs -cat practice/riders_tsv/* | head -n 5")
 
-# **Note:** Disregard the `cat: Unable to write to output steam.` message.
+# **Note:** Disregard the `cat: Unable to write to 
+# output steam.` message.
 
 
 # ## Working with Parquet files
+
+# Write the riders data to a Parquet file
 
 spark_write_parquet(
   riders,
@@ -133,7 +140,24 @@ spark_write_parquet(
 
 system("hdfs dfs -ls practice/riders_parquet")
 
-# Note that the schema is stored with the data
+# Warning: If you try to overwrite an existing file
+# in HDFS, an error will result. You can try this by
+# running the above `spark_write_parquet()` command
+# a second time.
+
+# You can specify `mode = "overwrite"` to overwrite
+# any existing data with the new data:
+
+spark_write_parquet(
+  riders,
+  path = "practice/riders_parquet",
+  mode = "overwrite"
+)
+
+# Note that in a Parquet file, the schema is stored 
+# with the data.
+
+# Read in the Parquet file:
 
 riders_parquet <- spark_read_parquet(
   sc = spark,
@@ -167,11 +191,13 @@ class(airlines)
 
 airlines
 
-# Only use `dbGetQuery()` when the query result will be small enough to fit in memory in your R session.
+# Only use `dbGetQuery()` when the query result will 
+# be small enough to fit in memory in your R session.
 
 
-# You can also manage the result of a SQL query as a `tbl_spark`.
-# To do this, you need to load dplyr and use `tbl(spark, sql(...))`.
+# You can also manage the result of a SQL query as 
+# a `tbl_spark`. To do this, you need to load dplyr 
+# and use `tbl(spark, sql(...))`.
 
 library(dplyr)
 
@@ -182,8 +208,9 @@ class(flights)
 flights
 
 
-# But you need not use SQL to access Hive tables with sparklyr
-# Instead you can just reference the Hive table name with `tbl()`:
+# But you need not use SQL to access Hive tables 
+# with sparklyr. Instead you can just reference 
+# the Hive table name with `tbl()`:
 
 flights <- tbl(spark, "flights")
 
@@ -193,18 +220,22 @@ class(flights)
 
 flights
 
-# There are more details in the next module about how sparklyr works together with dplyr
+# There are more details in the next module about 
+# how sparklyr works together with dplyr.
 
 
 # ## Copying data frames from R to Spark
 
-# Use the `sdf_copy_to()` function to copy a local R data frame to Spark
+# Use the `sdf_copy_to()` function to copy a 
+# local R data frame to Spark
 
 iris_tbl <- sdf_copy_to(spark, iris)
 
 iris_tbl
 
-# If you remove the variable `iris_tbl` (which represents this remote Spark data frame) you can re-create it without copying the data to Spark again.
+# If you remove the variable `iris_tbl` (which 
+# represents this remote Spark data frame) you can
+# re-create it without copying the data to Spark again.
 # Just use `tbl()` and reference the name (`iris`):
 
 rm(iris_tbl)
@@ -213,15 +244,19 @@ iris_tbl <- tbl(spark, "iris")
 
 iris_tbl
 
-# Note: `sdf_copy_to()` *does not persist* the copied data in HDFS.
-# The data is stored in a temporary location in HDFS and may be cached in Spark memory.
-# After you end your session by disconnecting from Spark, it will no longer be available.
+# Note: `sdf_copy_to()` *does not persist* the 
+# copied data in HDFS.
+# The data is stored in a temporary location in 
+# HDFS and may be cached in Spark memory.
+# After you end your session by disconnecting 
+# from Spark, it will no longer be available.
 
 # ## Exercises
 
 # Read the raw drivers file into a Spark DataFrame.
 
-# Save the drivers DataFrame as a JSON file in your CDSW practice directory.
+# Save the drivers DataFrame as a JSON file in your
+# CDSW practice directory.
 
 # Read the drivers JSON file into a Spark DataFrame.
 
