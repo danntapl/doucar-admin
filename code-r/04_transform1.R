@@ -167,12 +167,25 @@ riders %>% select(
 # For more details about the functions you can use inside
 # `select()` see `?select_helpers`.
 
+# #### Mini Exercise:
+
+# Review the `?select_helpers` help documentation.
+# Use the `select()` verb with the the `ends_with()` 
+# function to select the four latitude and longitude
+# columns from the riders table.
+# Explore what happens when you use multiple select 
+# helper functions in one `select()` verb.
+# How can you control whether they are interpreted as 
+# a logical OR or a logical AND?
+# Hint: These select helper functions return numeric
+# column positions, not logical vectors. Can you use 
+# set operations functions with them?
+
 # You can also refer to columns by their numeric positions:
 
 riders %>% select(4:5)
 
 riders %>% select(-(4:5))
-
 
 # There are several variations on `select()`:
 
@@ -205,6 +218,14 @@ riders %>% select(fname = first_name, lname = last_name)
 riders %>% 
   rename(fname = first_name) %>%
   rename(lname = last_name)
+
+# #### Mini Exercise:
+
+# Read the help documentation page for `?select_all`
+# which describes several variants of `select()` and
+# `rename()`. Use the `select_if()` verb with the
+# `is.numeric()` function to select all the numeric columns
+# in the riders table.
 
 
 # ### `filter()` filters rows of data by one or more conditions
@@ -281,6 +302,15 @@ riders %>% filter_if(
 # You can always look at the help documentation to 
 # see how to use them.
 
+# #### Mini Exercise:
+
+# Use Google Maps or some other mapping website to find the
+# latitude and longitde coordinates of an approximate
+# bounding box around the campus of North Dakota State 
+# University in Fargo.
+# Then use the `filter()` verb with the `between()` function
+# to limit the data to the riders whose homes are located
+# within this bounding box.
 
 # Another option is to filter to a *random* set of rows.
 # This is of course known as *sampling*.
@@ -316,6 +346,11 @@ riders %>% arrange(desc(birth_date))
 # ### `mutate()` creates one or more new columns
 
 riders %>% mutate(full_name = paste(first_name, last_name))
+
+# #### Mini Exercise:
+
+# Use the `mutate()` verb with the `substr()` function
+# to get the birth year of riders.
 
 # You can use `mutate()` to replace existing columns, but
 # note that the order of the columns may not be preserved:
@@ -405,6 +440,21 @@ riders %>% summarize(
 
 riders %>% tally()
 
+# #### Mini Exercise:
+
+# What are the longitude and latitude coordinates that make 
+# the bounding box in which all of the riders with known
+# home locations live?
+# Once you have found these coordinates, copy and paste
+# them into this code (replacing min_lon, min_lat, and so on
+# with the numeric values) to draw a rectangle of the 
+# bounding box on a Leaflet map:
+#
+#```r
+#leaflet() %>% 
+#  addTiles() %>% 
+#  addRectangles(min_lon, min_lat, max_lon, max_lat)
+#```
 
 # `summarise()` is more interesting when combined with `group_by()`:
 
@@ -434,6 +484,14 @@ riders %>%
 # `group_by(column) %>% summarise(n = n())`:
 
 riders %>% count(sex)
+
+# #### Mini Exercise:
+
+# What proportion of riders who reported their sex
+# as female are students? How does this compare to the
+# proportions of students among self-reported male drivers
+# and drivers who did not identify themselves as male or
+# female?
 
 
 # ### Using variables in dplyr expressions
@@ -497,6 +555,13 @@ riders %>%
     students = sum(as.numeric(student))
   ) %>%
   arrange(birth_decade)
+
+# #### Mini Exercise:
+
+# Use `mutate()`, `filter()`, `arrange()`, and `select()` 
+# to get the full names (first name, space, last name)
+# of all student riders, in ascending order by last name 
+# then first name.
 
 
 # ## Working with dplyr output
@@ -606,7 +671,6 @@ clusters <- kmeans(student_rider_homes_tbl_df, 2)
 student_rider_homes_tbl_df$cluster <- 
   factor(clusters$cluster)
 
-
 # plot it with ggplot2
 
 library(ggplot2)
@@ -617,8 +681,7 @@ ggplot(
   ) + 
   geom_point(aes(color = cluster))
 
-
-# plot it with leaflet
+# plot it with Leaflet
 
 library(leaflet)
 
@@ -626,6 +689,15 @@ leaflet(student_rider_homes_tbl_df) %>%
   addTiles() %>%
   addMarkers(lng = ~home_lon, lat = ~home_lat)
 
+# #### Mini Exercise:
+
+# Return to the mini exercise above where you made 
+# a Leaflet map of the bounding box of rider home
+# locations. This time, instead of copying and pasting
+# the values from the printed sparklyr output, use
+# `collect()` to return the output to R as a `tbl_df`
+# and produce the same plot by passing that `tbl_df`
+# to the `leaflet()` function.
 
 # You can also perform more dplyr operations on a `tbl_df` that was 
 # created using sparklyr and collected, but these operations will 
