@@ -28,12 +28,12 @@ spark <- spark_connect(
 #[//]: # (and is probably safer to do with PySpark than sparklyr)
 
 #[//]: # (spark_read_source and spark_write_source)
-#[//]: # (with have to do with Spark packages—a more advanced topic)
+#[//]: # (which have to do with Spark packages—a more advanced topic)
 
 #[//]: # (spark_read_jdbc and spark_write_jdbc)
 #[//]: # (which are beyond the scope of this course)
 
-#[//]: # (In general, browing the list of functions in sparklyr)
+#[//]: # (In general, browsing the list of functions in sparklyr)
 #[//]: # (will cause students to see a lot of content they do not)
 #[//]: # (need to know about.)
 
@@ -101,6 +101,9 @@ riders2 <- spark_read_csv(
 
 riders2
 
+# Notice, in this explicit schema we override the default choices that
+# Spark would have made for the datatypes of the `id` and `home_block` 
+# columns.
 
 # Write the file to a tab-delimited file:
 
@@ -167,9 +170,8 @@ airlines
 # Only use `dbGetQuery()` when the query result will be small enough to fit in memory in your R session.
 
 
-# You can also return the result of a SQL query as a `tbl_spark`.
+# You can also manage the result of a SQL query as a `tbl_spark`.
 # To do this, you need to load dplyr and use `tbl(spark, sql(...))`.
-# This will *not* return the full query result; it will only display the first few rows.
 
 library(dplyr)
 
