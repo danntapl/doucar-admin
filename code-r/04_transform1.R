@@ -213,7 +213,9 @@ riders %>% select(fname = first_name, lname = last_name)
 # use `rename()` instead of `select()`:
 
 # Unfortunately this throws an error due to some bug:
+#```r
 #riders %>% rename(fname = first_name, lname = last_name)
+#```
 
 # Workaround: Rename the columns one at a time:
 riders %>% 
