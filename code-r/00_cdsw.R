@@ -31,7 +31,7 @@ system("ls -l")
 
 getwd()
 
-file.info(list.files())
+base::print.data.frame(file.info(list.files()))
 
 
 # ## Working with R Packages
