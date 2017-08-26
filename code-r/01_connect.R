@@ -112,6 +112,11 @@ spark_connection_is_open(spark)
 
 # ## Connecting to a Spark cluster via YARN
 
+# Wait 10 seconds before reconnecting, to work around 
+# sparklyr issue [#919](https://github.com/rstudio/sparklyr/issues/919).
+
+Sys.sleep(10)
+
 # To connect to Spark on YARN, use `master = "yarn"`:
 
 spark <- spark_connect(master = "yarn", app_name = "connect-yarn")
