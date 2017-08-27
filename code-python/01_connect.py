@@ -1,125 +1,126 @@
 # # Connecting to Spark
 
-# In this module we demonstrate how to run Spark in local mode (on the CDSW
-# cluster) and in cluster model (on the Hadoop cluster via YARN).
+# In this module we demonstrate how to run Spark locally within our CDSW
+# container and how to run Spark on our Hadoop cluster via YARN.  The default
+# behavior in CDSW is to run Spark on a Hadoop cluster via YARN.
 
 
-# ## Creating a SparkSession
+# ## Running Spark locally within the CDSW container
 
-# A
-# [SparkSession](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.SparkSession)
-# is the entry point to Spark SQL.
+# We can run Spark locally within our CDSW container.  This allows us to
+# develop and test our code on a small sample of data before we run the code on
+# the Hadoop cluster.
 
+# We begin by creating a
+# [SparkSession](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.SparkSession),
+# which is the entry point to Spark SQL:
 from pyspark.sql import SparkSession
 
 # Use the `getOrCreate` method of the `builder` class to create a SparkSession:
-
-spark = SparkSession.builder.appName("connect").getOrCreate()
+spark = SparkSession.builder \
+  .master("local") \
+  .appName("connect-local") \
+  .getOrCreate()
 
 # Notes:
 
+# * The call to `master("local")` directs Spark to run the application locally.
+# A local Spark instance is a single process running within our CDSW container.
+
 # * The optional `appName` method changes the default name of the SparkSession.
 
-# * An underlying `SparkContext` is created with the SparkSession--it is your Spark "runtime".
+# * An underlying `SparkContext` is created with the SparkSession--it is our
+# Spark "runtime".
 
-# * The note from the console about setting logging level is incorrect for your
-# session that creates a SparkSession explicitly.  To adjust the logging level
-# use `spark.SparkContext.setLogLevel('newLevel')`.  Legal values are:
-#    * TRACE
-#    * DEBUG
-#    * INFO
-#    * WARN
-#    * ERROR
-#    * FATAL
-#    * OFF
+# * The note in the console about setting logging level is incorrect for our
+# session that creates a SparkSession explicitly.  Use
+# `spark.SparkContext.setLogLevel(newLevel)` to adjust the logging level.  We
+# will discuss logging in more detail later.
 
-# Use the `version` method to get the version of Spark.
-
+# Use the `version` method to get the version of Spark:
 spark.version
 
-# Use the `stop` method to end the `SparkSession`.
-
-spark.stop()
-
-# This actually stops the underlying `SparkContext`.
-
-# The `SparkSession` can connect to Spark in local mode or cluster mode.  The
-# default behavior in CDSW is cluster mode.
-
-
-# ## Connecting to a local Spark instance
-
-# A local Spark instance is a single local process, and is useful for
-# developing and debugging code on small datasets.  To connect to a local Spark
-# instance running on the CDSW node, use `master("local")`:
-
-# Create a SparkSession:
-spark = SparkSession.builder.master("local").appName("connect-local").getOrCreate()
-
-# Create a Spark DataFrame:
+# Use the `createDataFrame` method to create a Spark DataFrame:
 df = spark.createDataFrame([("brian", ), ("glynn", ), ("ian", )], schema=["team"])
 
-# Print the schema:
+# **Note:** We must pass in a Python list of tuples.  Each tuple represents a record.
+
+# Use the `printSchema` method to print the schema:
 df.printSchema()
 
-# View the DataFrame:
+# Use the `show` method to view the DataFrame:
 df.show()
 
-# Stop the SparkSession:
+# Use the `stop` method to end the `SparkSession`:
 spark.stop()
 
-
-# ## Connecting to a Spark cluster via YARN
-
-# To connect to a Spark cluster via YARN, use `master("yarn")`:
-
-spark = SparkSession.builder.master("yarn").appName("connect-yarn").getOrCreate()
-
-# **Note**: The default value for master is `"yarn"`.
+# **Note:** This actually stops the underlying `SparkContext`.
 
 
-# ## Viewing the Spark Job UI
+# ## Running Spark on a Hadoop cluster via YARN
 
-# Create a simple Spark job to exercise the Spark Job UI:
+# To connect to a Hadoop cluster via YARN, use `master("yarn")`:
+spark = SparkSession.builder \
+  .master("yarn") \
+  .appName("connect-yarn") \
+  .getOrCreate()
+
+# **Note**: The default value for master is `"yarn"`.  In CDSW, Spark runs in `client` mode.
+
+
+# ## Viewing the Spark UI
+
+# Create a simple Spark job to exercise the Spark UI:
 df = spark.range(1000000)
 df.count()
 
-# There are at least four methods for viewing your Spark Job UI.  Here are two.
+# There are various ways to view the internal details of your Spark 
+# applications.  Here are a few.
 
-# **Method 1:** Use the `uiWebUrl` method:
+# **Method 1:**
+# To view the Spark UI, choose `Spark UI` from the grid pulldown menu in the 
+# upper-right of your workbench.  **Note**, the Spark UI is presented only
+# while you have a SparkSession running.
 
-spark.sparkContext.uiWebUrl
+# **Method 2:** 
+# If your application runs in the Hadoop cluster with `master("yarn")`, 
+# then you can view details of your application using
+# the Hue Job Browser for Spark Applications on the cluster.
+# (Hue shows information from the Hadoop cluster, and so will not
+# present details of Spark appications that run locally in a CDSW container.)
 
-# Paste this URL into your browser to view the Spark Job UI.
-
-# **Method 2:** Use the Hue Job Browser for Spark Applications on the cluster.
-
-# See also [Accessing Spark 2 Web UIs from Cloudera Data Science
-# Workbench](https://www.cloudera.com/documentation/data-science-workbench/latest/topics/cdsw_spark_ui.html#cdsw_spark_ui).
+# Stop the SparkSession:
+spark.stop()
 
 
 # ## Viewing the Spark History Server UI
 
-# You can open the Spark History Server UI directly from CDSW.
-
-# Stop the SparkSession:
-spark.stop()
-
-
-## Exercises
-
-# Create a SparkSession that connects to Spark in local mode.  Configure the SparkSession to use two cores.  
-
-# Create a small DataFrame.  Print the schema.  View the DataFrame.  Count the number of records.
-
-# Explore the Spark Job UI.
-
-# Stop the SparkSession.
-
-# Explore the Spark History Server UI.
+# Once your SparkSession has completed (with `spark.stop()`) you can open the
+# Spark History Server UI to view details of the session run.  Invoke the Spark
+# History Server by choosing `Spark History` from the grid pulldown menu in the
+# upper-right of the workbench.
 
 
-## References
+# ## Exercises
+
+# (1) Create a SparkSession that connects to Spark in local mode.  Configure
+# the SparkSession to use two cores.  
+
+# (2) Create a small DataFrame.  Print the schema.  View the DataFrame.  Count
+# the number of records.
+
+# (3) Explore the Spark UI.
+
+# (4) Stop the SparkSession.
+
+# (5) Explore the Spark History Server UI.
+
+
+# ## References
 
 # [Using Cloudera's Distribution of Apache Spark
 # 2](https://www.cloudera.com/documentation/data-science-workbench/latest/topics/cdsw_dist_comp_with_Spark.html)
+
+# [Spark Overview](http://spark.apache.org/docs/latest/index.html)
+
+# [Spark Python API](http://spark.apache.org/docs/latest/api/python/index.html)
