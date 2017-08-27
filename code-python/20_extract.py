@@ -139,20 +139,20 @@ for word in vectorizer_model.vocabulary:
 # predict the ride rating from the word vector.  Before doing so, we need to
 # preprocess the ride rating.
 
-# Use the
-# [StringIndexer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.StringIndexer)
-# estimator to convert `star_rating` to a zero-based integer:
-from pyspark.ml.feature import StringIndexer
-indexer = StringIndexer(inputCol="star_rating", outputCol="star_rating_indexed")
-indexed = indexer.fit(selected).transform(selected)
-
-# **Note:** We have chained the `fit` and `transform` methods.
+# Classification algorithms in Spark MLlib generally assume that the label is a
+# zero-based integer.  Let us subtract one from the original star_rating to
+# comply:
+from pyspark.sql.functions import col
+indexed = selected.withColumn("star_rating_indexed", col("star_rating") - 1.0)
 
 # We can examine the mapping by applying the `crosstab` method:
 indexed \
   .crosstab("star_rating", "star_rating_indexed") \
   .orderBy("star_rating_star_rating_indexed") \
   .show()
+
+# Write data to HDFS:
+indexed.write.parquet("myduocar/clustering_data", mode="overwrite")
 
 # Now we are ready to build a simple Naive Bayes classifier:
 from pyspark.ml.classification import NaiveBayes
@@ -178,9 +178,9 @@ evaluator.evaluate(reviews_with_prediction)
 
 # ## Exercises
 
-# (1) Use the `RegexTokenizer` transformer to more cleanly tokenize the reviews.
+# (1) Determine if increasing the vocabulary size improves the solution.
 
-# (2) Determine if increasing the vocabulary size improves the solution.
+# (2) Use the `RegexTokenizer` transformer to more cleanly tokenize the reviews.
 
 # (3) Use the `HashingTF` estimator rather than the `CountVectorizer` estimator to generate the term-frequency vectors.
 
