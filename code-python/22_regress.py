@@ -1,7 +1,7 @@
 # # Building and evaluating regression models
 
-# In this module we build and evaluate a regression model to predict ride
-# rating from various ride, driver, and rider information.  The general
+# In this module we build and evaluate a linear regression model to predict
+# ride rating from various ride, driver, and rider information.  The general
 # workflow will be the same for other regression algorithms; however, the
 # particular details will differ.
 
@@ -12,41 +12,49 @@
 from __future__ import print_function
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
+
+# We do not seem to need these:
+#``` python
 #import numpy as np
 #import pandas as pd
 #import matplotlib.pyplot as plt
 #import seaborn as sns
+#```
 
 # Create a SparkSession:
-spark = SparkSession.builder.appName("regress").master("local").getOrCreate()
+spark = SparkSession.builder.master("local").appName("regress").getOrCreate()
 
-# Read enhanced ride data from HDFS:
+# Read the enhanced ride data from HDFS:
 rides = spark.read.parquet("/duocar/joined_all")
 
 
 # ## Preprocess the data for modeling
 
-# Cancelled rides do not have a rating.  We can use the `filter` method to remove
-# the cancelled rides:
+# Cancelled rides do not have a rating.  We can use the `filter` or `where`
+# method to remove the cancelled rides:
 processed1 = rides.filter(rides.cancelled == 0)
 processed1.count()
 
 # However, we will use the versatile
-# [SQLTransformer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.SQLTransformer):
+# [SQLTransformer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.SQLTransformer)
+# instead:
 from pyspark.ml.feature import SQLTransformer
-sql_filter = SQLTransformer(statement="SELECT * FROM __THIS__ WHERE cancelled == 0")
-processed2 = sql_filter.transform(rides)
+processed2 = SQLTransformer(statement="SELECT * FROM __THIS__ WHERE cancelled == 0").transform(rides)
 processed2.count()
 
-# **Note:** `__THIS__` represents the DataFrame passed to the `transform` method.
+# **Note:** The `SQLTransformer` requires the `statement` keyword.
 
-# **Note:** Using the `SQLTransformer` rather than the `filter` method allows us to
-# use this transformation in a Spark MLlib pipeline.
+# **Note:** `__THIS__` represents the DataFrame passed to the `transform`
+# method.
+
+# **Note:** Using the `SQLTransformer` rather than the `filter` or `where`
+# method allows us to use this transformation in a Spark MLlib pipeline.
 
 
 # ## Extract, transform, and select features
 
-# Create function to explore (categorical) features:
+# Next we identify a few potential features to include in our model.  Let us
+# create function to explore potential (categorical) features:
 def explore(df, feature, label, plot=True):
   from pyspark.sql.functions import count, mean, stddev
   aggregated = df \
@@ -57,7 +65,7 @@ def explore(df, feature, label, plot=True):
     pdf = aggregated.toPandas()
     pdf.plot.bar(x=pdf.columns[0], y=pdf.columns[2], yerr=pdf.columns[3], capsize=5)
 
-# Did rider review the ride?
+# Did the rider review the ride?
 engineered1 = processed2.withColumn("reviewed", col("review").isNotNull().cast("int"))
 explore(engineered1, "reviewed", "star_rating")
 
@@ -70,14 +78,16 @@ explore(processed2, "vehicle_color", "star_rating")
 # Do riders give better reviews on sunny days?
 explore(engineered1, "CloudCover", "star_rating")
 
-# Spark MLlib algorithms require the features to be a vector of doubles.
-# As a result, we need to apply some additional transformations.
+# Spark MLlib algorithms require the features to be a vector of doubles.  As a
+# result, we need to further transform these features before we can build our
+# regression model.
 
-# Use `StringIndexer` to convert the string codes to numeric codes:
+# Use `StringIndexer` to convert `vehicle_color` from string codes to numeric
+# codes:
 from pyspark.ml.feature import StringIndexer
 indexer = StringIndexer(inputCol="vehicle_color", outputCol="vehicle_color_ix")
 indexer_model = indexer.fit(engineered1)
-indexer_model.labels
+list(enumerate(indexer_model.labels))
 indexed = indexer_model.transform(engineered1)
 indexed.select("vehicle_color", "vehicle_color_ix").show(5)
 
@@ -89,19 +99,19 @@ encoder = OneHotEncoder(inputCol="vehicle_color_ix", outputCol="vehicle_color_cd
 encoded = encoder.transform(indexed)
 encoded.select("vehicle_color", "vehicle_color_ix", "vehicle_color_cd").show(5)
 
-# **Note:** `OneHotEncoder` is a tranformer.
+# **Note:** `OneHotEncoder` is a transformer.
 
-# Select features (and label):
+# Now we are ready to select the features (and label):
 selected = encoded.select("reviewed", "vehicle_year", "vehicle_color_cd", "star_rating")
 features = ["reviewed", "vehicle_year", "vehicle_color_cd"]
 
-# Assemble feature vector:
+# Finally, we must assemble the features into a single column of vectors:
 from pyspark.ml.feature import VectorAssembler
 assembler = VectorAssembler(inputCols=features, outputCol="features")
 assembled = assembler.transform(selected)
 assembled.head(5)
 
-# Save data for subsequent modules:
+# Let us save the data for subsequent modules:
 assembled.write.parquet("myduocar/regression_data", mode="overwrite")
 
 # **Note:** We are saving the data in our personal HDFS directory.
@@ -132,7 +142,7 @@ lr_model = lr.fit(train)
 # Query model performance:
 lr_model.summary.r2
 
-# Query model:
+# Query the model:
 lr_model.intercept
 lr_model.coefficients
 lr_model.summary.coefficientStandardErrors
