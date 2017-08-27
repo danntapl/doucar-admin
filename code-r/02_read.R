@@ -268,7 +268,7 @@ iris_tbl
 # Remove practice directory from HDFS:
 
 system("hdfs dfs -rm -r -skipTrash practice/riders_tsv")
-system("hdfs dfs -rm -r -skipTrash practive/riders_parquet")
+system("hdfs dfs -rm -r -skipTrash practice/riders_parquet")
 
 # Stop the `SparkSession`:
 
