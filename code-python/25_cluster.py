@@ -20,7 +20,7 @@ from pyspark.sql import SparkSession
 spark = SparkSession.builder.master("local").appName("cluster").getOrCreate()
 
 # Load the enhanced ride data from HDFS:
-rides = spark.read.parquet('/duocar/joined/')
+rides = spark.read.parquet("/duocar/joined/")
 
 
 # ## Preprocess the data
@@ -36,14 +36,14 @@ features_selected = ["origin_lat", "origin_lon", "dest_lat", "dest_lon"]
 
 # Assemble the feature vector:
 from pyspark.ml.feature import VectorAssembler
-va = VectorAssembler(inputCols=features_selected, outputCol='features')
+va = VectorAssembler(inputCols=features_selected, outputCol="features")
 rides_assembled = va.transform(rides_filtered)
 
 # Standardizing the feature vector ensures that the features are in the same
 # scale and each feature is given a fair chance to contribute to the clustering
 # model:
 from pyspark.ml.feature import StandardScaler
-ss = StandardScaler(inputCol='features', outputCol='features_scaled', withMean=False, withStd=True)
+ss = StandardScaler(inputCol="features", outputCol="features_scaled", withMean=False, withStd=True)
 rides_standardized = ss.fit(rides_assembled).transform(rides_assembled)
 
 # **Note:** We are running the `StandardScaler` after the `VectorAssembler`.
@@ -62,7 +62,7 @@ rides_standardized.describe("origin_lat", "origin_lon", "dest_lat", "dest_lon").
 
 # Use the `KMeans` class constructor to specify a k-means model:
 from pyspark.ml.clustering import KMeans
-kmeans = KMeans(featuresCol='features', predictionCol='cluster', k=3)
+kmeans = KMeans(featuresCol="features", predictionCol="cluster", k=3)
 type(kmeans)
 
 # Use the `explainParams` method to get a full list of the arguments:
@@ -148,7 +148,8 @@ sns.boxplot(x="cluster", y="distance", data=clustered)
 
 # (1) Experiment with diffent values of k (number of clusters).
 
-# (2) Experiment with different sets of features.                                              
+# (2) Experiment with different sets of features.
+
 # (3) Explore other clustering algorithms. 
 
 
