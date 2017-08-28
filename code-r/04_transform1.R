@@ -1,6 +1,7 @@
 # # Transforming Data 
 
-# At the end of the last module, we saw some examples of `select()` and `distinct()`.
+# At the end of the last module, we saw some examples of `select()` and 
+`distinct()`.
 # These are examples of dplyr *verbs*.
 # In this module we will look at the common dplyr verbs, and
 # understand how they work in sparklyr and how they can be used
@@ -33,7 +34,8 @@ riders <- spark_read_csv(
 
 # ### Background about dplyr verbs
 
-# dplyr provides a set of *verbs* to perform the most common data manipulation tasks.
+# dplyr provides a set of *verbs* to perform the most common data manipulation 
+# tasks.
 # The main dplyr verbs are:
 # * `select()` to select columns
 # * `filter()` to filter rows
@@ -48,8 +50,9 @@ riders <- spark_read_csv(
 # dplyr verbs work on local data frames in R memory.
 # Most R users are familiar with this.
 
-# For example: Calculate the rounded average sepal width of iris flowers by species
-# after removing some outlying values, and return the results in increasing order
+# For example: Calculate the rounded average sepal width of iris flowers by 
+# species after removing some outlying values, and return the results in 
+# increasing order
 
 avg_sepal_width <- iris %>%
   select(Sepal.Width, Species) %>%
@@ -84,8 +87,9 @@ avg_sepal_width_spark <- iris_spark %>%
   arrange(Avg_Sepal_Width) %>%
   mutate(Avg_Sepal_Width = round(Avg_Sepal_Width, 1))
 
-# This is the same as the example above, except periods in column names are replaced by underscores
-# Because sparklyr automatically renames columns, replacing periods with underscores.
+# This is the same as the example above, except periods in column names are 
+# replaced by underscores, because sparklyr automatically renames columns 
+# in this way.
 
 # The result is the same as in the example above:
 
@@ -123,7 +127,8 @@ Species ORDER BY Avg_Sepal_Width"))
 
 # ## Simple dplyr examples
 
-# These examples use only one dplyr verb at a time, to highlight what each verb does.
+# These examples use only one dplyr verb at a time, to highlight what each verb
+# does.
 
 # ### `select()`
 
@@ -167,10 +172,10 @@ riders %>% select(
 # For more details about the functions you can use inside
 # `select()` see `?select_helpers`.
 
-# #### Mini Exercise:
+# #### Mini Exercise: select()
 
 # Review the `?select_helpers` help documentation.
-# Use the `select()` verb with the the `ends_with()` 
+# Use the `select()` verb with the `ends_with()` 
 # function to select the four latitude and longitude
 # columns from the riders table.
 # Explore what happens when you use multiple select 
@@ -222,7 +227,7 @@ riders %>%
   rename(fname = first_name) %>%
   rename(lname = last_name)
 
-# #### Mini Exercise:
+# #### Mini Exercise: select_if()
 
 # Read the help documentation page for `?select_all`
 # which describes several variants of `select()` and
@@ -256,7 +261,7 @@ riders %>% filter(first_name == "Skylar" | last_name == "Hayes")
 # which columns to filter on.
 
 # `filter_all()` applies filtering criteria either to
-# *any* columns, or to *all* columns.
+# *any* column, or to *all* columns.
 # The pronoun `.` is used to refer to these columns.
 
 # To apply filter criteria to *all* columns, use
@@ -299,16 +304,16 @@ riders %>% filter_if(
   all_vars(!is.na(.))
 )
 
-# Note: This `filter_*()` variants are a relatively
+# Note: These `filter_*()` variants are a relatively
 # exotic topic. Don't worry about remembering exactly
 # how to use them; just remember that they exist.
 # You can always look at the help documentation to 
 # see how to use them.
 
-# #### Mini Exercise:
+# #### Mini Exercise: filter() and between()
 
 # Use Google Maps or some other mapping website to find the
-# latitude and longitde coordinates of an approximate
+# latitude and longitude coordinates of an approximate
 # bounding box around the campus of North Dakota State 
 # University in Fargo.
 # Then use the `filter()` verb with the `between()` function
@@ -350,7 +355,7 @@ riders %>% arrange(desc(birth_date))
 
 riders %>% mutate(full_name = paste(first_name, last_name))
 
-# #### Mini Exercise:
+# #### Mini Exercise: mutate()
 
 # Use the `mutate()` verb with the `substr()` function
 # to get the birth year of riders.
@@ -396,8 +401,7 @@ riders %>%
     birth_date = as.POSIXct(birth_date)
   )
 
-# You can refer to columns that you have just created
-# in the same `mutate()`:
+# You can refer to columns that you have just created in the same `mutate()`:
 
 riders %>% mutate(
   full_name = paste(first_name, last_name),
@@ -443,7 +447,7 @@ riders %>% summarize(
 
 riders %>% tally()
 
-# #### Mini Exercise:
+# #### Mini Exercise: bounding box
 
 # What are the longitude and latitude coordinates that make 
 # the bounding box in which all of the riders with known
@@ -488,7 +492,7 @@ riders %>%
 
 riders %>% count(sex)
 
-# #### Mini Exercise:
+# #### Mini Exercise: group_by()
 
 # What proportion of riders who reported their sex
 # as female are students? How does this compare to the
@@ -531,7 +535,7 @@ riders %>% filter(first_name == !! first_name)
 # ## Chaining dplyr verbs
 
 # You can accomplish most common data analysis tasks
-# by chanining together these simple dplyr verbs.
+# by chaining together these simple dplyr verbs.
 
 # For example, you can find out:
 # How many riders and how many student riders have their
@@ -559,7 +563,7 @@ riders %>%
   ) %>%
   arrange(birth_decade)
 
-# #### Mini Exercise:
+# #### Mini Exercise: Multiple verbs
 
 # Use `mutate()`, `filter()`, `arrange()`, and `select()` 
 # to get the full names (first name, space, last name)
@@ -692,7 +696,7 @@ leaflet(student_rider_homes_tbl_df) %>%
   addTiles() %>%
   addMarkers(lng = ~home_lon, lat = ~home_lat)
 
-# #### Mini Exercise:
+# #### Mini Exercise: dynamic bounding box
 
 # Return to the mini exercise above where you made 
 # a Leaflet map of the bounding box of rider home
