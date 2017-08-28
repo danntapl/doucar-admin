@@ -2,8 +2,8 @@
 
 /* **Note**: // comments do not render Markdown. */
 
-/* In this module we demonstrate how to load transformers, estimators, and pipelines
-that were saved from Python into Scala. */
+/* In this module we demonstrate how to load transformers, estimators, and
+pipelines that were saved from Python into Scala. */
 
 
 /* ## Setup */
@@ -14,7 +14,8 @@ spark
 /* Read the enhanced ride data from HDFS: */
 val rides = spark.read.parquet("/duocar/joined_all/")
 
-/* **Note:** We are reading a different dataset (joined_all rather than joined). */
+/* **Note:** We are reading a different dataset (joined_all rather than
+joined). */
 
 
 /* ## Preprocess the data */
@@ -25,6 +26,8 @@ val pre2 = rides.withColumn("star_rating_double", rides("star_rating").cast("dou
 /* Rename the preprocessed DataFrame: */
 val preprocessed = pre2
 
+/* **Note:** We could implement these preprocessing steps in a `SQLTransformer`
+and pipeline the entire workflow. */
   
 /* ## Transform the data */
 
