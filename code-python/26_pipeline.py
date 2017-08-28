@@ -20,7 +20,7 @@ spark = SparkSession.builder.master("local").appName("pipeline").getOrCreate()
 
 # ## Load data
 
-# Read enhanced ride data from HDFS:
+# Read the enhanced ride data from HDFS:
 rides = spark.read.parquet("/duocar/joined_all/")
 
 # Create train and test DataFrames:
@@ -87,7 +87,7 @@ from pyspark.ml.tuning import TrainValidationSplit
 validator = TrainValidationSplit(estimator=classifier, estimatorParamMaps=paramGrid, evaluator=evaluator)
 
 
-# ## Specify pipeline
+# ## Specify a pipeline model
 
 # A
 # [Pipeline](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.Pipeline)
@@ -97,7 +97,7 @@ stages = [filterer, indexer, encoder, extractor, assembler, validator]
 pipeline = Pipeline(stages=stages)
 
 
-# ## Fit pipeline model
+# ## Fit the pipeline model
 
 # The `fit` method produces a
 # [PipelineModel](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.PipelineModel),
@@ -105,7 +105,7 @@ pipeline = Pipeline(stages=stages)
 %time pipeline_model = pipeline.fit(train)
 
 
-# ## Query PipelineModel
+# ## Query the PipelineModel
 
 # Access the stages of a `PipelineModel` using its `stages` attribute:
 pipeline_model.stages
@@ -123,9 +123,10 @@ validator_model.bestModel.getNumTrees
 validator_model.bestModel.featureImportances
 
 
-# ## Apply PipelineModel
+# ## Apply the PipelineModel
 
-# We can use the `transform` method of our `PipelineModel` to apply it to our test DataFrame:
+# We can use the `transform` method of our `PipelineModel` to apply it to our
+# test DataFrame:
 classified = pipeline_model.transform(test)
 classified.printSchema()
 
@@ -135,7 +136,8 @@ classified \
   .orderBy("prediction_star_rating") \
   .show()
 
-# Compare model performance to baseline prediction (always predict five-star rating):
+# Compare model performance to baseline prediction (always predict five-star
+# rating):
 from pyspark.sql.functions import lit
 classified_with_baseline = classified.withColumn("prediction_baseline", lit(5.0))
 evaluator = MulticlassClassificationEvaluator(labelCol="star_rating", metricName="accuracy")
@@ -145,9 +147,21 @@ evaluator.setPredictionCol("prediction").evaluate(classified_with_baseline)
 # Again, we have some work to do!
 
 
+# ## Save the PipelineModel
+
+# Save PipelineModel for reuse:
+# ``` python
+# !hdfs dfs -rm -r myduocar/pipeline_model
+# pipeline_model.save("myduocar/pipeline_model")
+# ```
+# The code above does not run since `TrainValidationSplitModel` does not have a
+# `save` method.
+
+
 # ## Exercises
 
-# (1)  Add `service` to the set of features and rerun the pipeline.  Did the model performance on the test DataFrame improve?
+# (1)  Add `service` to the set of features and rerun the pipeline.  Did the
+# model performance on the test DataFrame improve?
 
 
 # ## Cleanup
