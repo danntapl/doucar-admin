@@ -1,5 +1,3 @@
-# edu-data-science-dev
+# Cloudera Data Scientist Training
 
-This repository contains the demonstration and exercise files for *Cloudera Data Scientist Training*, the four-day workshop covering data science and machine learning workflows at scale using Apache Spark 2 and other key components of the Hadoop ecosystem.
-
-The slides for this course are in a [separate repository](http://github.mtv.cloudera.com/EDU/data-scientist). 
+This project contains the demonstration and exercise files for *Cloudera Data Scientist Training*, a four-day workshop covering data science and machine learning workflows at scale using Apache Spark 2 and other key components of the Hadoop ecosystem.
