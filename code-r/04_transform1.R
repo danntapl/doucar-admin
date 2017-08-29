@@ -713,11 +713,6 @@ student_rider_homes_tbl_df %>%
   )
 
 
-# ## Exercises
-
-
-
-
 # ## Cleanup
 
 spark_disconnect(spark)
