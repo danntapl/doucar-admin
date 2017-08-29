@@ -172,7 +172,7 @@ riders %>% select(
 # For more details about the functions you can use inside
 # `select()` see `?select_helpers`.
 
-# #### Mini Exercise: select()
+# #### Mini Exercise: `select()`
 
 # Review the `?select_helpers` help documentation.
 # Use the `select()` verb with the `ends_with()` 
@@ -227,7 +227,7 @@ riders %>%
   rename(fname = first_name) %>%
   rename(lname = last_name)
 
-# #### Mini Exercise: select_if()
+# #### Mini Exercise: `select_if()`
 
 # Read the help documentation page for `?select_all`
 # which describes several variants of `select()` and
@@ -310,7 +310,7 @@ riders %>% filter_if(
 # You can always look at the help documentation to 
 # see how to use them.
 
-# #### Mini Exercise: filter() and between()
+# #### Mini Exercise: `filter()` and `between()`
 
 # Use Google Maps or some other mapping website to find the
 # latitude and longitude coordinates of an approximate
@@ -355,7 +355,7 @@ riders %>% arrange(desc(birth_date))
 
 riders %>% mutate(full_name = paste(first_name, last_name))
 
-# #### Mini Exercise: mutate()
+# #### Mini Exercise: `mutate()`
 
 # Use the `mutate()` verb with the `substr()` function
 # to get the birth year of riders.
@@ -447,7 +447,7 @@ riders %>% summarize(
 
 riders %>% tally()
 
-# #### Mini Exercise: bounding box
+# #### Mini Exercise: Bounding box
 
 # What are the longitude and latitude coordinates that make 
 # the bounding box in which all of the riders with known
@@ -492,7 +492,7 @@ riders %>%
 
 riders %>% count(sex)
 
-# #### Mini Exercise: group_by()
+# #### Mini Exercise: `group_by()`
 
 # What proportion of riders who reported their sex
 # as female are students? How does this compare to the
@@ -696,7 +696,7 @@ leaflet(student_rider_homes_tbl_df) %>%
   addTiles() %>%
   addMarkers(lng = ~home_lon, lat = ~home_lat)
 
-# #### Mini Exercise: dynamic bounding box
+# #### Mini Exercise: Dynamic bounding box
 
 # Return to the mini exercise above where you made 
 # a Leaflet map of the bounding box of rider home
