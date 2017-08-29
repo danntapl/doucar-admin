@@ -66,7 +66,7 @@ class(riders_tbl_spark)
 # these are classes defined by the packages `tibble` and `dplyr`.
 # `tbl` is an underlying class defined by the `tibble` package
 # `tbl_lazy` means that R uses lazy evaluation on this object; it does not immediately perform operations but waits until the result is requested
-# `tbl_sql` means that R can perform operaions on this object by issuing SQL queries which are processed by some SQL backend (Spark SQL in this case)
+# `tbl_sql` means that R can perform operations on this object by issuing SQL queries which are processed by some SQL backend (Spark SQL in this case)
 
 # This work of translating commands into SQL is done by dplyr, with help from sparklyr
 # and also by the package dbplyr which is a general database backend for dplyr.
@@ -197,7 +197,7 @@ riders_tbl_spark %>% glimpse()
 
 # ## dplyr Functions for Spark Connection Objects
 
-# dplyr also provides some special functions for working with the Spark connecton object.
+# dplyr also provides some special functions for working with the Spark connection object.
 
 # One example is `src_tbls()` which lists the tables 
 

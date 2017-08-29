@@ -308,7 +308,7 @@ riders %>% filter_if(
 # #### Mini Exercise:
 
 # Use Google Maps or some other mapping website to find the
-# latitude and longitde coordinates of an approximate
+# latitude and longitude coordinates of an approximate
 # bounding box around the campus of North Dakota State 
 # University in Fargo.
 # Then use the `filter()` verb with the `between()` function
@@ -531,7 +531,7 @@ riders %>% filter(first_name == !! first_name)
 # ## Chaining dplyr verbs
 
 # You can accomplish most common data analysis tasks
-# by chanining together these simple dplyr verbs.
+# by chaining together these simple dplyr verbs.
 
 # For example, you can find out:
 # How many riders and how many student riders have their
