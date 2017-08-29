@@ -224,9 +224,6 @@ student_rider_homes %>% sdf_register("temp_2")
 # We will discuss this more later in the course
 # when we get to the content about machine learning.
 
-# ## Exercises
-
-
 
 # ## Cleanup
 
