@@ -23,35 +23,31 @@ drivers = spark.read.csv("/duocar/raw/drivers/", header=True, inferSchema=True)
 
 # How young is the youngest driver?  How old is the oldest driver?
 
-# Age in years from a birthday, from stackoverflow
-from datetime import date
-def calculate_age(born):
-  today = date.today()
-  return today.year - born.year - \
-    ((today.month, today.day) < (born.month, born.day))
-
-# Youngest driver
-from pyspark.sql.functions import max, to_date
-youngest = drivers\
+# Create a DataFrame from drivers with a new column, "age":
+from pyspark.sql.functions \
+  import current_date, floor, months_between, to_date
+driver_ages = drivers\
   .withColumn("birth_date", to_date("birth_date"))\
-  .select(max("birth_date").alias("birth_date"))\
-  .first()["birth_date"]
+  .withColumn("today", current_date())\
+  .withColumn("age", \
+              floor(months_between("today", "birth_date")/12))
+   
+# Youngest driver:
+driver_ages\
+  .orderBy("birth_date", ascending=False)\
+  .select(to_date("birth_date"), "age")\
+  .show(1)
 
-youngest
-calculate_age(youngest)
-
-# Oldest driver
-from pyspark.sql.functions import min, to_date
-oldest = drivers\
-  .withColumn("birth_date", to_date("birth_date"))\
-  .select(min("birth_date").alias("birth_date"))\
-  .first()["birth_date"]
-
-oldest
-calculate_age(oldest)
+  
+# Oldest driver:
+driver_ages\
+  .orderBy("birth_date", ascending=True)\
+  .select("birth_date", "age")\
+  .show(1)
 
 
-# How many female drivers does DuoCar have?  How many non-white, female drivers?
+# How many female drivers does DuoCar have?  
+# How many non-white, female drivers?
 
 drivers\
   .filter(drivers.sex == "female")\
