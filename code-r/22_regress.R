@@ -1,6 +1,6 @@
 # # Regression modeling with sparklyr
 
-# This module demonstrates how to fit and evaluate a
+# This module demonstrates how to fit and examine a
 # linear regression model using sparklyr's machine
 # learning functions, in addition to feature transformers
 # and other sparklyr functions.
@@ -47,7 +47,7 @@ samples <- rides %>%
   sdf_partition(train = 0.7, test = 0.3)
 
 
-# ## Fit the regression model
+# ## Specify and fit the regression model
 
 # Now fit a linear regression model to the data, to try to
 # predict star rating based on whether or not the rider 
@@ -70,7 +70,7 @@ model <- samples$train %>%
   )
 
 
-# ## Examine the regression model
+# ## Examine the linear regression model
 
 # You can print the model object:
 
@@ -95,7 +95,7 @@ model$root.mean.squared.error
 # ## Generate predictions using the model
 
 # Use the `sdf_predict()` function to generate predictions
-# using the model.
+# for the test set using the model.
 
 pred <- model %>% 
   sdf_predict(samples$test)
