@@ -125,4 +125,4 @@ spark.stop()
 
 # [Working with UDFs in Apache Spark](https://blog.cloudera.com/blog/2017/02/working-with-udfs-in-apache-spark/)
 
-# [Python datatime module](https://docs.python.org/2/library/datetime.html)
+# [Python datetime module](https://docs.python.org/2/library/datetime.html)
