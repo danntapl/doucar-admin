@@ -28,7 +28,7 @@ riders <- spark_read_csv(
 # of the columns and the first 10 rows of data, 
 # for as many columns as fit on the screen
 
-riders
+riders # This is the same as: `print(riders)`
 
 # To get the first *`x`* rows for some other value 
 # of *`x`*, use `head()`.
@@ -39,6 +39,9 @@ riders %>% head()
 riders %>% head(5)
 
 riders %>% head(20)
+
+# Tip: There are some arguments and options that control 
+# how `tbl` objects print. See `?format.tbl` for details.
 
 
 # To get a vector of the column names, use `colnames()`:
