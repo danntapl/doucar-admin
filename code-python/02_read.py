@@ -116,6 +116,7 @@ riders2 = spark \
   .read \
   .format("csv") \
   .option("sep", ",") \
+  .option("header", True) \
   .schema(schema) \
   .load("/duocar/raw/riders/")
 
