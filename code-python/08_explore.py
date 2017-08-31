@@ -133,7 +133,7 @@ pdf
 sns.barplot(x="rider_student", y="count", hue="rider_sex", data=pdf)
 
 # Replace missing values:
-pdf = sdf.fillna("unknown").toPandas()
+pdf = sdf.fillna("other/unknown").toPandas()
 sns.barplot(x="rider_student", y="count", hue="rider_sex", data=pdf)
 
 # ### Categorical-Continuous
