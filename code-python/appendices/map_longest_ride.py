@@ -1,12 +1,11 @@
-# Get the route coordinates of the longest ride in the DuoCar data
-# and use Folium to create a map of the ride route
+# Get the route coordinates of the longest ride in the DuoCar
+# data and use Folium to create a map of the ride route
 
 # Setup
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 import folium
 
-# Create a SparkSession
 spark = SparkSession.builder.master("local").getOrCreate()
 
 # Load the rides and ride_routes data from HDFS
@@ -25,12 +24,11 @@ coordinates = [[float(i.lat), float(i.lon)] \
                for i in longest_ride_route.collect()]
 
 # Make a Folium map
-
 m = folium.Map()
 m.fit_bounds(coordinates, padding=(25, 25))
 folium.PolyLine(locations=coordinates, weight=5).add_to(m)
-folium.Marker(coordinates[1], popup='Origin').add_to(m)
-folium.Marker(coordinates[-1], popup='Destination').add_to(m)
+folium.Marker(coordinates[1], popup="Origin").add_to(m)
+folium.Marker(coordinates[-1], popup="Destination").add_to(m)
 m
 
 # Cleanup
