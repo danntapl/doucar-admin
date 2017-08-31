@@ -93,7 +93,7 @@ spark.stop()
 # * over()
 
 # Window functions
-# * cum_dist()
+# * cume_dist()
 # * dense_rank()
 # * lag()
 # * lead()
