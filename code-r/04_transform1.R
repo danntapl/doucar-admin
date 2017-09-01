@@ -1,7 +1,7 @@
 # # Transforming Data 
 
-# At the end of the last module, we saw some examples of `select()` and 
-`distinct()`.
+# At the end of the last module, we saw some examples of 
+# `select()` and `distinct()`.
 # These are examples of dplyr *verbs*.
 # In this module we will look at the common dplyr verbs, and
 # understand how they work in sparklyr and how they can be used
