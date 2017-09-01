@@ -23,7 +23,9 @@ sns.pairplot(iris, hue="species")
 sns.pairplot?
 
 # Use the following IPython help syntax to inspect the source code:
+#``` python
 #sns.pairplot??
+#```
 
 # **Developer Note:** The script does not run correctly (using `Run All`) when
 # this command is uncommented.
