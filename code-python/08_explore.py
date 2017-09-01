@@ -178,8 +178,7 @@ sns.lvplot(x="rider_student", y="distance", data=sample_pdf)
 sns.boxplot(x="rider_student", y="distance", data=sample_pdf)
 
 # A violin plot:
-# sns.violinplot(x="rider_student", y="distance", data=sample_pdf)
-# **Note:** This blew up my session.
+sns.violinplot(x="rider_student", y="distance", data=sample_pdf)
 
 # ### Continuous-Continuous
 
