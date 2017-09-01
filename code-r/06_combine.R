@@ -354,6 +354,15 @@ samples$test %>% tally()
 riders %>% tally()
 
 
+# ## Exercises
+
+# Join together the rides, drivers, riders, and ride reviews
+# tables to produce a table that is the same as the joined
+# table already stored in HDFS. It's OK if the column names
+# are not the same, but the number of records should be the
+# same as in the existing joined table.
+
+
 # ## Cleanup
 
 spark_disconnect(spark)
