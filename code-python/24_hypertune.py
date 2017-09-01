@@ -6,10 +6,7 @@
 # and logistic regression.  In this module we show how to use grid search and
 # cross validation in Spark MLlib to determine a reasonable regularization
 # parameter for [$l1$ lasso linear
-# regression](https://en.wikipedia.org/wiki/Lasso_(statistics)).
-
-# **Developer Note:** The markdown for the Wikipedia link does not render
-# correctly.
+# regression](https://en.wikipedia.org/wiki/Lasso_%28statistics%29).
   
 
 # ## Setup
