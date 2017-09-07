@@ -13,11 +13,13 @@ library(ggplot2)
 ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + 
 	geom_point()
 
+
 # ## Getting Help
 
 help("geom_point")
 
 ?geom_point
+
 
 # ## Accessing the Command Line
 
@@ -27,7 +29,7 @@ system("pwd")
 
 system("ls -l")
 
-# But it's more common to use built-in R functions for tasks like these
+# But it's more common to use built-in R functions for tasks like these:
 
 getwd()
 
@@ -38,39 +40,39 @@ base::print.data.frame(file.info(list.files()))
 
 # **Important:** Packages are managed on a project-by-project basis.
 
-# Show what packages are loaded in this session of R
+# Show what packages are loaded in this session of R:
 search()
 sessionInfo()
 
-# Show the currently installed packages
+# Show the currently installed packages:
 rownames(installed.packages())
 
-# See if a particular package is installed
+# See if a particular package is installed:
 "leaflet" %in% rownames(installed.packages())
 
-# Install the current released version of a package from CRAN
+# Install the current released version of a package from CRAN:
 install.packages("leaflet")
 
-# Or install the latest development version from GitHub
+# Or install the latest development version from GitHub:
 devtools::install_github("rstudio/leaflet")
 
 # Note that this package is now installed for all sessions associated with this project.
 
-# See what version of the package is installed
+# See what version of the package is installed:
 packageVersion("leaflet")
 
-# Load the package
+# Load the package:
 library(leaflet)
 
-# Use the package
+# Use the package:
 leaflet() %>%
   addTiles() %>%
   addMarkers(lng = -122.139869, lat = 37.425501, popup = "395 Page Mill Rd")
 
-# Unload the package
+# Unload the package:
 detach("package:leaflet", unload = TRUE)
 
-# Uninstall the package
-#``` r
-#remove.packages("leaflet")
-#```
+# Uninstall the package:
+# ``` r
+# remove.packages("leaflet")
+# ```
