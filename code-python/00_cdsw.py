@@ -17,15 +17,17 @@ sns.pairplot(iris, hue="species")
 # ## Getting Help
 
 # Use the standard Python help command:
+# ``` python
 # help(sns.pairplot)
+# ```
 
 # or the IPython help syntax:
 sns.pairplot?
 
 # Use the following IPython help syntax to inspect the source code:
-#``` python
-#sns.pairplot??
-#```
+# ``` python
+# sns.pairplot??
+# ```
 
 # **Developer Note:** The script does not run correctly (using `Run All`) when
 # this command is uncommented.
@@ -49,10 +51,13 @@ sns.pairplot?
 # Use `!pip list` to get a list of the currently installed packages:
 !pip list --format=columns
 
-# Search for an available Python package (folium in this case):
+# **Note:** Replace `pip` with `pip3` in Python 3.
+
+# Search for the [folium](https://github.com/python-visualization/folium)
+# package in the Python package repository:
 !pip search folium
 
-# Install a new package.
+# Install a new package:
 !pip install folium
 
 # **Note:** This package is now installed for all sessions associated with this
@@ -63,7 +68,7 @@ sns.pairplot?
 
 # **Note:**  This returns nothing if the package is not installed.
 
-# Use folium:
+# Use package:
 import folium
 folium.Map(location=[46.8772222, -96.7894444])
 
@@ -136,31 +141,29 @@ Image("resources/spark.png")
 
 # ### Code blocks
 
-# To print a block of code in the output without running it, 
-# use a comment line with three backticks to begin the block,
-# then the block of code with each line preceded with the 
-# comment character, then a comment line with three backticks
-# to close the block. Optionally include the language name 
-# after the opening backticks:
+# To print a block of code in the output without running it, use a comment line
+# with three backticks to begin the block, then the block of code with each
+# line preceded with the comment character, then a comment line with three
+# backticks to close the block. Optionally include the language name after the
+# opening backticks:
 
-#``` python
-#print("Hello, World!")
-#```
+# ``` python
+# print("Hello, World!")
+# ```
 
-# You can omit the language name to print the code block in 
-# black text without syntax coloring, for example to display
-# a block of static data or output.
+# You can omit the language name to print the code block in black text without
+# syntax coloring, for example, to display a block of static data or output:
 
-#```
-#Hello, World!
-#```
+# ```
+# Hello, World!
+# ```
 
 # ### Invisible comments
 
 #[//]: # (To include a comment that will not appear in the)
 #[//]: # (output at all, you can use this curious syntax.)
 
-# Move along, nothing to see here
+# Move along, nothing to see here.
 
 
 # ## Exercises
@@ -168,9 +171,9 @@ Image("resources/spark.png")
 # (1) Experiment with the CDSW command prompt.  Run some commands and note the
 # following:
 # * Tab completion is available
-# * Some GNU Readline Library commands such as `C-f`, `C-b`, and `C-d` are
-# available
-# * You can use the up and down arrows to navigate the command history
+# * GNU Readline Library commands such as `C-a`, `C-e`, `C-f`, `C-b`, `C-d`,
+# and `C-k` are available
+# * The up and down arrows navigate the command history
 
 # (2) Experiment with the CDSW editor.  Create a new file.  Enter Python code
 # and Markdown text.  Run the file line by line (or chunk by chunk).  Clear the
@@ -187,3 +190,5 @@ Image("resources/spark.png")
 # [Markdown](https://daringfireball.net/projects/markdown/)
 
 # [LaTeX](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
+
+# [GNU Readline Library](http://cnswww.cns.cwru.edu/php/chet/readline/rluserman.html)
