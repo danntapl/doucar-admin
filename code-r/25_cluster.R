@@ -139,7 +139,7 @@ new_data <- tribble(
 # arguments to make the points more easily visible.
 
 # There is a third major university in the Fargo
-# metropolitan area: Concordia College (Go Cobbers!).
+# metropolitan area: Concordia College. (Go Cobbers!)
 # Try changing the number of clusters from two to three,
 # and see if the third cluster identifies Concordia College
 # students. If not, how else could you use k-means 
