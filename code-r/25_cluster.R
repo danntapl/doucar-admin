@@ -4,7 +4,7 @@
 # using sparklyr.
 
 # Scenario: The Fargo metropolitan area is home to two
-# large universties: North Dakota State University and 
+# major universties: North Dakota State University and 
 # Minnesota State University Moorhead. DuoCar wants to
 # send targeted promotions to student riders containing
 # different content based on which university the student
