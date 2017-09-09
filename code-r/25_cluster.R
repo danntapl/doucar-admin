@@ -138,10 +138,11 @@ new_data <- tribble(
 # university. Hint: Use the `opacity` and/or `fillOpacity`
 # arguments to make the points more easily visible.
 
-# There is a third major university in the Fargo
-# metropolitan area: Concordia College. (Go Cobbers!)
-# Try changing the number of clusters from two to three,
-# and see if the third cluster identifies Concordia College
+# There is a third notable (but smaller) university in the
+# Fargo metropolitan area: Concordia College. (Go Cobbers!)
+# Try changing the number of clusters from two to three
+# and re-fitting the k-means model to the data.
+# See if the third cluster identifies Concordia College
 # students. If not, how else could you use k-means 
 # clustering to identify Concordia College students? Hint:
 # you could apply the k-means model twice.
