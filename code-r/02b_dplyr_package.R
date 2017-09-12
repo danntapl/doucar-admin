@@ -259,15 +259,17 @@ tbl_change_db(spark, "default")
 
 # Name this character vector `makes` and run the following code:
 
-makes_counts <- table(makes)
-makes_df <- data.frame(
-  make = names(makes_counts),
-  count = as.numeric(makes_counts)
-)
-makes_df <- makes_df[makes_df$count > 20, ]
-
-library(ggplot2)
-ggplot(makes_df, aes(x = make, y = count)) + geom_col()
+#```r
+#makes_counts <- table(makes)
+#makes_df <- data.frame(
+#  make = names(makes_counts),
+#  count = as.numeric(makes_counts)
+#)
+#makes_df <- makes_df[makes_df$count > 20, ]
+#
+#library(ggplot2)
+#ggplot(makes_df, aes(x = make, y = count)) + geom_col()
+#```
 
 # What are the top three vehicle makes among DuoCar drivers?
 
