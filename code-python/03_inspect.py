@@ -37,13 +37,15 @@ riders = spark.read.csv("/duocar/raw/riders/", header=True, inferSchema=True)
 
 riders.printSchema()
 
-# Use the `dtypes`, `columns`, and `schema` attributes to view the schema in other ways:
+# Use the `dtypes`, `columns`, and `schema` attributes to view the schema in
+# other ways:
 
 riders.dtypes
 riders.columns
 riders.schema
 
-# **Note:** The `schema` attribute provides a programmatic version of the schema.
+# **Note:** The `schema` attribute provides a programmatic version of the
+# schema.
 
 
 # ## Viewing some data
@@ -52,7 +54,8 @@ riders.schema
 
 riders.show(5)
 
-# Use the `head` or `take` method to get a display of the `Row` objects that is sometimes easier to read:
+# Use the `head` or `take` method to get a display of the `Row` objects that is
+# sometimes easier to read:
 
 riders.head(5)
 
@@ -72,7 +75,8 @@ riders.count()
 
 # ## Computing summary statistics
 
-# Use the `describe` method to compute summary statistics for numeric and string columns:
+# Use the `describe` method to compute summary statistics for numeric and
+# string columns:
 
 riders.describe().show()
 
@@ -104,10 +108,18 @@ riders.select(count("id"), countDistinct("id")).show()
 
 # **Note:** This can take quite a bit of time on large DataFrames.
 
+# You can use functional style, as shown above, or SQL style for examination of
+# DataFrames.  SQL style requires one preliminary step:
+
+riders.createOrReplaceTempView("riders")
+
+spark.sql("select count(id), count(distinct id) from riders").show()
+
 
 # ### Inspect a categorical variable
 
-# The variable `sex` is a categorical variable.  Let us examine it more carefully:
+# The variable `sex` is a categorical variable.  Let us examine it more
+# carefully:
 
 riders.select(count("*"), count("sex"), countDistinct("sex")).show()
 
@@ -119,7 +131,8 @@ riders.select("sex").show(5)
 
 riders.select("sex").distinct().count()
 
-# **Developer Note:** See https://jira.cloudera.com/browse/DSE-1159 for the print issue.
+# **Developer Note:** See https://jira.cloudera.com/browse/DSE-1159 for the
+# print issue.
 
 riders.select("sex").distinct().show()
 
@@ -127,7 +140,11 @@ riders.select("sex").distinct().show()
 
 riders.groupby("sex").count().show()
 
-# **Note:** `sex` contains null (missing) values that we must deal with.
+# The same query in SQL style:
+
+spark.sql("select sex, count(*) from riders group by 1").show()
+  
+# **Note:** `sex` contains null (missing) values that we may have to deal with.
 
 
 # ### Inspecting a numerical variable
@@ -141,9 +158,12 @@ riders.select("home_lat", "home_lon").describe().show(5)
 
 # Use the `approxQuantile` to get customized (approximate) quantiles:
 
-riders.approxQuantile("home_lat", probabilities=[0.0, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 1.0], relativeError=0.1)
+riders.approxQuantile("home_lat", \
+	probabilities=[0.0, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 1.0], \
+	relativeError=0.1)
 
-# **Note:** This method returns a Python list.  Spark 2.2 adds support for multiple columns.
+# **Note:** This method returns a Python list.  Spark 2.2 adds support for
+# multiple columns.
 
 
 # ### Inspecting a datetime variable
@@ -151,24 +171,28 @@ riders.approxQuantile("home_lat", probabilities=[0.0, 0.05, 0.1, 0.25, 0.5, 0.75
 # Let us inspect `birth_date` and `start_date`, which are both Timestamp
 # variables:
 
-riders.select("birth_date", "start_date").show(5, truncate=False)
-riders.select("birth_date", "start_date").head(5)
+dates = riders.select("birth_date", "start_date")
+dates.show(5, truncate=False)
+dates.head(5)
 
 # Note that the original data was in Date format, but Spark read the data in
 # Timestamp format.  We will probably want to fix this.
 
-# Note that the `describe` method does not work with Date or Timestamp variables:
+# Note that the `describe` method does not work with Date or Timestamp
+# variables:
 
-riders.select("birth_date", "start_date").describe().show(5)
+dates.describe().show(5)
 
 
 # ## Exercises
 
-# Read the raw driver data from HDFS into a Spark DataFrame.
+# (1) Read the raw driver data from HDFS into a Spark DataFrame.
 
-# Inspect the driver DataFrame.  Are the data types for each column appropriate?
+# (2) Inspect the driver DataFrame.  Are the data types for each column
+# appropriate?
 
-# Inspect various columns of the driver DataFrame.  Are there any issues with the data?
+# (3) Inspect the columns of the driver DataFrame.  Are there any issues with
+# the data?
 
 
 # ## Cleanup
