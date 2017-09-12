@@ -1,7 +1,7 @@
 # # sparklyr and dplyr
 
 # In this module we describe
-# * How sparklyr provides a dplyr backend
+# * How sparklyr works together with dplyr
 # * How sparklyr interacts with Spark by issuing SQL queries
 # * How to return Spark tables to R as local data frames
 
