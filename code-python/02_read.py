@@ -120,6 +120,9 @@ riders2 = spark \
   .schema(schema) \
   .load("/duocar/raw/riders/")
 
+# **Note:** We must include the header option otherwise Spark will read the
+# header row as a valid record.
+
 # Confirm the explicit schema:
 riders2.printSchema()
 
@@ -171,10 +174,13 @@ riders_via_sql.show(5)
 
 # Use the `saveAsTable` method of the `DataFrameWriter` class to save a
 # DataFrame as a Hive table:
-riders.write.saveAsTable("riders_tbl")
+import uuid
+table_name = "riders_" + str(uuid.uuid4().hex)  # Create unique table name.
+riders.write.saveAsTable(table_name)
 
 # You can now manipulate this table in Hue.
-spark.sql("DESCRIBE riders_tbl").show()
+query = "DESCRIBE %s" % table_name
+spark.sql(query).show()
 
 
 # ## Working with pandas DataFrames
@@ -258,7 +264,8 @@ ran_df.describe("id", "normal").show()
 !hdfs dfs -rm -r -skipTrash practice/riders_text_compressed
 !hdfs dfs -rm -r -skipTrash practice/riders_tsv
 !hdfs dfs -rm -r -skipTrash practice/riders_parquet
-spark.sql("DROP TABLE IF EXISTS riders_tbl")
+query = "DROP TABLE IF EXISTS %s" % table_name
+spark.sql(query)
 
 # Stop the `SparkSession`:
 spark.stop()
