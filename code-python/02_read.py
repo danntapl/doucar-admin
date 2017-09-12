@@ -250,11 +250,15 @@ ran_df.describe("id", "normal").show()
 
 # ## Exercises
 
-# (1) Read the raw driver file into a Spark DataFrame.
+# (1) Read the raw driver file from HDFS into a Spark DataFrame.
 
 # (2) Save the driver DataFrame as a JSON file in your CDSW practice directory.
 
-# (3) Read the driver JSON file into a Spark DataFrame.
+# (3) Use Hue to inspect the JSON file.
+
+# (4) Read the driver JSON file into a Spark DataFrame.
+
+# (5) Delete the JSON file.
 
 
 # ## Cleanup
