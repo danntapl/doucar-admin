@@ -40,9 +40,9 @@ spark <- spark_connect(
 
 # ## Working with delimited text files
 
-# The rider data is a comma-delimited text file
+# The rider data is a comma-delimited text file.
 # Use the `spark_read_csv()` function to read it into 
-# a Spark DataFrame
+# a Spark DataFrame.
 
 # ### Infer the schema
 
@@ -131,7 +131,7 @@ system("hdfs dfs -cat practice/riders_tsv/* | head -n 5")
 
 # ## Working with Parquet files
 
-# Write the riders data to a Parquet file
+# Write the riders data to a Parquet file:
 
 spark_write_parquet(
   riders,
@@ -140,7 +140,7 @@ spark_write_parquet(
 
 system("hdfs dfs -ls practice/riders_parquet")
 
-# Warning: If you try to overwrite an existing file
+# **Warning:** If you try to overwrite an existing file
 # in HDFS, an error will result. You can try this by
 # running the above `spark_write_parquet()` command
 # a second time.
@@ -191,7 +191,7 @@ class(airlines)
 
 airlines
 
-# Only use `dbGetQuery()` when the query result will 
+# **Important:** Only use `dbGetQuery()` when the query result will 
 # be small enough to fit in memory in your R session.
 
 
@@ -227,7 +227,7 @@ flights
 # ## Copying data frames from R to Spark
 
 # Use the `sdf_copy_to()` function to copy a 
-# local R data frame to Spark
+# local R data frame to Spark:
 
 iris_tbl <- sdf_copy_to(spark, iris)
 
@@ -244,7 +244,7 @@ iris_tbl <- tbl(spark, "iris")
 
 iris_tbl
 
-# Note: `sdf_copy_to()` *does not persist* the 
+# **Note:** `sdf_copy_to()` *does not persist* the 
 # copied data in HDFS.
 # The data is stored in a temporary location in 
 # HDFS and may be cached in Spark memory.
