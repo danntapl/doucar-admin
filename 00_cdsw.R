@@ -66,7 +66,8 @@ library(leaflet)
 # Use the package
 leaflet() %>%
   addTiles() %>%
-  addMarkers(lng = -122.4450575, lat = 37.7211538, popup = "325 Seneca Avenue")
+  addMarkers(lng = -122.139869, lat = 37.425501, popup = "395 Page Mill Rd")
+
 # Unload the package
 detach("package:leaflet", unload = TRUE)
 
