@@ -1,8 +1,8 @@
 # # Connecting to Spark
 
-# This script contains solutions to the exercises.  You can run this script in
-# a new session or execute selected statements in an existing session.  Note
-# that there is generally more than one way to solve a problem.
+# This script contains sample solutions to the exercises.  You can run this
+# script in a new session or execute selected statements in an existing
+# session.  Note that there is generally more than one way to solve a problem.
 
 
 # ## Exercises
