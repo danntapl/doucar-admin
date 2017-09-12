@@ -29,7 +29,9 @@
 
 # Warning: This takes several minutes the first time you run it.
 
-install.packages("sparklyr")
+if(!"sparklyr" %in% rownames(installed.packages())) {
+  install.packages("sparklyr")
+}
 
 library(sparklyr)
 

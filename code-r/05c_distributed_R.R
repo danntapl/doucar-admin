@@ -86,7 +86,10 @@ rides_with_haversine_distance %>%
 # yourself, you could use an existing haversine distance
 # function which is available in the geosphere R package.
 
-install.packages("geosphere")
+if(!"geosphere" %in% rownames(installed.packages())) {
+  install.packages("geosphere")
+}
+
 library(geosphere)
 
 # But you need to create a wrapper around this function

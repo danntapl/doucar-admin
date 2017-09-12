@@ -45,7 +45,9 @@ events_cloud_cover <- weather %>%
 # which provides `geom_` functions for drawing joyplots
 # using ggplot2:
 
-install.packages("ggjoy")
+if(!"ggjoy" %in% rownames(installed.packages())) { 
+  install.packages("ggjoy")
+}
 
 # Now load both ggplot2 and ggjoy:
 

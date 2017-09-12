@@ -50,11 +50,16 @@ rownames(installed.packages())
 # See if a particular package is installed:
 "leaflet" %in% rownames(installed.packages())
 
-# Install the current released version of a package from CRAN:
-install.packages("leaflet")
+# Install the current released version of a package from CRAN
+# if it is not already installed:
+if(!"leaflet" %in% rownames(installed.packages())) {
+  install.packages("leaflet")
+}
 
 # Or install the latest development version from GitHub:
-devtools::install_github("rstudio/leaflet")
+#```r
+#devtools::install_github("rstudio/leaflet")
+#```
 
 # Note that this package is now installed for all sessions associated with 
 # this project.
