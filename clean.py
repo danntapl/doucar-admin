@@ -31,3 +31,6 @@ for root in ["/home/cdsw/code-python", "/home/cdsw/code-r"]:
 					# write file
 					with open(path, "w") as f:
 						f.write(contents)
+
+# this script will self-destruct
+os.remove("/home/cdsw/clean.py")
