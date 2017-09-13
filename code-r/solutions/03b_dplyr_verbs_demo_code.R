@@ -1,7 +1,8 @@
-# # Transforming Data - Mini Exercise Solutions
+# # dplyr verbs - Interactive Demonstration Code
 
-# Sample answers to the Mini Exercises. 
-# You can run this standalone, or execute selected statements in a wider session.
+# Sample code for the interactive demonstrations
+# You can run this standalone, or execute selected
+# statements in a wider session.
 
 
 # ## Setup
@@ -13,7 +14,7 @@ config <- spark_config()
 config$spark.driver.host <- Sys.getenv("CDSW_IP_ADDRESS")
 spark <- spark_connect(
   master = "local",
-  app_name = "transform-mini-exercises",
+  app_name = "transform-demos",
   config = config
 )
 
@@ -24,7 +25,7 @@ riders <- spark_read_csv(
 )
 
 
-# #### Mini Exercise: select()
+# #### Interactive Demonstration: `select()`
 
 # Review the `?select_helpers` help documentation.
 # Use the `select()` verb with the `ends_with()` 
@@ -41,7 +42,7 @@ riders <- spark_read_csv(
 riders %>% select(ends_with("lat"):ends_with("k_lon"))
 
 
-# #### Mini Exercise: select_if()
+# #### Interactive Demonstration: `select_if()`
 
 # Read the help documentation page for `?select_all`
 # which describes several variants of `select()` and
@@ -52,7 +53,7 @@ riders %>% select(ends_with("lat"):ends_with("k_lon"))
 select_if(riders, is.numeric)
 
 
-# #### Mini Exercise: filter() and between()
+# #### Interactive Demonstration: `filter()` and `between()`
 
 # Use Google Maps or some other mapping website to find the
 # latitude and longitude coordinates of an approximate
@@ -70,14 +71,14 @@ riders %>%
   filter(between(home_lat, 46.890480, 46.901213))
 
 
-# #### Mini Exercise: mutate()
+# #### Interactive Demonstration: `mutate()`
 
 riders %>% 
   mutate(birth_year = substr(birth_date, 1, 4)) %>%
   select(birth_date, birth_year, everything())
 
 
-# #### Mini Exercise: bounding box
+# #### Interactive Demonstration: Bounding box
 
 # What are the longitude and latitude coordinates that make 
 # the bounding box in which all of the riders with known
@@ -108,7 +109,7 @@ leaflet() %>%
   addRectangles(-97.67161, 46.6334, -96.179, 47.23741)
 
 
-# #### Mini Exercise: group_by()
+# #### Interactive Demonstration: `group_by()`
 
 # What proportion of riders who reported their sex
 # as female are students? How does this compare to the
@@ -124,7 +125,7 @@ riders %>%
     proportion = sum(student)/n())
 
 
-# #### Mini Exercise: Multiple verbs
+# #### Interactive Demonstration: Multiple verbs
 
 # Use `mutate()`, `filter()`, `arrange()`, and `select()` 
 # to get the full names (first name, space, last name)
@@ -136,31 +137,6 @@ riders %>%
   mutate(full_name = paste(first_name, last_name)) %>%
   arrange(last_name, first_name) %>%
   select(full_name)
-
-
-# #### Mini Exercise: dynamic bounding box
-
-# Return to the mini exercise above where you made 
-# a Leaflet map of the bounding box of rider home
-# locations. This time, instead of copying and pasting
-# the values from the printed sparklyr output, use
-# `collect()` to return the output to R as a `tbl_df`
-# and produce the same plot by passing that `tbl_df`
-# to the `leaflet()` function.
-
-bounds <- riders %>%
-  summarise(
-    lng1 = min(home_lon),
-    lat1 = min(home_lat),
-    lng2 = max(home_lon),
-    lat2 = max(home_lat)
-  ) %>%
-  collect()
-
-library(leaflet)
-leaflet() %>%
-  addTiles() %>%
-  addRectangles(bounds$lng1, bounds$lat1, bounds$lng2, bounds$lat2)
 
 
 # ## Cleanup
