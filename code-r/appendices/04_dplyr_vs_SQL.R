@@ -1,4 +1,4 @@
-# ### dplyr vs. SQL
+# # dplyr vs. SQL
 
 # Which is easier to write: dplyr or SQL?
 
