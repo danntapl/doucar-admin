@@ -1,5 +1,9 @@
 # # Distributing R computations on the cluster
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # sparklyr provides the function `spark_apply()` which
 # can be used to run arbitrary R code on the cluster nodes
 # where the Spark executors are running.

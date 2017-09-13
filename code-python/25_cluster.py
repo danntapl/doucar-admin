@@ -1,5 +1,9 @@
 # # Building and evaluating clustering models
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we use the k-means clustering functionality is Spark MLlib to
 # look for structure in the ride data.
 

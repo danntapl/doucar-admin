@@ -1,5 +1,9 @@
 # # Inspecting Data
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we will take our first look at a Spark DataFrame.
 # * Examining the schema
 # * Viewing some data

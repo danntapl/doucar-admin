@@ -1,5 +1,9 @@
 # # Transforming Data - Transforming DataFrame Columns
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we demonstrate how to transform DataFrame columns.
 
 # * Working with numerical columns

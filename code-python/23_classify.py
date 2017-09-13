@@ -1,5 +1,9 @@
 # # Building and Evaluating Classification Models
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # Spark MLlib provides a number of
 # [classification](https://en.wikipedia.org/wiki/Statistical_classification)
 # algorithms for predicting the value of a categorical variable.  In this

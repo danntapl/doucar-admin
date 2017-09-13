@@ -1,5 +1,9 @@
 # # rwebhdfs
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # If for some reason you really can't use Spark with sparklyr,
 # or Impala with implyr, there's the R package rwebhdfs 
 # that can access files in HDFS through WebHDFS.

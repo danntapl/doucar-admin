@@ -1,5 +1,9 @@
 # # Connecting to Spark
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # This script contains sample solutions to the exercises.  You can run this
 # script in a new session or execute selected statements in an existing
 # session.  Note that there is generally more than one way to solve a problem.

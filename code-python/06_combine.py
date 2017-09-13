@@ -1,5 +1,9 @@
 # # Combining and splitting data
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we demonstrate how to combine and split Spark DataFrames.
 
 # * Joining DataFrames

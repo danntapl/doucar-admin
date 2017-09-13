@@ -1,5 +1,9 @@
 # # Accessing the Spark DataFrame API directly
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # The last R module described how sparklyr works with 
 # dplyr to turn a series of dplyr verbs into a SQL
 # statement that is executed by Spark SQL.

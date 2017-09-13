@@ -1,5 +1,9 @@
 # # Extracting, transforming, and selecting features
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we demonstrate some of the functionality available in Spark
 # MLlib to extract, transform, and select features for machine learning.  In
 # particular, we generate features from the ride review text that can be used

@@ -1,5 +1,9 @@
 # # Working with Machine Learning Pipelines
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In the previous modules we have established a workflow in which we load some
 # data; preprocess this data; extract, transform, and select features; and
 # develop and evaluate a machine learning model.  In this module we show how we

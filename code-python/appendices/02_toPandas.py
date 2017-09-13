@@ -1,5 +1,9 @@
 # # Type Conversions when Reading a Spark DataFrame into a pandas DataFrame
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we highlight some of the issues with column type conversions
 # when reading a Spark DataFrame into a pandas DataFrame.  The list of issues
 # presented below is by no means exhaustive, but should give the reader an idea

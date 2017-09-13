@@ -1,5 +1,9 @@
 # ## Tuning Spark Applications
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # Spark applications and Spark environments present countless opportunities for
 # ever deeper understanding and performance tuning.  Here we present a few of 
 # the techniques readily available to you in your scripts--which often have

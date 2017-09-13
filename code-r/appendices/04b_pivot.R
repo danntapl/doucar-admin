@@ -1,5 +1,9 @@
 # # The sparklyr `sdf_pivot()` function
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # 04b_sdf_functions.R does not mention the `sdf_pivot()`
 # function. An example of this function is below.
 

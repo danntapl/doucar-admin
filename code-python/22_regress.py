@@ -1,5 +1,9 @@
 # # Building and evaluating regression models
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we build and evaluate a linear regression model to predict
 # ride rating from various ride, driver, and rider information.  The general
 # workflow will be the same for other regression algorithms; however, the

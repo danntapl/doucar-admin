@@ -1,5 +1,9 @@
 # # Summarizing and grouping data
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we demonstrate how to summarize and group data in a Spark
 # DataFrame.
 

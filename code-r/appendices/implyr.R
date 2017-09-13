@@ -1,5 +1,9 @@
 # # implyr
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # sparklyr is one dplyr interface package that enables you to
 # query data stored in HDFS or S3—but it's not the only one.
 # Another such package is 

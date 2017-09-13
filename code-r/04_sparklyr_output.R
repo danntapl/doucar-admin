@@ -1,5 +1,9 @@
 # # Working with sparklyr output
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # ## Setup
 
 library(sparklyr)

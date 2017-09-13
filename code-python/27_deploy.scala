@@ -1,5 +1,9 @@
 /* # Deploying Models and Pipelines in Production */
 
+/* Copyright © 2010–2017 Cloudera. All rights reserved.
+   Not to be reproduced or shared without prior written 
+   consent from Cloudera. */
+
 /* **Note**: // comments do not render Markdown. */
 
 /* In this module we demonstrate how to load transformers, estimators, and

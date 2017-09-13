@@ -1,5 +1,9 @@
 # # Exploring data
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # Now that we have enhanced our ride data, we can begin a more systematic
 # exploration of the relationships among the variables.  The insight gathered
 # during this analysis may be used to improve DuoCar's day-to-day business

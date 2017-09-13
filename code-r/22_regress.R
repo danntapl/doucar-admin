@@ -1,5 +1,9 @@
 # # Regression modeling with sparklyr
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # This module demonstrates how to fit and examine a
 # linear regression model using sparklyr's machine
 # learning functions, in addition to feature transformers

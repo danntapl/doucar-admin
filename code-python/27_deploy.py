@@ -1,5 +1,9 @@
 # # Deploying Models and Pipelines in Production
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we show how save, load, and apply transformers, estimators,
 # and pipelines.
 

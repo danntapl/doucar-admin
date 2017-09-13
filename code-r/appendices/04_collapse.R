@@ -1,5 +1,9 @@
 # # The dplyr `collapse()` function
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # 04_sparklyr_output.R talks about `collect()` and `compute()`,
 # but it doesn't mention the related function `collapse()`.
 

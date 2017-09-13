@@ -1,5 +1,9 @@
 # # Combining and Splitting Data
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we demonstrate how to use sparklyr to combine 
 # and split Spark DataFrames.
 

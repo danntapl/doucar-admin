@@ -1,5 +1,9 @@
 # # dplyr verbs
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # At the end of the last module, we saw some examples of 
 # `select()` and `distinct()`. These are examples of dplyr 
 # *verbs*.  In this module we will look at the common dplyr 

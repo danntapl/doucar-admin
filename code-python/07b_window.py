@@ -1,5 +1,9 @@
 # # Window Functions
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we demonstrate how to create and apply window functions.
 
 # **Note:** Windows are experimental in Spark 2.2.

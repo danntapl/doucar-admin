@@ -1,5 +1,9 @@
 # # Monitoring Spark Applications
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # Recall that, for Spark:
 # * Underlying every DataFrame is an *RDD* (Resilient Distributed 
 # Dataset)--the basic programming abstraction of Spark programs. An RDD

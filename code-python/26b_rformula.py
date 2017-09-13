@@ -1,5 +1,9 @@
 # # The RFormula Transformer
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # The RFormula Transformer will look familiar to R users.  It can be useful in
 # some cases.  In this module we demonstrate the basic functionality of the
 # RFormula Transformer.

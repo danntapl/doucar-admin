@@ -1,5 +1,9 @@
 # # Connecting to Spark
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we demonstrate how to run Spark locally within our CDSW
 # container and how to run Spark on our Hadoop cluster via YARN.  The default
 # behavior in CDSW is to run Spark on a Hadoop cluster via YARN.

@@ -1,5 +1,9 @@
 # # Configuring sparklyr
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # sparklyr supports a number of options for configuring both 
 # the behavior of the package and the behavior of the 
 # underlying Spark engine. These are described in the 

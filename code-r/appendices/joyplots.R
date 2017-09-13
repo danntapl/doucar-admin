@@ -1,5 +1,9 @@
 # # Joyplot example
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # [Joyplots](http://blog.revolutionanalytics.com/2017/07/joyplots.html)
 # in R are super popular right now, so we just had to make one.
 

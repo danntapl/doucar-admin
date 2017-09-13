@@ -1,5 +1,9 @@
 # # Tuning hyperparameters using grid search
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # Most machine learning algorithms have a set of parameters that govern the
 # algorithm's behavior.  These parameters are called hyperparameters to
 # distinguish them from the model parameters such as the coefficients in linear

@@ -1,5 +1,9 @@
 # # Using base R functions and operators with Spark DataFrames
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # Many of the usual functions and operators that work on data
 # frames do not work on `tbl_spark` objects. (They may fail 
 # or return unexpected output.)

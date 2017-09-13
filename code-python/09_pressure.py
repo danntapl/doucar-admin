@@ -1,5 +1,9 @@
 # # Exert runtime pressure on the cluster
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # Exert pressure on the cluster through:
 # * Artificially repartitioning the rides DF into 35 partitions
 # * Expanding the data in rides by a factor of 5000

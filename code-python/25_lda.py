@@ -1,5 +1,9 @@
 # # Topic Modeling with Latent Dirichlet Allocation (LDA)
 
+# Copyright © 2010–2017 Cloudera. All rights reserved.
+# Not to be reproduced or shared without prior written 
+# consent from Cloudera.
+
 # In this module we use latent Dirichlet allocation (LDA) to look for topics
 # in the ride reviews.
 
