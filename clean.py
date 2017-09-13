@@ -1,5 +1,11 @@
 # remove instructor notes and narration scripts from Python and R files
 
+# DANGER: this script is intended to be run within the
+# public CDSW project that students will check out
+# at the beginning of class. you should not run it in
+# any other situation! it deletes contents of files
+# without warning then deletes itself.
+
 # currently assumes:
 
 #📝
