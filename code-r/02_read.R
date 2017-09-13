@@ -170,19 +170,24 @@ riders_parquet
 
 # ## Working with Hive databases and tables
 
-# In addition to using any data you have read into Spark in
-# the current session, you can also access tables defined
-# in the metastore.
+# In addition to using any data you have read into Spark
+# in the current session, you can also access tables 
+# defined in the metastore.
+
+# To do this, you need to use some functions from the 
+# R package dplyr:
+
+library(dplyr)
 
 # To list all tables in the default metastore database—plus
 # any data you have read into Spark in the current session—
-# use the function `src_tbls()`:
+# use the function `src_tbls()` from the dplyr package:
 
 src_tbls(spark)
 
 # To create a `tbl_spark` object representing a Spark 
 # DataFrame containing the data in one of these Hive tables,
-# use the `tbl()` function:
+# use the function `tbl()` from the dplyr package:
 
 airlines <- tbl(spark, "airlines")
 
@@ -233,8 +238,8 @@ rm(drivers)
 
 # ## Executing SQL queries 
 
-# You can use the `DBI::dbGetQuery()` function to run SQL
-# queries on Spark SQL:
+# You can use the `dbGetQuery()` function from the DBI
+# package to run SQL queries on Spark SQL:
 
 library(DBI)
 
@@ -261,10 +266,8 @@ airlines
 
 
 # You can also return the result of a SQL query as a
-# `tbl_spark`. To do this, you need to load the dplyr
-# package and use `tbl(spark, sql(...))`.
-
-library(dplyr)
+# `tbl_spark`. To do this, you need to use the dplyr
+# functions `tbl()` and `sql()`:
 
 flights <- tbl(spark, sql("SELECT * FROM flights"))
 
@@ -287,7 +290,7 @@ class(flights)
 flights
 
 # There are more details in upcoming modules about how
-# sparklyr works together with dplyr.
+# the R packages sparklyr and dplyr work together.
 
 
 # ## Copying data frames from R to Spark
