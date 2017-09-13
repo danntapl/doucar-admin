@@ -165,7 +165,7 @@ riders %>% select(-(4:5))
 # There are several variations on `select()`:
 
 # `distinct()` works like `select()`
-# but it reutrns only distinct values
+# but it returns only distinct values
 
 riders %>% distinct(first_name)
 

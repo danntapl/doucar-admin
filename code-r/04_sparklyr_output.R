@@ -132,7 +132,7 @@ student_rider_homes %>% show_query()
 
 student_rider_homes
 
-# This is eqivalent to:
+# This is equivalent to:
 
 print(student_rider_homes)
 

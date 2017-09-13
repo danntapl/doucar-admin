@@ -106,7 +106,7 @@ riders2 <- spark_read_csv(
 riders2
 
 # Notice, in this explicit schema we override the default 
-# choices that Spark would have made for the datatypes 
+# choices that Spark would have made for the data types 
 # of the `id` and `home_block` columns.
 
 # Write the file to a tab-delimited file:
