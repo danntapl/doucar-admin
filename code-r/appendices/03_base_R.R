@@ -10,14 +10,14 @@
 #```r
 #riders$student # returns NULL
 #
-#riders_tbl_spark[, "student"] # fails
+#riders[, "student"] # fails
 #```
 
 # And you cannot use `str()` to examine the structure of a `tbl_df`
 # (it returns a mess of technical info, not the column structure)
 
 #```r
-#riders_tbl_spark %>% str() # returns non-useful output
+#riders %>% str() # returns non-useful output
 #```
 
 # However, for many operations, dplyr provides its own ways 
@@ -27,8 +27,8 @@
 # column, dplyr provides the function `pull()` which collects
 # just the one column:
 
-riders_tbl_spark %>% pull(student)
+riders %>% pull(student)
 
 # And instead of using `str()` to see the structure, you can use `glimpse()`:
 
-riders_tbl_spark %>% glimpse()
+riders %>% glimpse()
