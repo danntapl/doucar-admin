@@ -168,9 +168,73 @@ riders_parquet <- spark_read_parquet(
 riders_parquet
 
 
-# ## Working with Hive Tables
+# ## Working with Hive databases and tables
 
-# Use the `DBI::dbGetQuery()` function to run SQL queries:
+# In addition to using any data you have read into Spark in
+# the current session, you can also access tables defined
+# in the metastore.
+
+# To list all tables in the default metastore database—plus
+# any data you have read into Spark in the current session—
+# use the function `src_tbls()`:
+
+src_tbls(spark)
+
+# To create a `tbl_spark` object representing a Spark 
+# DataFrame containing the data in one of these Hive tables,
+# use the `tbl()` function:
+
+airlines <- tbl(spark, "airlines")
+
+airlines
+
+
+# Sometimes you need to use a table that's in a non-default
+# database in the metastore. To see what databases are 
+# available, call the `src_databases()` function:
+
+src_databases(spark)
+
+# Then use the function `in_schema()` in the dbplyr 
+# package to qualify which database a table is in.
+# To avoid loading the dbplyr package, you can use 
+# `dbplyr::` before the function call:
+
+drivers <- tbl(spark, dbplyr::in_schema("duocar", "drivers"))
+
+# Another way to use a table that's in a non-default 
+# database is to change the current database.
+# You can do this using the `tbl_change_db()` function:
+
+tbl_change_db(spark, "duocar")
+
+# Then you can refer to tables in the duocar database 
+# without using `dbplyr::in_schema()`:
+
+drivers <- tbl(spark, "drivers")
+
+# Then switch back to the default database:
+
+tbl_change_db(spark, "default")
+
+# But be careful about switching databases using 
+# `tbl_change_db()`: Any `tbl_spark` objects you created 
+# based on tables in a different database will no longer work
+# once you switch databases. For example, this will now fail:
+
+#```r
+#drivers
+#```
+
+# It is safer to use `dbplyr::in_schema()`.
+
+rm(drivers)
+
+
+# ## Executing SQL queries 
+
+# You can use the `DBI::dbGetQuery()` function to run SQL
+# queries on Spark SQL:
 
 library(DBI)
 
@@ -191,13 +255,14 @@ class(airlines)
 
 airlines
 
-# **Important:** Only use `dbGetQuery()` when the query result will 
-# be small enough to fit in memory in your R session.
+# **Important:** Only use `dbGetQuery()` when the query 
+# result will be small enough to fit in memory in your R 
+# session.
 
 
-# You can also manage the result of a SQL query as 
-# a `tbl_spark`. To do this, you need to load dplyr 
-# and use `tbl(spark, sql(...))`.
+# You can also return the result of a SQL query as a
+# `tbl_spark`. To do this, you need to load the dplyr
+# package and use `tbl(spark, sql(...))`.
 
 library(dplyr)
 
@@ -208,7 +273,8 @@ class(flights)
 flights
 
 
-# But you need not use SQL to access Hive tables 
+# But remember that for simple queries like this, 
+# you need not use SQL statements to access Hive tables 
 # with sparklyr. Instead you can just reference 
 # the Hive table name with `tbl()`:
 
@@ -220,8 +286,8 @@ class(flights)
 
 flights
 
-# There are more details in the next module about 
-# how sparklyr works together with dplyr.
+# There are more details in upcoming modules about how
+# sparklyr works together with dplyr.
 
 
 # ## Copying data frames from R to Spark
@@ -250,6 +316,7 @@ iris_tbl
 # HDFS and may be cached in Spark memory.
 # After you end your session by disconnecting 
 # from Spark, it will no longer be available.
+
 
 # ## Exercises
 

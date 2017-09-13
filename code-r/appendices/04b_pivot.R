@@ -1,6 +1,6 @@
 # # The sparklyr `sdf_pivot()` function
 
-# 04_transform1.R does not mention the `sdf_pivot()`
+# 04b_sdf_functions.R does not mention the `sdf_pivot()`
 # function. An example of this function is below.
 
 # Scenario: Let's look at the weather data

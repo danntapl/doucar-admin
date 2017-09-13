@@ -115,7 +115,7 @@ riders %>% mutate(
 riders %>% na.replace(sex = "other/unknown")
 
 
-# ### Mini Exercise:
+# ### Interactive Demonstration: `show_query()`
 
 # Try using `show_query()` with the above dplyr examples  
 # and the comparable Spark DataFrame API function examples 
@@ -176,7 +176,7 @@ spark %>% sdf_along(seq_len(1000000))
 #iris_tbl_4 <- iris %>% sdf_import(spark, "iris")
 #```
 
-# ### Mini Exercise:
+# ### Interactive Demonstration: Arguments to Copy Functions
 
 # Notice in the call to `sdf_import()` that the name of
 # the table (`"iris"`) is passed in as the `name`
