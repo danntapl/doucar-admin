@@ -1,4 +1,4 @@
-# # Using familiar base R functions and operators with Spark DataFrames
+# # Using base R functions and operators with Spark DataFrames
 
 # Many of the usual functions and operators that work on data
 # frames do not work on `tbl_spark` objects. (They may fail 
