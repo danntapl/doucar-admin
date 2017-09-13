@@ -1,6 +1,7 @@
-# Exert runtime pressure on the cluster
-# Done through:
-# * Artificially repartioning the rides DF into 35 partitions
+# # Exert runtime pressure on the cluster
+
+# Exert pressure on the cluster through:
+# * Artificially repartitioning the rides DF into 35 partitions
 # * Expanding the data in rides by a factor of 5000
 
 # Note, uncommenting line 35 (caching the reused DF) slows things
