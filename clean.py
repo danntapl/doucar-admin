@@ -7,6 +7,8 @@
 # any other situation! it deletes contents of files
 # without warning then deletes itself.
 
+import os, re
+
 # regexes matching beginning and end of instructor note
 i_n_start_regex = "#[#\s]*BEGIN INSTRUCTOR NOTE"
 i_n_stop_regex = "#[#\s]*END INSTRUCTOR NOTE"
