@@ -1,4 +1,5 @@
-# remove instructor notes and narration scripts from Python and R files
+# remove instructor notes and narration scripts from Python and R scripts
+# and delete some files that are not intended for the students
 
 # DANGER: this script is intended to be run within the
 # public CDSW project that students will check out
@@ -48,5 +49,8 @@ for root in ["/home/cdsw/code-python", "/home/cdsw/code-r"]:
 						f.write(contents)
 					print("Cleaned " + path)
 
+# delete files that are not intended for the students
+os.remove("/home/cdsw/sections.sh")
+          
 # this script will self-destruct
 os.remove("/home/cdsw/clean.py")
