@@ -1,33 +1,38 @@
-# # Joyplot example
+# # Ridgeline plot example
 
 # Copyright © 2010–2017 Cloudera. All rights reserved.
 # Not to be reproduced or shared without prior written 
 # consent from Cloudera.
 
-# [Joyplots](http://blog.revolutionanalytics.com/2017/07/joyplots.html)
+# [Ridgeline plots](http://serialmentor.com/blog/2017/9/15/goodbye-joyplots), or 
+# "[Joyplots](http://blog.revolutionanalytics.com/2017/07/joyplots.html)"
 # in R are super popular right now, so we just had to make one.
 
-# Let's make a joyplot that visualizes the weather data,
-# exploring the relationship between the Events column
-# (which report on weather events that day,
-# like rain, snow, thunderstorms, fog)
-# and the CloudCover column 
-# (which reports cloud cover that day in okta units,
-# which have a min of 0 and a max of 8).
+# Let's make a ridgeline plot that visualizes the weather
+# data, exploring the relationship between the Events 
+# column (which report on weather events that day, like 
+# rain, snow, thunderstorms, fog) and the CloudCover 
+# column  (which reports cloud cover that day in okta 
+# units, which have a min of 0 and a max of 8).
 
 # ## Setup
 
 library(sparklyr)
 library(dplyr)
-
-spark <- spark_connect(master = "local", app_name = "inspect")
+config <- spark_config()
+config$spark.driver.host <- Sys.getenv("CDSW_IP_ADDRESS")
+spark <- spark_connect(
+  master = "local",
+  app_name = "ridgeline",
+  config = config
+)
 
 # Load weather data
 
 weather <- spark_read_parquet(
   sc = spark,
   name = "weather",
-  path = "/duocar/clean/weather"
+  path = "/duocar/clean/weather/"
 )
 
 # ## Get the data
@@ -42,33 +47,33 @@ events_cloud_cover <- weather %>%
   collect() 
 
 
-# ## Install ggjoy
+# ## Install ggridges
 
 # Now let's install the package 
-# [ggjoy](https://github.com/clauswilke/ggjoy)
-# which provides `geom_` functions for drawing joyplots
-# using ggplot2:
+# [ggridges](https://github.com/clauswilke/ggridges)
+# which provides `geom_` functions for drawing ridgeline
+# plots using ggplot2:
 
-if(!"ggjoy" %in% rownames(installed.packages())) { 
-  install.packages("ggjoy")
+if(!"ggridges" %in% rownames(installed.packages())) { 
+  install.packages("ggridges")
 }
 
-# Now load both ggplot2 and ggjoy:
+# Now load both ggplot2 and ggridges:
 
 library(ggplot2)
-library(ggjoy)
+library(ggridges)
 
-# ## Making the joyplot
+# ## Making the ridgeline plot
 
-# We use `geom_joy()` and `theme_joy()` along with
-# `ggplot()` to make the joyplot:
+# We use `geom_density_ridges()` and `theme_ridges()` 
+# along with `ggplot()` to make the ridgeline plot:
 
 ggplot(
     events_cloud_cover, 
     aes(x = CloudCover, y = Events)
   ) +
-  geom_joy(scale = 1) + 
-  theme_joy()
+  geom_density_ridges(scale = 1) + 
+  theme_ridges()
 
 
 # ## Advanced version
@@ -106,8 +111,8 @@ ggplot(
     events_cloud_cover, 
     aes(x = CloudCover, y = Events)
   ) +
-  geom_joy(scale = 1) + 
-  theme_joy()
+  geom_density_ridges(scale = 1) + 
+  theme_ridges()
 
 # ## Non-graphical version
 
