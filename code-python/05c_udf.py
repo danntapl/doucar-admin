@@ -27,7 +27,8 @@ import datetime
 def hour_of_day(timestamp):
   return timestamp.hour
 
-# **Note:** The Spark TimestampType corresponds to Python `datetime.datetime` objects.
+# **Note:** The Spark TimestampType corresponds to Python `datetime.datetime`
+# objects.
 
 # Test the Python function:
 dt = datetime.datetime(2017, 7, 21, 5, 51, 10)
@@ -42,14 +43,16 @@ hour_of_day_udf = udf(hour_of_day, returnType=IntegerType())
 # to StringType.
 
 # Apply the UDF:
-rides.select("date_time", hour_of_day_udf("date_time")).show(5, truncate=False)
+rides \
+  .select("date_time", hour_of_day_udf("date_time")) \
+  .show(5, truncate=False)
 
 # Compute number of rides by hour of day:
-rides\
-  .select(hour_of_day_udf("date_time").alias("hour"))\
-  .groupBy("hour")\
-  .count()\
-  .orderBy("hour")\
+rides \
+  .select(hour_of_day_udf("date_time").alias("hour")) \
+  .groupBy("hour") \
+  .count() \
+  .orderBy("hour") \
   .show(25)
 
 
@@ -79,7 +82,8 @@ def haversine(lat1, lon1, lat2, lon2):
  
   return R * c
 
-# **Note:** We have made some minor changes to the code to make it integer proof.
+# **Note:** We have made some minor changes to the code to make it integer
+# proof.
 
 # Test that this result is about 2887.2599506071106:
 haversine(36.12, -86.67, 33.94, -118.40)
@@ -90,16 +94,15 @@ haversine_udf = udf(haversine, returnType=DoubleType())
 
 # Apply the haversine UDF:
 from pyspark.sql.functions import round
-distances = rides\
-  .select("distance", (haversine_udf("origin_lat", "origin_lon", "dest_lat", "dest_lon") * 1000)\
-  .alias("haversine_distance"))
+distances = rides \
+  .select("distance", (haversine_udf("origin_lat", "origin_lon", "dest_lat", "dest_lon") * 1000).alias("haversine_distance"))
 distances.show(5)
 
 # We would expect the haversine distance to be less than the ride distance:
-distances\
-  .select((distances.haversine_distance > distances.distance).alias("greater_than"))\
-  .groupBy("greater_than")\
-  .count()\
+distances \
+  .select((distances.haversine_distance > distances.distance).alias("greater_than")) \
+  .groupBy("greater_than") \
+  .count() \
   .show()
 
 # The null values probably correspond to canceled rides:
@@ -111,10 +114,11 @@ distances.filter(distances.haversine_distance > distances.distance).show(5)
 
 # ## Exercises
 
-# Create a user-defined function (UDF) that extracts day of the week from a
+# (1) Create a user-defined function (UDF) that extracts day of the week from a
 # timestamp column.  Hint: Use the Python `datetime` module.  
 
-# Use your UDF to compute the explore the number of rides by day of the week.
+# (2) Use your UDF to compute the explore the number of rides by day of the
+# week.
 
 
 # ## Cleanup
