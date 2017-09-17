@@ -64,16 +64,22 @@ riders.select("*").show(5)
 # ### Adding Columns
 
 # Use the `withColumn` method to add a new column:
-riders.select("student").withColumn("student_boolean", riders.student == 1).show()
+riders \
+  .select("student") \
+  .withColumn("student_boolean", riders.student == 1) \
+  .show()
 
 # **Notes:**
 # * We have chained the `select` and `withColumn` methods.
 # * We have introduced another way to access a column: `riders.student`.
 # * We have introduced a Boolean expression `riders.student == 1`.
 
-# A SQL version of this is as follows:
-
+# A SQL approach using the `selectExpr` method is as follows:
 riders.selectExpr("student", "student = 1 as student_boolean").show(5)
+
+# Another SQL approach using a temporary table is as follows:
+riders.createOrReplaceTempView("riders_tmp")
+spark.sql("select student, student = 1 as student_boolean from riders_tmp").show(5)
 
 # ### Dropping Columns
 
@@ -86,17 +92,22 @@ riders.drop("first_name", "last_name", "ethnicity").show(5)
 riders.withColumnRenamed("start_date", "join_date").printSchema()
 
 # Chain multiple methods to rename more than one column:
-riders.withColumnRenamed("start_date", "join_date").withColumnRenamed("sex", "gender").printSchema()
+riders \
+  .withColumnRenamed("start_date", "join_date") \
+  .withColumnRenamed("sex", "gender") \
+  .printSchema()
 
 # ### Changing the column type
 
 # Recall that `home_block` was read in as a (long) integer:
 riders.printSchema()
 
-# Use the `withColumn` (DataFrame) method in conjuction with the `cast` (Column) method to change its type:
+# Use the `withColumn` (DataFrame) method in conjunction with the `cast`
+# (Column) method to change its type:
 riders.withColumn("home_block", riders.home_block.cast("string")).printSchema()
 
-# **Note:** If we need to change the name and/or type of many columns, then we may want to consider specifying the schema on read.
+# **Note:** If we need to change the name and/or type of many columns, then we
+# may want to consider specifying the schema on read.
 
 
 # ## Working with rows
@@ -104,56 +115,66 @@ riders.withColumn("home_block", riders.home_block.cast("string")).printSchema()
 # ### Ordering rows
 
 # Use the `sort` or `orderBy` method to sort a DataFrame by particular columns:
-riders.select("birth_date", "student").sort("birth_date", ascending=True).show()
-riders.select("birth_date", "student").orderBy("birth_date", ascending=False).show()
+riders \
+  .select("birth_date", "student") \
+  .sort("birth_date", ascending=True) \
+  .show()
+
+riders \
+  .select("birth_date", "student") \
+  .orderBy("birth_date", ascending=False) \
+  .show()
 
 # Use the `asc` or `desc` column method instead of the `ascending` argument:
-
-riders.select("birth_date", "student").orderBy(riders.birth_date.desc()).show()
+riders \
+  .select("birth_date", "student") \
+  .orderBy(riders.birth_date.desc()) \
+  .show()
 
 # **Note:** You can also use the `asc` and `desc` functions.
-
-# **Note:** We will see the `sortWithinPartions` method later.
 
 # ### Selecting a fixed number of rows
 
 # Use the `limit` method to select a fixed number of rows:
-
 riders.select("student", "sex").limit(5).show()
 
 # ### Selecting distinct rows
 
 # Use the `distinct` method to select distinct rows:
-
 riders.select("student", "sex").distinct().show()
 
 # You can also use the `dropDuplicates` method:
-
 riders.select("student", "sex").dropDuplicates().show()
 
 # ### Filtering rows
 
-# Use the `filter` or `where` method along with a predicate function to select particular rows:
-
+# Use the `filter` or `where` method along with a Boolean expression to select
+# particular rows:
 riders.filter(riders.student == 1).count()
-riders.where(riders.sex == "female").count()
-riders.filter(riders.student == 1).where(riders.sex == "female").count()
 
-# **Note:** A predicate function returns True or False as output.
+riders.where(riders.sex == "female").count()
+
+riders.filter(riders.student == 1).where(riders.sex == "female").count()
 
 # ### Sampling rows
 
-# Use the `sample` method to select a random sample of rows with or without replacement.
-
+# Use the `sample` method to select a random sample of rows with or without
+# replacement.
 riders.count()
 riders.sample(withReplacement=False, fraction=0.1, seed=12345).count()
 
 # Use the `sampleBy` method to select a stratified random sample:
+riders \
+  .groupBy("sex") \
+  .count() \
+  .show() 
+riders \
+  .sampleBy("sex", fractions={"male": 0.2, "female": 0.8}, seed=54321) \
+  .groupBy("sex") \
+  .count() \
+  .show()
 
-riders.groupBy("sex").count().show()
-riders.sampleBy("sex", fractions={"male": 0.2, "female": 0.8}, seed=54321).groupBy("sex").count().show()
-
-# Here we have sampled 20% of male riders and 80% of female riders.
+# We have sampled 20% of male riders and 80% of female riders.
 
 
 # ## Working with missing values
@@ -195,22 +216,24 @@ riders_missing.replace({"OTHER/UNKNOWN": "NA", "MISSING": "NO RESPONSE"}, ["sex"
 
 # ## Exercises
 
-# Read the raw driver data from HDFS into a Spark DataFrame.
+# (1) Read the raw driver data from HDFS into a Spark DataFrame.
 
-# How young is the youngest driver?  How old is the oldest driver?
+# (2) How young is the youngest driver?  How old is the oldest driver?
 
-# How many female drivers does DuoCar have?  How many non-white, female drivers?
+# (3) How many female drivers does DuoCar have?  How many non-white, female
+# drivers?
 
-# Create a new DataFrame without any personally identifiable information (PII).
+# (4) Create a new DataFrame without any personally identifiable information
+# (PII).
 
-# Replace the missing values in the **rides.service** column with "Car" for
-# standard DuoCar service.
+# (5) Read the raw ride data from HDFS into a Spark DataFrame.  Inspect the
+# `service` column.  Replace the missing values with "Car" for standard DuoCar
+# service.
 
 
 # ## Cleanup
 
 # Stop the `SparkSession`.
-
 spark.stop()
 
 
