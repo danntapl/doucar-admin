@@ -33,7 +33,9 @@ riders = spark.read.csv("/duocar/raw/riders/", header=True, inferSchema=True)
 # ### Example 1: Converting ride distance from meters to miles
 
 from pyspark.sql.functions import round
-rides.select("distance", round(rides.distance / 1609.344, 2).alias("distance_in_miles")).show(5)
+rides \
+  .select("distance", round(rides.distance / 1609.344, 2).alias("distance_in_miles")) \
+  .show(5)
 
 # **Notes:**
 # * We have used the fact that 1 mile = 1609.344 meters.
@@ -41,11 +43,15 @@ rides.select("distance", round(rides.distance / 1609.344, 2).alias("distance_in_
 # * We have used the `alias` method to rename the column.
 
 # To add a new column use the `withColumn` method with a new column name:
-rides.withColumn("distance_in_miles", round(rides.distance / 1609.344, 2)).show(5)
+rides \
+  .withColumn("distance_in_miles", round(rides.distance / 1609.344, 2)) \
+  .show(5)
 
 # To replace the existing column use the `withColumn` method with the existing
 # column name:
-rides.withColumn("distance", round(rides.distance / 1609.344, 2)).show(5)
+rides \
+  .withColumn("distance", round(rides.distance / 1609.344, 2)) \
+  .show(5)
 
 # ### Example 2: Converting the ride id from an integer to a string
 
@@ -59,7 +65,9 @@ rides.select("id", format_string("%010d", "id").alias("id_fixed")).show(5)
 
 # ### Example 3: Converting the student flag from an integer to a Boolean
 
-riders.select("student", (riders["student"] == 1).alias("student_boolean")).show(5)
+riders \
+  .select("student", (riders["student"] == 1).alias("student_boolean")) \
+  .show(5)
 
 
 # ## Working with string columns
@@ -68,7 +76,9 @@ riders.select("student", (riders["student"] == 1).alias("student_boolean")).show
 
 # Trim whitespace and convert rider sex to uppercase:
 from pyspark.sql.functions import trim, upper
-riders.select("sex", upper(trim(riders.sex)).alias("gender")).show(5)
+riders \
+  .select("sex", upper(trim(riders.sex)).alias("gender")) \
+  .show(5)
 
 # ### Example 5: Extracting Census Block Group from the rider's Census Block
 
@@ -76,13 +86,17 @@ riders.select("sex", upper(trim(riders.sex)).alias("gender")).show(5)
 # the first 12 digits of the [Census
 # Block](https://en.wikipedia.org/wiki/Census_block):
 from pyspark.sql.functions import substring
-riders.select("home_block", substring("home_block", 1, 12).alias("home_block_group")).show(5)
+riders \
+  .select("home_block", substring("home_block", 1, 12).alias("home_block_group")) \
+  .show(5)
 
 # ### Example 6: Regular Expressions
 
 # Use a regular expression to extract the Census Block Group:
 from pyspark.sql.functions import regexp_extract
-riders.select("home_block", regexp_extract(riders.home_block.cast("string"), "^(\d{12}).*", 1).alias("home_block_group")).show(5)
+riders \
+  .select("home_block", regexp_extract(riders.home_block.cast("string"), "^(\d{12}).*", 1).alias("home_block_group")) \
+  .show(5)
 
 
 # ## Working with datetime columns
@@ -90,38 +104,47 @@ riders.select("home_block", regexp_extract(riders.home_block.cast("string"), "^(
 # ### Example 7: Fix birth date
 
 from pyspark.sql.functions import to_date
-riders.select("birth_date", to_date("birth_date").alias("birth_date_fixed")).show(5)
+riders \
+  .select("birth_date", to_date("birth_date").alias("birth_date_fixed")) \
+  .show(5)
 
-# **Note:** We could use the `withColumn` method as above to add a new column or replace an existing one.
+# **Note:** We could use the `withColumn` method as above to add a new column
+# or replace an existing one.
 
 # ### Example 8: Compute rider age
 
 from pyspark.sql.functions import to_date, current_date, months_between, floor
-riders.select("birth_date", current_date().alias("today"))\
-    .withColumn("age", floor(months_between("today", "birth_date") / 12))\
-    .show(5)
+riders \
+  .select("birth_date", current_date().alias("today")) \
+  .withColumn("age", floor(months_between("today", "birth_date") / 12)) \
+  .show(5)
 
-# **Note:** Spark implicity casts `birth_date` or `today` as necessary.  It is
-# probably safer to explicity cast one of these columns before computing the
+# **Note:** Spark implicitly casts `birth_date` or `today` as necessary.  It is
+# probably safer to explicitly cast one of these columns before computing the
 # number of months between.
 
 # ### Example 9: Fix ride date and time
 
-from pyspark.sql.functions import unix_timestamp, from_unixtime
-rides.select("date_time", from_unixtime(unix_timestamp("date_time", "yyyy-MM-dd HH:mm")).alias("date_time_fixed")).show(5)
-
-# **Note:** `date_time` is a string whereas `date_time_fixed` is a timestamp.
+rides \
+  .select("date_time", rides.date_time.cast("timestamp").alias("date_time_fixed")) \
+  .show(5, truncate=False)
 
 
 # ## Working with Boolean columns
 
 # ### Example 10: Create a Boolean column
-riders.select("student", (riders.student == 1).alias("student_boolean")).show(5)
+
+riders \
+  .select("student", (riders.student == 1).alias("student_boolean")) \
+  .show(5)
 
 # **Note:** `riders.student == 1` is called a *Boolean Column expression*.
 
 # We can filter on a Boolean column
-riders.select("student", (riders.student == 1).alias("student_boolean")).filter("student_boolean").show(5)
+riders \
+  .select("student", (riders.student == 1).alias("student_boolean")) \
+  .filter("student_boolean") \
+  .show(5)
 
 # ### Example 11: Multiple Boolean Column expressions
 
@@ -135,7 +158,11 @@ riders.select("student", "sex", studentFilter & maleFilter).show(15)
 # Combine using the OR operator:
 riders.select("student", "sex", studentFilter | maleFilter).show(15)
 
-# Note the difference in how nulls are treated in the computation.
+# Note the difference in how nulls are treated in the computation:
+# * true & null = null
+# * false & null = false
+# * true | null = true
+# * false | null = null
 
 # ### Example 12: Using multiple boolean expressions in a filter
 
@@ -147,15 +174,15 @@ riders.filter(maleFilter).filter(studentFilter).select("student", "sex").show(5)
 
 # ## Exercises
 
-# Convert the **rides.driver_id** column to a string column.
+# (1) Convert the `rides.driver_id` column to a string column.
 
-# Extract the year from the **rides.date_time** column.
+# (2) Extract the year from the `rides.date_time` column.
 
-# Convert **rides.duration** from seconds to  minutes.
+# (3) Convert `rides.duration` from seconds to minutes.
 
-# Convert the **rides.cancelled** column to a boolean column.
+# (4) Convert the `rides.cancelled` column to a boolean column.
 
-# Convert the **rides.star_rating** column to a double column.
+# (5) Convert the `rides.star_rating` column to a double column.
 
 
 # ## Cleanup
