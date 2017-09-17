@@ -11,7 +11,8 @@ FILES="code-python/00_cdsw.py
     code-python/04_transform1.py
     code-python/05a_transform2.py
     code-python/05b_complex_types.py
-    code-python/05c_udf.py"
+    code-python/05c_udf.py
+    code-python/06_combine.py"
 
 for file in $FILES
 do

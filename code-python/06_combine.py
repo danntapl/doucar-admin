@@ -28,7 +28,7 @@ scientists.show()
 offices = spark.read.csv("/duocar/raw/offices/", header=True, inferSchema=True)
 offices.show()
 
-# ## Cross join
+# ### Cross join
 
 # Use the `crossJoin` DataFrame method to join every row in the left
 # (scientists) DataFrame with every row in the right (offices) DataFrame:
@@ -43,7 +43,7 @@ scientists.crossJoin(offices).show()
 # Use the `join` DataFrame method with different values of the `how` argument
 # to perform other types of joins.
 
-# ## Inner join
+# ### Inner join
 
 # Use a join expression and the value `inner` to return only those rows for
 # which the join expression is true:
@@ -60,53 +60,63 @@ scientists.join(offices, "office_id", "inner").show()
 # following:
 scientists.join(offices, "office_id").show()
 
-# ## Left semi join
+# ### Left semi join
 
 # Use the value `left_semi` to return the rows in the left DataFrame that match
 # rows in the right DataFrame:
-scientists.join(offices, scientists.office_id == offices.office_id, "left_semi").show()
+scientists \
+  .join(offices, scientists.office_id == offices.office_id, "left_semi") \
+  .show()
 
 # This gives us a list of data scientists associated with an office.
 
-# ## Left anti join
+# ### Left anti join
 
 # Use the value `left_anti` to return the rows in the left DataFrame that do
 # not match rows in the right DataFrame:
-scientists.join(offices, scientists.office_id == offices.office_id, "left_anti").show()
+scientists \
+  .join(offices, scientists.office_id == offices.office_id, "left_anti") \
+  .show()
 
 # This gives us a list of data scientists not associated with an office.
 
 # **Note:** You can think of the left semi and left anti joins as special types
 # of filters.
 
-# ## Left outer join
+# ### Left outer join
 
 # Use the value `left` or `left_outer` to return every row in the left
 # DataFrame with or without a matching row in the right DataFrame:
-scientists.join(offices, scientists.office_id == offices.office_id, "left_outer").show()
+scientists \
+  .join(offices, scientists.office_id == offices.office_id, "left_outer") \
+  .show()
 
 # This gives us a list of data scientists with or without an office.
 
-# ## Right outer join
+# ### Right outer join
 
 # Use the value `right` or `right_outer` to return every row in the right
 # DataFrame with or without a matching row in the left DataFrame:
-scientists.join(offices, scientists.office_id == offices.office_id, "right_outer").show()
+scientists \
+  .join(offices, scientists.office_id == offices.office_id, "right_outer") \
+  .show()
 
 # This gives us a list of offices with or without a data scientist.
 
 # **Note:** The Paris office has two data scientists.
 
-# ## Full outer join
+# ### Full outer join
 
 # Use the value `full`, `outer`, or `full_outer` to return the union of the
 # left outer and right outer joins (with duplicates removed):
-scientists.join(offices, scientists.office_id == offices.office_id, "full_outer").show()
+scientists \
+  .join(offices, scientists.office_id == offices.office_id, "full_outer") \
+  .show()
 
 # This gives us a list of all data scientists whether or not they have an
 # office and all offices whether or not they have any data scientists.
 
-# ## Example: Joining the DuoCar data
+# ### Example: Joining the DuoCar data
 
 # Let us join the driver, rider, and review data with the ride data.
 
@@ -114,12 +124,12 @@ scientists.join(offices, scientists.office_id == offices.office_id, "full_outer"
 rides = spark.read.parquet("/duocar/clean/rides/")
 drivers = spark.read.parquet("/duocar/clean/drivers/")
 riders = spark.read.parquet("/duocar/clean/riders/")
-reviews = spark.read.parquet("/duocar/clean/ride_reviews")
+reviews = spark.read.parquet("/duocar/clean/ride_reviews/")
 
 # Since we want all the ride data, we will use a sequence of left outer joins:
-joined = rides\
-  .join(drivers, rides.driver_id == drivers.id, "left_outer")\
-  .join(riders, rides.rider_id == riders.id, "left_outer")\
+joined = rides \
+  .join(drivers, rides.driver_id == drivers.id, "left_outer") \
+  .join(riders, rides.rider_id == riders.id, "left_outer") \
   .join(reviews, rides.id == reviews.ride_id, "left_outer")
 joined.printSchema()
 
@@ -127,7 +137,7 @@ joined.printSchema()
 # remove the duplicate ID columns after joining the data to make this DataFrame
 # more usable.  For example, see the `joined` data in the DuoCar data
 # repository.
-spark.read.parquet("/duocar/joined").printSchema()
+spark.read.parquet("/duocar/joined/").printSchema()
 
 
 # ## Applying set operations to DataFrames
@@ -192,17 +202,18 @@ test.count()
 
 # **Note:** The proportions must be doubles.
 
-# **Note:** We will use this functionality to create train, validation, and test datasets for machine learning pipelines.
+# **Note:** We will use this functionality to create train, validation, and
+# test datasets for machine learning pipelines.
 
 
 # ## Exercises
 
-# Create a DataFrame with all combinations of vehicle make and vehicle year
+# (1) Create a DataFrame with all combinations of vehicle make and vehicle year
 # (regardless of whether the combination is observed in the data).
 
-# Join the demographic and weather data with the joined rides data.
+# (2) Join the demographic and weather data with the joined rides data.
 
-# Find any drivers who have not provide a ride?
+# (3) Are there any drivers who have not provided a ride?
 
 
 # ## Cleanup
