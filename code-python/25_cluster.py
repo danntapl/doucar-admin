@@ -150,7 +150,7 @@ sns.boxplot(x="cluster", y="distance", data=clustered)
 
 # ## Exercises
 
-# (1) Experiment with diffent values of k (number of clusters).
+# (1) Experiment with different values of k (number of clusters).
 
 # (2) Experiment with different sets of features.
 
