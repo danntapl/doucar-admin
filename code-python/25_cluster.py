@@ -4,7 +4,7 @@
 # Not to be reproduced or shared without prior written 
 # consent from Cloudera.
 
-# In this module we use the k-means clustering functionality is Spark MLlib to
+# In this module we use the k-means clustering functionality in Spark MLlib to
 # look for structure in the ride data.
 
 
@@ -92,14 +92,14 @@ kmeans_model.clusterCenters()
 
 if kmeans_model.hasSummary:
   
-  # Print cluster sizes
+  # Print cluster sizes:
   print(kmeans_model.summary.clusterSizes)
   
-  # Show predicitions
+  # Show predictions:
   kmeans_model.summary.predictions.printSchema()
   kmeans_model.summary.predictions.select("features", "cluster").show(5, truncate=False)
   
-# Plot cluster centers
+# Plot cluster centers:
 center_map = folium.Map(location=[46.8772222, -96.7894444])
 for cluster in kmeans_model.clusterCenters():
   # Plot marker at origin.
@@ -141,7 +141,7 @@ clustered = predictions.sample(withReplacement=False, fraction=0.01).toPandas()
 # Import the seaborn package:
 import seaborn as sns
 
-# Plot the distributuion of `service` for each cluster:
+# Plot the distribution of `service` for each cluster:
 sns.countplot(x="cluster", hue="service", data=clustered)
 
 # Plot the distribution of `distance` for each cluster:
