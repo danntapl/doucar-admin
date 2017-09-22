@@ -50,8 +50,8 @@ riders <- spark_read_csv(
 
 # ## Spark DataFrame API functions with dplyr equivalents
 
-# Some Spark DataFrame API functions are directly 
-# comparable to dplyr verbs. For example:
+# Some of sparklyr's Spark DataFrame API functions are 
+# directly comparable to dplyr verbs. For example:
 
 # ### `sdf_sort()`
 
@@ -96,6 +96,10 @@ riders %>% sdf_sample(0.01)
 
 # ### `na.omit()`
 
+# Note: Although this function's name does not begin 
+# with `sdf_`, it is nevertheless a Spark DataFrame 
+# API function, not a dplyr verb.
+
 # Can be used to filter out all rows with missing values.
 # You can also use `filter_all()` to do this, but it's 
 # more concise to use `na.omit()`.
@@ -107,6 +111,10 @@ riders %>% na.omit()
 
 
 # ### `na.replace()`
+
+# Note: Although this function's name does not begin 
+# with `sdf_`, it is nevertheless a Spark DataFrame 
+# API function, not a dplyr verb.
 
 # Can be used to replace missing values in specified 
 # columns with specified values.
