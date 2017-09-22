@@ -20,25 +20,25 @@ spark <- spark_connect(
 # This section describes some of the functions documented 
 # in the 
 # [Spark data](https://spark.rstudio.com/reference/index.html#section-spark-data)
-# section of the sparklyr function reference.
-# 
-# There are some other functions there that are not
+# section of the sparklyr function reference. There are 
+# some other functions documented there that are not
 # described here but that students may ask about, like:
 
-# `spark_read_table()`
-# which is not necessary when you are using dplyr
-# because you can instead use `tbl()`
+# * `spark_read_table()`
+#   which is not necessary when you are using dplyr
+#   because you can instead use `tbl()`
 
-# `spark_write_table()`
-# which creates a permanent Hive table
-# which we don't want students to do yet
-# and is probably safer to do with PySpark than sparklyr
+# * `spark_write_table()`
+#   which creates a permanent Hive table
+#   which we don't want students to do yet
+#   and is probably safer to do with PySpark than sparklyr
 
-# `spark_read_source()` and `spark_write_source()`
-# which have to do with Spark packages—a more advanced topic
+# * `spark_read_source()` and `spark_write_source()`
+#   which have to do with Spark packages—a more advanced
+#   topic
 
-# `spark_read_jdbc()` and `spark_write_jdbc()`
-# which are beyond the scope of this course
+# * `spark_read_jdbc()` and `spark_write_jdbc()`
+#   which are beyond the scope of this course
 
 # In general, browsing the list of all the functions in
 # sparklyr will cause students to see a lot of content 
