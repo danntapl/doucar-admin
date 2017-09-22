@@ -35,16 +35,18 @@ riders <- spark_read_csv(
   path = "/duocar/raw/riders/"
 )
 
+# ### BEGIN INSTRUCTOR NOTE
 
-#[//]: # (Instructor note:)
+# This section describes some of the functions documented 
+# in the 
+# [Spark DataFrames](https://spark.rstudio.com/reference/index.html#section-spark-dataframes)
+# section of the sparklyr function reference.
+# This section does not describe all these functions, 
+# because the need for some of them is not apparent until
+# the feature transformers and machine learning functions
+# are introduced in a later section.
 
-#[//]: # (This section describes some of the functions documented at)
-#[//]: # (https://spark.rstudio.com/reference/index.html#section-spark-dataframes)
-#[//]: # (It does not describe all these functions, because)
-#[//]: # (the need for some of them is not apparent until)
-#[//]: # (the feature transformers and machine learning functions)
-#[//]: # (are introduced in a later section.)
-
+# ### END INSTRUCTOR NOTE
 
 # ## Spark DataFrame API functions with dplyr equivalents
 
