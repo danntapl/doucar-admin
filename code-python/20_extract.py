@@ -7,7 +7,7 @@
 # In this module we demonstrate some of the functionality available in Spark
 # MLlib to extract, transform, and select features for machine learning.  In
 # particular, we generate features from the ride review text that can be used
-# to predict ride rating.  We cover only a small subset of the available
+# to predict the ride rating.  We cover only a small subset of the available
 # transformations; we will cover additional transformations in subsequent
 # modules.
 
@@ -24,10 +24,9 @@ reviews = spark.read.parquet("/duocar/clean/ride_reviews/")
 # Read the ride data from HDFS:
 rides = spark.read.parquet("/duocar/clean/rides/")
 
-# Join the ride review data with the ride data:
+# We only want the rides with reviews, so left outer join `reviews` and
+# `rides`:
 joined = reviews.join(rides, reviews.ride_id == rides.id, "left_outer")
-
-# **Note:** We want only those rides with reviews.
 
 # Select the subset of columns in which we are interested:
 reviews_with_ratings = joined.select("ride_id", "review", "star_rating")
@@ -46,7 +45,7 @@ reviews_with_ratings.head(5)
 from pyspark.ml.feature import Tokenizer
 tokenizer = Tokenizer(inputCol="review", outputCol="words")
 tokenized = tokenizer.transform(reviews_with_ratings)
-tokenized.head(5)
+tokenized.select("review", "words").head(5)
 
 # **Note:** `Tokenizer` is a
 # [Transformer](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.Transformer)
@@ -64,7 +63,7 @@ from pyspark.ml.feature import CountVectorizer
 vectorizer = CountVectorizer(inputCol="words", outputCol="words_vectorized", vocabSize=10)
 vectorizer_model = vectorizer.fit(tokenized)
 vectorized = vectorizer_model.transform(tokenized)
-vectorized.head(5)
+vectorized.select("words", "words_vectorized").head(5)
 
 # **Note:** `CountVectorizer` is an
 # [Estimator](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.Estimator)
@@ -82,7 +81,7 @@ vectorized.head(5)
 
 # **Note:** Our limited vocabulary includes a number of common words such as
 # "the" that we do not expect to be predictive:
-vectorizer_model.vocabulary
+list(enumerate(vectorizer_model.vocabulary))
 # Spark MLlib provides a transformer to remove these so-called "stop words".
 
 # Use the
@@ -92,16 +91,17 @@ from pyspark.ml.feature import StopWordsRemover
 remover = StopWordsRemover(inputCol="words", outputCol="words_removed")
 remover.getStopWords()[:5]
 removed = remover.transform(tokenized)
-removed.head(5)
+removed.select("words", "words_removed").head(5)
 
 # Recount the words:
 vectorizer = CountVectorizer(inputCol="words_removed", outputCol="words_vectorized", vocabSize=10)
 vectorizer_model = vectorizer.fit(removed)
 vectorized = vectorizer_model.transform(removed)
-vectorized.head(5)
+vectorized.select("words_removed", "words_vectorized").head(5)
 
 # **Note:** Our vocabulary seems more reasonable now:
-vectorizer_model.vocabulary
+list(enumerate(vectorizer_model.vocabulary))
+
 
 # ## Selecting features
 
@@ -113,10 +113,10 @@ vectorizer_model.vocabulary
 
 # Use `ChiSqSelector` to select the top 5 features:
 from pyspark.ml.feature import ChiSqSelector
-selector = ChiSqSelector(featuresCol="words_vectorized", labelCol="star_rating", outputCol="selected_words", numTopFeatures=5)
+selector = ChiSqSelector(featuresCol="words_vectorized", labelCol="star_rating", outputCol="words_selected", numTopFeatures=5)
 selector_model = selector.fit(vectorized)
 selected = selector_model.transform(vectorized)
-selected.head(5)
+selected.select("words_removed", "words_selected").head(5)
 
 # List selected words:
 [vectorizer_model.vocabulary[i] for i in selector_model.selectedFeatures]
@@ -160,7 +160,7 @@ indexed.write.parquet("myduocar/clustering_data", mode="overwrite")
 
 # Now we are ready to build a simple Naive Bayes classifier:
 from pyspark.ml.classification import NaiveBayes
-naive_bayes = NaiveBayes(featuresCol="selected_words", labelCol="star_rating_indexed")
+naive_bayes = NaiveBayes(featuresCol="words_selected", labelCol="star_rating_indexed")
 reviews_with_prediction = naive_bayes.fit(indexed).transform(indexed)
 
 # Compute the *confusion matrix* via the `crosstab` method:
