@@ -93,7 +93,7 @@ explore(labeled, "vehicle_year", "high_rating")
 # **Feature 3:** What about the color of the vehicle?
 explore(labeled, "vehicle_color", "high_rating")
 
-# **Note:** The rider is more likely to give a high rating if the car is is
+# **Note:** The rider is more likely to give a high rating if the car is
 # black and less likely to give a high rating if the car is yellow.
 
 # The classification algorithms in Spark MLlib do not accept categorical
@@ -259,7 +259,7 @@ evaluator.setMetricName("areaUnderPR").evaluate(test_with_prediction)
 
 # There are two ways to score out a new dataset.
 
-# **Method1:*** The `evaluate` method
+# **Method1:** The `evaluate` method
 
 # The more expensive way is to use the `evaluate` method of the
 # `LogisticRegressionModel` class.  The `predictions` attribute of the
