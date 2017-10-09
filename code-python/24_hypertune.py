@@ -102,7 +102,7 @@ validator = TrainValidationSplit(estimator=lr, estimatorParamMaps=grid, evaluato
 # class:
 type(cv_model)
 
-# The cross-validation results are stored in the `validationMatrics` attribute:
+# The cross-validation results are stored in the `validationMetrics` attribute:
 cv_model.validationMetrics
 
 # These are the RMSE for each set of hyperparameters.  Smaller is better.
@@ -165,7 +165,7 @@ kfold_model.bestModel.evaluate(test).r2
 
 # (1) Maybe our regularization parameters are too large.  Rerun the
 # hyperparameter tuning with regularization parameters [0.0, 0.02, 0.04, 0.06,
-# 0.08, 1.0].
+# 0.08, 0.1].
 
 # (2) Create a parameter grid that searches over regularization type (lasso or
 # ridge) as well as the regularization parameter.
