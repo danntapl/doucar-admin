@@ -84,7 +84,7 @@ paramGrid = ParamGridBuilder() \
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 evaluator = MulticlassClassificationEvaluator(labelCol="star_rating", metricName="accuracy")
 
-# **Note:** We treated `star_rating` as a multiclass label.
+# **Note:** We are treating `star_rating` as a multiclass label.
 
 # Specify validator:
 from pyspark.ml.tuning import TrainValidationSplit
