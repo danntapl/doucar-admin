@@ -39,7 +39,7 @@ rides <- spark_read_parquet(
 
 samples <- rides %>%
   filter(!cancelled) %>%
-  mutate(reviewed = is.na(review)) %>%
+  mutate(reviewed = !is.na(review)) %>%
   ft_string_indexer(
     input.col = "vehicle_color",
     output.col = "vehicle_color_index"
@@ -103,6 +103,13 @@ model$root.mean.squared.error
 
 pred <- model %>% 
   sdf_predict(samples$test)
+
+# Evaluate the model on the test test by computing
+# R-squared, which gives the fraction of the variance
+# in the test set that is explained by the model:
+
+pred %>%
+  summarise(r_squared = cor(star_rating, prediction)^2)
 
 
 # ## Cleanup
