@@ -51,6 +51,11 @@ riders %>% print(n = 5)
 
 riders %>% print(n = 20)
 
+# To show all the columns, even if rows wrap onto multiple 
+# lines, set `width = Inf`:
+
+riders %>% print(n = 5, width = Inf)
+
 # There are some other arguments and options that control 
 # how `tbl` objects print. See `?format.tbl` for details.
 
