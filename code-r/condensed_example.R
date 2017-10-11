@@ -116,7 +116,8 @@ drivers %>% print(n = 5, width = Inf)
 # * `summarise()` to aggregate
 
 # In addition to these main dplyr verbs, there are
-# several others
+# some other less important ones that are variations on
+# the main verbs, such as `rename()` and `transmute()`.
 
 # And in addition to verbs, dplyr also has the function
 # `group_by()` which allows you to perform operations by
