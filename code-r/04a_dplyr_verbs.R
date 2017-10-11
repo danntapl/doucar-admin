@@ -306,7 +306,7 @@ riders %>% head(20)
 
 # To print more than 10 rows, use `print(n = `*`x`*`)`:
 
-riders %>% head(20) %>% print(n = Inf)
+riders %>% head(20) %>% print(n = 20)
 
 # Note that row order in an unordered Spark DataFrame is 
 # arbitrary, so you may not get the same rows each time 
