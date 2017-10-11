@@ -48,7 +48,7 @@ rides <- spark_read_parquet(
 samples <- rides %>%
   filter(!cancelled) %>%
   mutate(
-    reviewed = is.na(review),
+    reviewed = !is.na(review),
     five_star = as.integer(star_rating == 5)
   ) %>%
   ft_string_indexer(
