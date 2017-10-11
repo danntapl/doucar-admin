@@ -193,7 +193,7 @@ student_rider_homes_tbl_df <-
 # We will learn throughout this training about how sparklyr 
 # and dplyr allow you to do many things with `tbl_spark` 
 # objects *without* loading the full result into R.
-# But some functions require that the data be loaded in R
+# But some functions require that the data be loaded in R.
 # For example, the functions in graphics packages like 
 # ggplot2 and leaflet do *not* work with `tbl_spark` objects.
 
