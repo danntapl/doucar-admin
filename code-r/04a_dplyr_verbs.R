@@ -294,6 +294,24 @@ riders %>% filter_if(
 # to limit the data to the riders whose homes are located
 # within this bounding box.
 
+# Instead of filtering based on some conditions, you may
+# simply want to return some fixed number of rows. To
+# return the first *`x`* rows, use `head(`*`x`*`)`:
+
+riders %>% head(5)
+
+# If you return more than 10 rows, only 10 will be printed:
+
+riders %>% head(20)
+
+# To print more than 10 rows, use `print(n = `*`x`*`)`:
+
+riders %>% head(20) %>% print(n = Inf)
+
+# Note that row order in an unordered Spark DataFrame is 
+# arbitrary, so you may not get the same rows each time 
+# you use `head()` on the same data.
+
 # Another option is to filter to a *random* set of rows.
 # This is of course known as *sampling*.
 # There are two special dplyr verbs for random sampling:
