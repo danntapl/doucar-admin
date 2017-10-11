@@ -86,14 +86,20 @@ drivers %>% colnames()
 
 drivers %>% sdf_nrow()
 
+# Print the first 10 rows of data, for as many columns
+# as fit on the screen (this is the default behavior):
+
+drivers
+
 # Print the first five rows of data, for as many columns
 # as fit on the screen:
 
-drivers %>% head(5)
+drivers %>% print(n = 5)
 
-# Print the first 10 rows (this is the default behavior):
+# Print the first five rows of data, showing all the
+# columns even if rows wrap onto multiple lines:
 
-drivers
+drivers %>% print(n = 5, width = Inf)
 
 
 # ### Transforming Data Using dplyr Verbs
