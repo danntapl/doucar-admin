@@ -53,6 +53,12 @@ You will find examples of loading this data int DataFrames in the associated exa
  * vehicle_elite: boolean
  * rides: integer
  * stars: integer
+ 
+_Note that the driver is driving one of three different cars_
+* _Car_ - a regular car
+* _Noir_ - black car service
+* _Grand_ - high occupancy vehicle
+* _Elite_ - limosine service
 
 ### ride_reviews
 * ride_id: string

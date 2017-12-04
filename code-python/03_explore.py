@@ -4,11 +4,13 @@
 # Not to be reproduced or shared without prior written 
 # consent from Cloudera.
 
-# Now that we have enhanced our ride data, we can begin a more systematic
+# This project will provide
 # exploration of the relationships among the variables.  The insight gathered
 # during this analysis may be used to improve DuoCar's day-to-day business
 # operations or it may serve as preparation for more sophisticated analysis and
 # modeling using machine learning algorithms.
+
+# This project also demonstrates using __Pandas__, __Matplotlib__ and __Seaborn__
 
 # Possible work flows for big data
 # * Work with all of the data on the cluster
@@ -273,15 +275,6 @@ def tmp_plot():  # Wrap plot build into function for CDSW
   g = sns.FacetGrid(data=rides_pdf, row="rider_sex", col="rider_student")
   g = g.map(plt.scatter, "distance", "duration")
 tmp_plot()
-
-
-# ## Exercises
-
-# (1) Explore the distribution of ride rating.
-
-# (2) Explore the distribution of ride duration.
-
-# (3) Explore the relationship between ride rating and rider student status.
 
 
 # ## Cleanup
