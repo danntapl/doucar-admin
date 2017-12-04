@@ -7,13 +7,11 @@
 # In this module we demonstrate how to read and write a variety of data formats
 # into and out of Apache Spark.
 
-# * Working with text files
 # * Working with delimited text files
 # * Working with files in Amazon S3
 # * Working with Parquet files
 # * Working with Hive tables
 # * Working with pandas DataFrames
-# * Generating a Spark DataFrame
 
 
 # ## Setup
@@ -21,52 +19,6 @@
 # Create a SparkSession:
 from pyspark.sql import SparkSession
 spark = SparkSession.builder.master("local").appName("read").enableHiveSupport().getOrCreate()
-
-# **Note:** The subsequent Hive examples seem to work without the
-# `enableHiveSupport` method.
-
-
-# ## Working with text files
-
-# The `text` method of the
-# [DataFrameReader](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.DataFrameReader)
-# class reads each line of a text file into a row of a DataFrame with a single
-# column named *value*.
-riders_txt = spark.read.text("/duocar/raw/riders/")
-riders_txt.show(5, truncate=False)
-riders_txt.head(5)
-
-# In this case, we would need to apply further transformations to parse each
-# line.
-
-# **Note:** The default filesystem in CDH (and by extension CDSW) is HDFS.  The
-# read statement above is a shortcut for the following:
-riders_txt = spark.read.text("hdfs:///duocar/raw/riders/")
-
-# Let us create a subdirectory in our HDFS home directory for subsequent
-# examples:
-!hdfs dfs -rm -r -skipTrash practice
-!hdfs dfs -mkdir practice
-
-# The `text` method of the
-# [DataFrameWriter](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.DataFrameWriter)
-# class writes each row of a DataFrame with a single string column into a line
-# of a text file:
-riders_txt.write.text("practice/riders_text")
-
-# Note that this write is to a *relative path* in the user's home directory.
-!hdfs dfs -ls practice/riders_text
-!hdfs dfs -cat practice/riders_text/* | head -n 5
-
-# **Note:** Do not worry about the `cat: Unable to write to output steam.`
-# message.
-
-# The `text` method can also write a compressed file.
-riders_txt.write.text("practice/riders_text_compressed", compression="bzip2")
-!hdfs dfs -ls practice/riders_text_compressed
-
-# **Reference:**
-# <https://www.cloudera.com/documentation/enterprise/latest/topics/introduction_compression.html>
 
 
 # ## Working with delimited text files
@@ -130,14 +82,6 @@ riders2 = spark \
 # Confirm the explicit schema:
 riders2.printSchema()
 
-# Write the file to a tab-delimited file:
-riders.write.csv("practice/riders_tsv", sep="\t")
-!hdfs dfs -ls practice/riders_tsv
-!hdfs dfs -cat practice/riders_tsv/* | head -n 5
-
-
-# ## Working with files in Amazon S3
-
 # We can read files directly from Amazon S3:
 demo = spark.read.csv("s3a://duocar/raw/demographics/", sep="\t", header=True, inferSchema=True)
 demo.printSchema()
@@ -148,15 +92,6 @@ demo.show(5)
 
 
 # ## Working with Parquet files
-
-# [Parquet](https://parquet.apache.org/) is a very popular columnar storage
-# format for Hadoop.  Use the `parquet` method of the `DataFrameWriter` class
-# to save a DataFrame in Parquet:
-riders.write.parquet("practice/riders_parquet")
-
-# **Note:** The SLF4J messages are a known issue with CDH.
-
-!hdfs dfs -ls practice/riders_parquet
 
 # Note that the schema is stored with the data:
 spark.read.parquet("practice/riders_parquet").printSchema()
@@ -213,74 +148,7 @@ riders_pd.head()
 # DataFrame into a pandas DataFrame.  See the appendix `02_toPandas.py` for
 # additional details.
 
-
-# ## Generating a Spark DataFrame
-
-# Sometimes we need to generate a Spark DataFrame from scratch, for example,
-# for testing purposes.
-
-# Use the `range` method to generate a sequence of integers and add new columns
-# as appropriate.
-spark.range(1000).show(5)
-
-# Use the `rand` function to generate a uniform random variable:
-from pyspark.sql.functions import rand
-spark \
-  .range(1000) \
-  .withColumn("uniform", rand(12345)) \
-  .show(5)
-
-# or a Bernoulli random variable with `p = 0.25`:
-bern_df = spark \
-  .range(1000) \
-  .withColumn("Bernoulli", (rand(12345) < 0.25).cast("int"))
-  
-# Generate a summary using the functional style:
-bern_df.groupby("Bernoulli").count().show()
-
-# Generate a summary using the SQL style:
-bern_df.createOrReplaceTempView("bern")
-spark.sql("SELECT Bernoulli, COUNT(*) AS count \
-    FROM bern \
-    GROUP BY Bernoulli") \
-  .show()
-
-# Use the `randn` function to generate a normal random variable:
-from pyspark.sql.functions import randn
-ran_df = spark.range(1000).withColumn("normal", 42 +  2 * randn(54321))
-ran_df.show(5)
-ran_df.describe("id", "normal").show()
-
-
-# ## Exercises
-
-# (1) Read the raw driver file from HDFS into a Spark DataFrame.
-
-# (2) Save the driver DataFrame as a JSON file in your CDSW practice directory.
-
-# (3) Use Hue to inspect the JSON file.
-
-# (4) Read the driver JSON file into a Spark DataFrame.
-
-# (5) Delete the JSON file.
-
-
-# ## Cleanup
-
-# Remove practice directory contents from HDFS:
-!hdfs dfs -rm -r -skipTrash practice/riders_text
-!hdfs dfs -rm -r -skipTrash practice/riders_text_compressed
-!hdfs dfs -rm -r -skipTrash practice/riders_tsv
-!hdfs dfs -rm -r -skipTrash practice/riders_parquet
-query = "DROP TABLE IF EXISTS %s" % table_name
-spark.sql(query)
-
 # Stop the `SparkSession`:
 spark.stop()
 
 
-# ## References
-
-# [DataFrameReader class](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.DataFrameReader)
-
-# [DataFrameWriter class](http://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.DataFrameWriter)
