@@ -1,5 +1,8 @@
 
 R/
+odbc.ini
+.odbcinst.ini
+
 
 # History files
 .Rhistory
