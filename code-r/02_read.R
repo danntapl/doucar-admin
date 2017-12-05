@@ -3,6 +3,14 @@
 # Copyright © 2010–2017 Cloudera. All rights reserved.
 # Not to be reproduced or shared without prior written 
 # consent from Cloudera.
+# ## Installing sparklyr
+
+# Warning: This takes several minutes the first time you run it in a project
+
+if(!"sparklyr" %in% rownames(installed.packages())) {
+  install.packages("sparklyr")
+}
+
 
 # ## Setup
 
@@ -15,36 +23,6 @@ spark <- spark_connect(
   config = config
 )
 
-# ### BEGIN INSTRUCTOR NOTE
-
-# This section describes some of the functions documented 
-# in the 
-# [Spark data](https://spark.rstudio.com/reference/index.html#section-spark-data)
-# section of the sparklyr function reference. There are 
-# some other functions documented there that are not
-# described here but that students may ask about, like:
-
-# * `spark_read_table()`
-#   which is not necessary when you are using dplyr
-#   because you can instead use `tbl()`
-
-# * `spark_write_table()`
-#   which creates a permanent Hive table
-#   which we don't want students to do yet
-#   and is probably safer to do with PySpark than sparklyr
-
-# * `spark_read_source()` and `spark_write_source()`
-#   which have to do with Spark packages—a more advanced
-#   topic
-
-# * `spark_read_jdbc()` and `spark_write_jdbc()`
-#   which are beyond the scope of this course
-
-# In general, browsing the list of all the functions in
-# sparklyr will cause students to see a lot of content 
-# they do not need to know about.
-
-# ### END INSTRUCTOR NOTE
 
 # ## Working with delimited text files
 
@@ -117,36 +95,26 @@ riders2
 # choices that Spark would have made for the data types 
 # of the `id` and `home_block` columns.
 
-# Write the file to a tab-delimited file:
+# We won't run this in a classroom environment, but we can 
+# write the file to a tab-delimited file:
 
-system("hdfs dfs -rm -r -skipTrash practice")
-
-system("hdfs dfs -mkdir practice")
-
-spark_write_csv(
-  riders,
-  path = "practice/riders_tsv",
-  delimiter = "\t"
-)
-
-system("hdfs dfs -ls practice/riders_tsv")
-
-system("hdfs dfs -cat practice/riders_tsv/* | head -n 5")
-
-# **Note:** Disregard the `cat: Unable to write to 
-# output steam.` message.
+#spark_write_csv(
+#  riders,
+#  path = "practice/riders_tsv",
+#  delimiter = "\t"
+#)
 
 
 # ## Working with Parquet files
 
 # Write the riders data to a Parquet file:
 
-spark_write_parquet(
-  riders,
-  path = "practice/riders_parquet"
-)
+# spark_write_parquet(
+#  riders,
+#  path = "practice/riders_parquet"
+#)
 
-system("hdfs dfs -ls practice/riders_parquet")
+# system("hdfs dfs -ls practice/riders_parquet")
 
 # **Warning:** If you try to overwrite an existing file
 # in HDFS, an error will result. You can try this by
@@ -156,11 +124,11 @@ system("hdfs dfs -ls practice/riders_parquet")
 # You can specify `mode = "overwrite"` to overwrite
 # any existing data with the new data:
 
-spark_write_parquet(
-  riders,
-  path = "practice/riders_parquet",
-  mode = "overwrite"
-)
+#spark_write_parquet(
+#  riders,
+#  path = "practice/riders_parquet",
+#  mode = "overwrite"
+#)
 
 # Note that in a Parquet file, the schema is stored 
 # with the data.
@@ -170,7 +138,7 @@ spark_write_parquet(
 riders_parquet <- spark_read_parquet(
   sc = spark,
   name = "riders_parquet",
-  path = "practice/riders_parquet"
+  path = "/duocar/clean/riders"
 )
 
 riders_parquet
@@ -197,7 +165,7 @@ src_tbls(spark)
 # DataFrame containing the data in one of these Hive tables,
 # use the function `tbl()` from the dplyr package:
 
-airlines <- tbl(spark, "airlines")
+airlines <- tbl(spark, "flights.airports")
 
 airlines
 
@@ -213,7 +181,7 @@ src_databases(spark)
 # To avoid loading the dbplyr package, you can use 
 # `dbplyr::` before the function call:
 
-drivers <- tbl(spark, dbplyr::in_schema("duocar", "drivers"))
+riders <- tbl(spark, dbplyr::in_schema("duocar", "riders"))
 
 # Another way to use a table that's in a non-default 
 # database is to change the current database.
@@ -224,7 +192,7 @@ tbl_change_db(spark, "duocar")
 # Then you can refer to tables in the duocar database 
 # without using `dbplyr::in_schema()`:
 
-drivers <- tbl(spark, "drivers")
+riders <- tbl(spark, "riders")
 
 # Then switch back to the default database:
 
@@ -241,7 +209,7 @@ tbl_change_db(spark, "default")
 
 # It is safer to use `dbplyr::in_schema()`.
 
-rm(drivers)
+rm(riders)
 
 
 # ## Executing SQL queries 
@@ -255,18 +223,18 @@ dbGetQuery(spark, "SHOW DATABASES")
 
 dbGetQuery(spark, "SHOW TABLES")
 
-dbGetQuery(spark, "DESCRIBE airlines")
+dbGetQuery(spark, "DESCRIBE riders")
 
-dbGetQuery(spark, "SELECT * from airlines limit 10")
+dbGetQuery(spark, "SELECT * from riders limit 10")
 
 
 # `dbGetQuery()` returns the query result to R as a data frame
 
-airlines <- dbGetQuery(spark, "SELECT * FROM airlines")
+riders <- dbGetQuery(spark, "SELECT * FROM riders")
 
-class(airlines)
+class(riders)
 
-airlines
+riders
 
 # **Important:** Only use `dbGetQuery()` when the query 
 # result will be small enough to fit in memory in your R 
@@ -277,11 +245,11 @@ airlines
 # `tbl_spark`. To do this, you need to use the dplyr
 # functions `tbl()` and `sql()`:
 
-flights <- tbl(spark, sql("SELECT * FROM flights"))
+airports <- tbl(spark, sql("SELECT * FROM flights.airports"))
 
-class(flights)
+class(airports)
 
-flights
+airports
 
 
 # But remember that for simple queries like this, 
@@ -289,13 +257,13 @@ flights
 # with sparklyr. Instead you can just reference 
 # the Hive table name with `tbl()`:
 
-flights <- tbl(spark, "flights")
+airports <- tbl(spark, "flights.airports")
 
 # This gives exactly the same result:
 
-class(flights)
+class(airports)
 
-flights
+airports
 
 # There are more details in upcoming modules about how
 # the R packages sparklyr and dplyr work together.
@@ -329,24 +297,7 @@ iris_tbl
 # from Spark, it will no longer be available.
 
 
-# ## Exercises
-
-# Read the raw drivers file into a Spark DataFrame.
-
-# Save the drivers DataFrame as a JSON file in your
-# CDSW practice directory.
-
-# Read the drivers JSON file into a Spark DataFrame.
-
-# Delete the JSON file.
-
-
 # ## Cleanup
-
-# Remove practice directory from HDFS:
-
-system("hdfs dfs -rm -r -skipTrash practice/riders_tsv")
-system("hdfs dfs -rm -r -skipTrash practice/riders_parquet")
 
 # Stop the `SparkSession`:
 

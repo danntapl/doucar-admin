@@ -130,16 +130,10 @@ spark <- spark_connect(master = "yarn", app_name = "connect-yarn")
 # If this command fails, you may need to restart your R session,
 # load sparklyr, and run it again.
 
-
-# ## Viewing the Spark Job UI
-
 # Create a simple Spark job to exercise the Spark Job UI:
 
 df <- sdf_len(spark, 10000000)
 df
-
-# Access the Spark UI through the Spark UI button in the upper right
-# menu in CDSW.
 
 # Disconnect from Spark
 

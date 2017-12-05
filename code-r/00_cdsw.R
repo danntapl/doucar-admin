@@ -142,9 +142,9 @@ detach("package:leaflet", unload = TRUE)
 # ### Images
 
 # Display a stored image file:
-library(png)
-pic <- readPNG("resources/spark.png")
-{plot.new(); rasterImage(pic, 0, 0, 1, 1)}
+#library(png)
+#pic <- readPNG("resources/spark.png")
+#{plot.new(); rasterImage(pic, 0, 0, 1, 1)}
 
 # **Note:** The image path is relative to `/home/cdsw/` regardless of script
 # location.
@@ -175,22 +175,6 @@ pic <- readPNG("resources/spark.png")
 
 # Move along, nothing to see here.
 
-
-# ## Exercises
-
-# (1) Experiment with the CDSW command prompt.  Run some commands and note the
-# following:
-# * Tab completion is available
-# * GNU Readline Library commands such as `C-a`, `C-e`, `C-f`, `C-b`, `C-d`,
-# and `C-k` are available
-# * The up and down arrows navigate the command history
-
-# (2) Experiment with the CDSW editor.  Create a new file.  Enter Python code
-# and Markdown text.  Run the file line by line (or chunk by chunk).  Clear the
-# console log and run the entire file.
-
-# (3) Open a terminal window.  Type `env | grep PYTHON` to explore the Python
-# environmental variables.
 
 
 # ## References

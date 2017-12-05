@@ -8,7 +8,6 @@
 # into and out of Apache Spark.
 
 # * Working with delimited text files
-# * Working with files in Amazon S3
 # * Working with Parquet files
 # * Working with Hive tables
 # * Working with pandas DataFrames
@@ -82,19 +81,10 @@ riders2 = spark \
 # Confirm the explicit schema:
 riders2.printSchema()
 
-# We can read files directly from Amazon S3:
-demo = spark.read.csv("s3a://duocar/raw/demographics/", sep="\t", header=True, inferSchema=True)
-demo.printSchema()
-demo.show(5)
-
-# If we have write permissions, then we can also write files to Amazon S3 using
-# the `s3a` prefix.
-
-
 # ## Working with Parquet files
 
 # Note that the schema is stored with the data:
-spark.read.parquet("practice/riders_parquet").printSchema()
+spark.read.parquet("/duocar/clean/drivers").printSchema()
 
 
 # ## Working with Hive Tables
@@ -142,11 +132,8 @@ demo_via_pandas.show(5)
 riders_pd = riders.toPandas()
 riders_pd.head()
 
-# **WARNING:** Use this with caution as you may use all your available memory!
-
 # **Note:** Column types may not convert as expected when reading a Spark
-# DataFrame into a pandas DataFrame.  See the appendix `02_toPandas.py` for
-# additional details.
+# DataFrame into a pandas DataFrame.
 
 # Stop the `SparkSession`:
 spark.stop()
