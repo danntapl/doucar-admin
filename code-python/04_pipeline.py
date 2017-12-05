@@ -1,4 +1,5 @@
 # # Working with Machine Learning Pipelines
+# *Suggested Engine: Python2, 2 vCPU 4GB RAM*
 
 # Copyright © 2010–2017 Cloudera. All rights reserved.
 # Not to be reproduced or shared without prior written 
@@ -105,6 +106,9 @@ pipeline = Pipeline(stages=stages)
 # The `fit` method produces a
 # [PipelineModel](http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.PipelineModel),
 # which is a `Transformer`:
+
+# Expect this to take around 5 mins
+
 %time pipeline_model = pipeline.fit(train)
 
 

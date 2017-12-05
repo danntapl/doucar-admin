@@ -1,4 +1,5 @@
 # # Reading and Writing Data
+# *Suggested Engine: R, 1 vCPU 2GB RAM*
 
 # Copyright © 2010–2017 Cloudera. All rights reserved.
 # Not to be reproduced or shared without prior written 
